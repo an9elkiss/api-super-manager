@@ -2,7 +2,6 @@ package com.an9elkiss.api.manager.service;
 
 import java.util.Map;
 
-import com.an9elkiss.api.manager.command.TaskViewCommand;
 import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
 import com.an9elkiss.api.manager.model.Task;
@@ -10,7 +9,7 @@ import com.an9elkiss.commons.command.ApiResponseCmd;
 
 public interface TaskService {
 
-	ApiResponseCmd<Object> createTask(Task task);
+	ApiResponseCmd<Task> createTask(Task task);
 
 	ApiResponseCmd<Object> deleteTask(Integer id);
 

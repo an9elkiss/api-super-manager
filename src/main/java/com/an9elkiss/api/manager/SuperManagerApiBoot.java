@@ -10,15 +10,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.an9elkiss.commons.auth.spring.AuthInterceptor;
 
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
 		"com.an9elkiss.api.manager.api, com.an9elkiss.api.manager.service, com.an9elkiss.commons.util.spring" })
 @MapperScan("com.an9elkiss.api.manager.dao")
-public class SuperManagerApiBoot implements CommandLineRunner {
+public class SuperManagerApiBoot extends WebMvcConfigurerAdapter implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
@@ -71,5 +74,16 @@ public class SuperManagerApiBoot implements CommandLineRunner {
             }
         };
     }
+    
+	// 这样，bean才能被托管
+	@Bean
+	public AuthInterceptor authInterceptor() {
+		return new AuthInterceptor();
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(authInterceptor()).addPathPatterns("/**");
+	}
 
 }

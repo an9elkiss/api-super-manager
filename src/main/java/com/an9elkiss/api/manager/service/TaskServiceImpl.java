@@ -1,15 +1,13 @@
 package com.an9elkiss.api.manager.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +21,8 @@ import com.an9elkiss.api.manager.dao.TaskWeekDao;
 import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.api.manager.model.TaskWeek;
 import com.an9elkiss.api.manager.util.DateTools;
-import com.an9elkiss.commons.auth.JsonFormater;
-import com.an9elkiss.commons.auth.model.Principal;
+import com.an9elkiss.commons.auth.AppContext;
 import com.an9elkiss.commons.command.ApiResponseCmd;
-import com.an9elkiss.commons.constant.RedisKeyPrefix;
-import com.an9elkiss.commons.util.spring.RedisUtils;
 
 @Service
 @Transactional
@@ -41,10 +36,7 @@ public class TaskServiceImpl implements TaskService {
 	@Autowired
 	private TaskWeekDao taskWeekDao;
 	
-	@Autowired
-	private RedisUtils redisUtils;
-	
-	private String CODE_TOP = "TC";
+	private String CODE_PREFIX = "TC";
 
 	@Override
 	public ApiResponseCmd<Object> createTask(Task task) {
@@ -54,14 +46,9 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public ApiResponseCmd<Object> deleteTask(Integer id, String token) {
-		String json = redisUtils.getString(RedisKeyPrefix.SESSION + token);
-		if (StringUtils.isBlank(json)) {
-			return ApiResponseCmd.deny();
-		}
-		Principal principal = JsonFormater.format(json);
 		Task task = new Task();
 		task.setId(id);
-		task.setUpdateBy(principal.getSubject().getName());
+		task.setUpdateBy(AppContext.getPrincipal().getName());
 		task.setStatus(ApiStatus.DELETED.getCode());
 		taskDao.update(task);
 		return ApiResponseCmd.success();
@@ -102,76 +89,73 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public ApiResponseCmd<TaskCommand> createTaskAndWeek(TaskCommand taskCommand) {
-		String json = redisUtils.getString(RedisKeyPrefix.SESSION + taskCommand.getToken());
-		if (StringUtils.isBlank(json)) {
-			return ApiResponseCmd.deny();
-		}
-		Principal principal = JsonFormater.format(json);
 		Task task = new Task();
 		TaskWeek taskWeek = new TaskWeek();
-		try {
-			BeanUtils.copyProperties(task, taskCommand);
-			BeanUtils.copyProperties(taskWeek, taskCommand);
-			task.setStatus(ApiStatus.NEW.getCode());
-			task.setCreateBy(principal.getSubject().getName());
-			task.setCode(CODE_TOP + (new Date().getTime()/1000));
-			// 计算折算工时
-			if (null != taskCommand.getPercent()) {
-				task.setPercentHours((int) (task.getPlanHours() * taskCommand.getPercent()));
-			}else{
-				task.setPercentHours(task.getPlanHours());
-			}
-			taskDao.save(task);
-			task = taskDao.findById(task.getId());
-			taskWeek.setTaskId(task.getId());
-			taskWeek.setStatus(ApiStatus.NEW.getCode());
-			taskWeek.setCreateBy(principal.getSubject().getName());
-			taskWeekDao.save(taskWeek);
-			taskWeek = taskWeekDao.findById(taskWeek.getId());
-			BeanUtils.copyProperties(taskCommand, task);
-			BeanUtils.copyProperties(taskCommand, taskWeek);
-			taskCommand.setTaskId(task.getId());
-			taskCommand.setTaskWeekId(taskWeek.getId());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			LOGGER.error("转换对象出现异常：", e);
+		BeanUtils.copyProperties(taskCommand, task);
+		BeanUtils.copyProperties(taskCommand, taskWeek);
+		task.setStatus(ApiStatus.NEW.getCode());
+		task.setCreateBy(AppContext.getPrincipal().getName());
+		task.setUpdateBy(AppContext.getPrincipal().getName());
+		
+		// TODO: 这里的code获取方式可能会变
+		task.setCode(CODE_PREFIX + (new Date().getTime()/1000));
+		
+		// TODO: 计算折算工时,包括一些用户信息，之后可能另外想办法获取，不通过前端传递
+		if (null != taskCommand.getPercent()) {
+			task.setPercentHours((int) (task.getPlanHours() * taskCommand.getPercent()));
+		}else{
+			task.setPercentHours(task.getPlanHours());
 		}
+		// 保存任务
+		taskDao.save(task);
+		task = taskDao.findById(task.getId());
+		taskWeek.setTaskId(task.getId());
+		taskWeek.setStatus(ApiStatus.NEW.getCode());
+		taskWeek.setCreateBy(AppContext.getPrincipal().getName());
+		taskWeek.setUpdateBy(AppContext.getPrincipal().getName());
+		
+		// 保存周任务
+		taskWeekDao.save(taskWeek);
+		taskWeek = taskWeekDao.findById(taskWeek.getId());
+		
+		// 封装taskCommand给前端用户
+		BeanUtils.copyProperties(task, taskCommand);
+		BeanUtils.copyProperties(taskWeek, taskCommand);
+		taskCommand.setTaskId(task.getId());
+		taskCommand.setTaskWeekId(taskWeek.getId());
 		return ApiResponseCmd.success(taskCommand);
 	}
 
 	@Override
 	public ApiResponseCmd<TaskCommand> updateTaskAndWeek(TaskCommand taskCommand) {
-		String json = redisUtils.getString(RedisKeyPrefix.SESSION + taskCommand.getToken());
-		if (StringUtils.isBlank(json)) {
-			return ApiResponseCmd.deny();
-		}
-		Principal principal = JsonFormater.format(json);
 		Task task = new Task();
 		TaskWeek taskWeek = new TaskWeek();
-		try {
-			BeanUtils.copyProperties(task, taskCommand);
-			BeanUtils.copyProperties(taskWeek, taskCommand);
-			taskWeek.setUpdateBy(principal.getSubject().getName());
-			taskWeek.setId(taskCommand.getTaskWeekId());
-			taskWeekDao.update(taskWeek);
-			taskWeek = taskWeekDao.findById(taskWeek.getId());
-			task.setUpdateBy(principal.getSubject().getName());
-			task.setId(taskWeek.getTaskId());
-			// 计算折算工时
-			if (null != taskCommand.getPercent() && null != task.getPlanHours()) {
-				task.setPercentHours((int) (task.getPlanHours() * taskCommand.getPercent()));
-			}else if(null != task.getPlanHours()){
-				task.setPercentHours(task.getPlanHours());
-			}
-			taskDao.update(task);
-			task = taskDao.findById(task.getId());
-			BeanUtils.copyProperties(taskCommand, task);
-			BeanUtils.copyProperties(taskCommand, taskWeek);
-			taskCommand.setTaskId(task.getId());
-			taskCommand.setTaskWeekId(taskWeek.getId());
-			updateTaskStatus(task);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			LOGGER.error("转换对象出现异常：", e);
+		BeanUtils.copyProperties(taskCommand, task);
+		BeanUtils.copyProperties(taskCommand, taskWeek);
+		taskWeek.setUpdateBy(AppContext.getPrincipal().getName());
+		taskWeek.setId(taskCommand.getTaskWeekId());
+		
+		// 更新周任务
+		taskWeekDao.update(taskWeek);
+		taskWeek = taskWeekDao.findById(taskWeek.getId());
+		task.setUpdateBy(AppContext.getPrincipal().getName());
+		task.setId(taskWeek.getTaskId());
+		
+		// 计算折算工时
+		if (null != taskCommand.getPercent() && null != task.getPlanHours()) {
+			task.setPercentHours((int) (task.getPlanHours() * taskCommand.getPercent()));
+		}else if(null != task.getPlanHours()){
+			task.setPercentHours(task.getPlanHours());
 		}
+		
+		// 更新任务
+		taskDao.update(task);
+		task = taskDao.findById(task.getId());
+		BeanUtils.copyProperties(task, taskCommand);
+		BeanUtils.copyProperties(taskWeek, taskCommand);
+		taskCommand.setTaskId(task.getId());
+		taskCommand.setTaskWeekId(taskWeek.getId());
+		updateTaskStatus(task);
 		return ApiResponseCmd.success(taskCommand);
 	}
 
@@ -180,14 +164,10 @@ public class TaskServiceImpl implements TaskService {
 		TaskWeek taskWeek = taskWeekDao.findById(id);
 		Task task = taskDao.findById(taskWeek.getTaskId());
 		TaskCommand taskCommand = new TaskCommand();
-		try {
-			BeanUtils.copyProperties(taskCommand, taskWeek);
-			BeanUtils.copyProperties(taskCommand, task);
-			taskCommand.setTaskId(task.getId());
-			taskCommand.setTaskWeekId(taskWeek.getId());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			LOGGER.error("转换对象出现异常：", e);
-		}
+		BeanUtils.copyProperties(task, taskCommand);
+		BeanUtils.copyProperties(taskWeek, taskCommand);
+		taskCommand.setTaskId(task.getId());
+		taskCommand.setTaskWeekId(taskWeek.getId());
 		return ApiResponseCmd.success(taskCommand);
 	}
 

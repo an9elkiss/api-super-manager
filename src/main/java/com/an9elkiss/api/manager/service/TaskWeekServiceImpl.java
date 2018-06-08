@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,11 +12,8 @@ import com.an9elkiss.api.manager.constant.ApiStatus;
 import com.an9elkiss.api.manager.dao.TaskWeekDao;
 import com.an9elkiss.api.manager.model.TaskWeek;
 import com.an9elkiss.api.manager.util.DateTools;
-import com.an9elkiss.commons.auth.JsonFormater;
-import com.an9elkiss.commons.auth.model.Principal;
+import com.an9elkiss.commons.auth.AppContext;
 import com.an9elkiss.commons.command.ApiResponseCmd;
-import com.an9elkiss.commons.constant.RedisKeyPrefix;
-import com.an9elkiss.commons.util.spring.RedisUtils;
 
 @Service
 @Transactional
@@ -25,9 +21,6 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 	
 	@Autowired
 	private TaskWeekDao taskWeekDao;
-	
-	@Autowired
-	private RedisUtils redisUtils;
 
 	@Override
 	public ApiResponseCmd<TaskWeek> createTaskWeek(TaskWeek taskWeek) {
@@ -37,14 +30,9 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 
 	@Override
 	public ApiResponseCmd<Object> deleteTaskWeek(Integer id, String token) {
-		String json = redisUtils.getString(RedisKeyPrefix.SESSION + token);
-		if (StringUtils.isBlank(json)) {
-			return ApiResponseCmd.deny();
-		}
-		Principal principal = JsonFormater.format(json);
 		TaskWeek taskWeek = new TaskWeek();
 		taskWeek.setId(id);
-		taskWeek.setUpdateBy(principal.getSubject().getName());
+		taskWeek.setUpdateBy(AppContext.getPrincipal().getName());
 		taskWeek.setStatus(ApiStatus.DELETED.getCode());
 		taskWeekDao.update(taskWeek);
 		return ApiResponseCmd.success();
@@ -72,6 +60,8 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 		searchParams.put("notStatus", ApiStatus.TASK_WEEK_END.getCode());
 		List<TaskWeek> findByParams = taskWeekDao.findByParams(searchParams);
 		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+		
+		// 将查出来的未完成任务循环插入
 		for (TaskWeek taskWeek : findByParams) {
 			TaskWeek tw = new TaskWeek();
 			tw.setTaskId(taskWeek.getTaskId());
@@ -83,6 +73,7 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 			tw.setCreateBy(taskWeek.getCreateBy());
 			tw.setUpdateBy(taskWeek.getUpdateBy());
 			taskWeekDao.save(tw);
+			
 			// 插入成功后更新下状态表示该任务不可再复制了
 			taskWeek.setStatus(ApiStatus.TASK_WEEK_END.getCode());
 			taskWeekDao.update(taskWeek);			

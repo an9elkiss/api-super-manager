@@ -17,6 +17,7 @@ import com.an9elkiss.api.manager.command.TaskResultCommand;
 import com.an9elkiss.api.manager.constant.ApiStatus;
 import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.api.manager.service.TaskService;
+import com.an9elkiss.commons.auth.spring.Access;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
 @Controller
@@ -26,31 +27,36 @@ public class TaskApiController implements TaskApi {
 	private TaskService taskService;
 
 	@Override
-	@RequestMapping(value = "/tasks", produces = { "application/json" })
+	@Access("API_TASKS_GET")
+	@RequestMapping(value = "/tasks", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<TaskResultCommand>> weekTask(@RequestParam Map<String,Object> searchParams) {
 		return ResponseEntity.ok(taskService.findTaskResultCommand(searchParams));
 	}
 	
 	@Override
-	@RequestMapping(value = "/task/save", produces = { "application/json" }, method = RequestMethod.POST)
+	@Access("API_TASK_SAVE_POST")
+	@RequestMapping(value = "/task", produces = { "application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<ApiResponseCmd<TaskCommand>> saveTask(TaskCommand taskCommand) {
 		return ResponseEntity.ok(taskService.createTaskAndWeek(taskCommand));
 	}
 	
 	@Override
-	@RequestMapping(value = "/task/update", produces = { "application/json" }, method = RequestMethod.POST)
+	@Access("API_TASK_UPDATE_POST")
+	@RequestMapping(value = "/task/{id}", produces = { "application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<ApiResponseCmd<TaskCommand>> updateTask(TaskCommand taskCommand) {
 		return ResponseEntity.ok(taskService.updateTaskAndWeek(taskCommand));
 	}
 
 	@Override
-	@RequestMapping(value = "/task/{id}", produces = { "application/json" })
+	@Access("API_TASK_GET")
+	@RequestMapping(value = "/task/{id}", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<TaskCommand>> showTask(@PathVariable("id") Integer id) {
 		return ResponseEntity.ok(taskService.findTaskAndWeek(id));
 	}
 
 	@Override
-	@RequestMapping(value = "/task/parents", produces = { "application/json" })
+	@Access("API_TASK_PARENTS")
+	@RequestMapping(value = "/task/parents", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<List<Task>>> parentTasks() {
 		Map<String, Integer> searchParams = new HashMap<>();
 		searchParams.put("status", ApiStatus.NEW.getCode());
@@ -59,7 +65,8 @@ public class TaskApiController implements TaskApi {
 	}
 
 	@Override
-	@RequestMapping(value = "/task/parent/resource/{id}", produces = { "application/json" })
+	@Access("API_TASK_PARENT_RESOURCE")
+	@RequestMapping(value = "/task/parent/resource/{id}", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskParentResources(@PathVariable("id") Integer id) {
 		return ResponseEntity.ok(taskService.findTaskParentResources(id));
 	}

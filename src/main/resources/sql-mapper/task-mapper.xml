@@ -86,6 +86,39 @@
 		WHERE id = #{id}
 	</select>
 	
+	<select id="findByParams" parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.model.Task" >
+		SELECT id id,
+			CODE CODE,
+			title title,
+			project project,
+			tags tags,
+			is_parent isParent,
+			parent_id parentId,
+			description description,
+			plan_score planScore,
+			plan_status planStatus,
+			plan_hours planHours,
+			status status,
+			create_by createBy,
+			create_time createTime,
+			update_by updateBy,
+			update_time updateTime,
+			percent_hours percentHours
+		FROM t_task 
+		WHERE 1=1
+			and status != 21
+		<if test="searchParams.id!=null">
+			and id = #{searchParams.id}
+		</if>
+		<if test="searchParams.status!=null">
+			and status = #{searchParams.status}
+		</if>
+		<if test="searchParams.isParent!=null">
+			and is_parent = #{searchParams.isParent}
+		</if>
+		
+	</select>
+	
 	<select id="findTaskViewCommands" parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.command.TaskViewCommand" >
 		SELECT
 			wek.id taskWeekId,
@@ -113,18 +146,71 @@
 			wek.update_by updateBy,
 			wek.update_time updateTime,
 			wek.user_name userName,
-			task.percent_hours percentHours
+			task.percent_hours percentHours,
+			wek.level
 		FROM
 			t_task task,
 			t_task_week wek
 		WHERE
 			task.id = wek.task_id
 			and task.parent_id is null
-			and year = #{searchParams.year}
-			and month = #{searchParams.month}
-			and week = #{searchParams.week}
-			and wek.user_id in(${searchParams.memberIds})
+			and wek.end_time <![CDATA[>=]]> #{searchParams.startDate}
+			and wek.end_time <![CDATA[<=]]> #{searchParams.endDate}
+			and wek.user_id = #{searchParams.memberId}
+			AND wek.status != 21
+			and task.status != 21
 		order by wek.user_id
+	</select>
+	
+	<select id="findTaskTotal" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT
+			IFNULL(sum(plan_score),0) planScoreTotal,
+			IFNULL(sum(plan_hours),0) planHoursTotal,
+			IFNULL(sum(percent_hours),0) percentHoursTotal,
+			IFNULL(sum(actual_hours),0) actualHoursTotal,
+			IFNULL(sum(actual_score),0) actualScoreTotal
+		FROM
+			t_task task,
+			t_task_week wek
+		WHERE
+			task.id = wek.task_id
+			AND wek.user_id = #{searchParams.id}
+			and wek.end_time <![CDATA[>=]]> #{searchParams.startDate}
+			and wek.end_time <![CDATA[<=]]> #{searchParams.endDate}
+			AND wek.status != 21
+			and task.status != 21
+	</select>
+	
+	<select id="findTaskParentResources" parameterType="Integer" resultType="java.util.HashMap">
+		SELECT
+			parent.id,
+			IFNULL((parent.plan_score - child.plan_score),0) surplusScore,
+			IFNULL((parent.plan_hours - child.plan_hours),0) surplusHours
+		FROM
+			(
+				SELECT
+					id,
+					IFNULL(plan_score,0) plan_score,
+					IFNULL(plan_hours,0) plan_hours
+				FROM
+					t_task
+				WHERE
+					id = #{id}
+					and status != 21
+			) parent,
+			(
+				SELECT
+					parent_id,
+					IFNULL(sum(plan_score),0) plan_score,
+					IFNULL(sum(plan_hours),0) plan_hours
+				FROM
+					t_task
+				WHERE
+					parent_id = #{id}
+					and status != 21
+			) child
+		WHERE
+			parent.id = child.parent_id
 	</select>
 	
 </mapper>

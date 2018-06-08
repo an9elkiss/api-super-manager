@@ -9,8 +9,8 @@
 	<insert id="save" parameterType="com.an9elkiss.api.manager.model.TaskWeek" useGeneratedKeys="true"
 		keyProperty="id">
 		INSERT INTO `t_task_week` 
-		(`task_id`, `actual_score`, `current_status`, `actual_hours`, `end_time`, `user_id`, `year`, `month`, `week`, `status`, `create_by`, `update_by`, `user_name`) 
-		VALUES (#{taskId}, #{actualScore}, #{currentStatus}, #{actualHours}, #{endTime}, #{userId}, #{year}, #{month}, #{week}, #{status}, #{createBy}, #{updateBy}, #{userName});
+		(`task_id`, `actual_score`, `current_status`, `actual_hours`, `end_time`, `user_id`, `year`, `month`, `week`, `status`, `create_by`, `update_by`, `user_name`, `level`) 
+		VALUES (#{taskId}, #{actualScore}, #{currentStatus}, #{actualHours}, #{endTime}, #{userId}, #{year}, #{month}, #{week}, #{status}, #{createBy}, #{updateBy}, #{userName}, #{level});
 	</insert>
 	  
 	<update id="update" parameterType="com.an9elkiss.api.manager.model.TaskWeek">
@@ -55,6 +55,9 @@
 			<if test="userName!=null and userName!=''">
 				, user_name = #{userName}
 			</if>
+			<if test="level!=null and level!=''">
+				, level = #{level}
+			</if>
 				
 			where id=#{id}
 	</update>
@@ -80,10 +83,56 @@
 		 create_time createTime,
 		 update_by updateBy,
 		 update_time updateTime,
-		 user_name userName
+		 user_name userName,
+		 level
 		FROM
 			t_task_week
 		WHERE id = #{id}
+	</select>
+	
+	<select id="findByParams" parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.model.TaskWeek" >
+		SELECT id id,
+		 task_id taskId,
+		 actual_score actualScore,
+		 current_status currentStatus,
+		 actual_hours actualHours,
+		 end_time endTime,
+		 user_id userId,
+		 YEAR YEAR,
+		 MONTH MONTH,
+		 WEEK WEEK,
+		 status status,
+		 create_by createBy,
+		 create_time createTime,
+		 update_by updateBy,
+		 update_time updateTime,
+		 user_name userName,
+		 level
+		FROM
+			t_task_week
+		WHERE 1=1
+			and status != 21
+		<if test="searchParams.startDate!=null">
+			and end_time <![CDATA[>=]]> #{searchParams.startDate}
+		</if>
+		<if test="searchParams.endDate!=null">
+			and end_time <![CDATA[<=]]> #{searchParams.endDate}
+		</if>
+		<if test="searchParams.id!=null">
+			and id = #{searchParams.id}
+		</if>
+		<if test="searchParams.currentStatus!=null">
+			and IFNULL(current_status,0) = #{searchParams.currentStatus}
+		</if>
+		<if test="searchParams.notCurrentStatus!=null">
+			and IFNULL(current_status,0) != #{searchParams.notCurrentStatus}
+		</if>
+		<if test="searchParams.notStatus!=null">
+			and IFNULL(status,0) != #{searchParams.notStatus}
+		</if>
+		<if test="searchParams.memberIds!=null">
+			and user_id in(${searchParams.memberIds})
+		</if>
 	</select>
 	
 </mapper>

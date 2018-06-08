@@ -49,6 +49,8 @@ public class TaskCommand {
 	private Integer percentHours;
 	/** 折算率 */
 	private Double percent;
+	/** 职位等级 */
+	private String level;
 	
 
 	public Integer getTaskWeekId() {
@@ -275,6 +277,14 @@ public class TaskCommand {
 
 	public void setPercent(Double percent) {
 		this.percent = percent;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 
 }

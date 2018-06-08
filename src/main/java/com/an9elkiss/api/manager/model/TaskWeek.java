@@ -32,7 +32,8 @@ public class TaskWeek {
 	private String updateBy;
 	private String createTime;
 	private String updateTime;
-	
+	/** 职位等级 */
+	private String level;
 	
 	
 	public Integer getId() {
@@ -131,6 +132,12 @@ public class TaskWeek {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
 	}
 	
 	

@@ -6,18 +6,37 @@ public enum ApiStatus implements Status {
 	
 	// --生命周期----------------------------
 	NEW(1, "新建"),
-	ACTIVE(11, "生效"),
-	FORBIDDEN(12, "禁用"),
 	DELETED(21, "已删除"),
 
-	// --Http Response----------------------------
-	SUCCESS(200, "操作成功"),
-
-	NOT_FOUND(401, "未找到数据"),
+	// 当父任务下面的子任务贡献值加起来等于总的父任务的贡献值时，将父任务的lifecycle更新为2
+	TASK_PARENT_SUCCESS(2, "当前父任务已分配完毕"),
+	TASK_IS_PARENT(1, "当前是父任务"),
+	TASK_WEEK_SUCCESS(8, "任务已完成"),
+	TASK_WEEK_END(2, "当前任务已经被复制过了"),
 	
-	// --User API----------------------------
-	USER_NAME_OR_PASSWORD_EMPTY(500101, "用户名或密码为空！"),
-	LOGIN_FAIL(500102, "用户名或密码错误..."),;
+	// TypeMap ProjectMap
+	PROJECT_1(1,"三星"),
+	PROJECT_2(2,"比亚迪"),
+	PROJECT_3(3,"Esprit"),
+	PROJECT_4(4,"NBA"),
+	PROJECT_5(5,"支付宝"),
+	PROJECT_6(6,"飞利浦"),
+	
+	// TypeMap TagMap
+	TAG_1(1,"新功能"),
+	TAG_2(2,"BUG"),
+	TAG_3(3,"持续改进"),
+	
+	// TypeMap StatusMap
+	STATUS_1(1, "开发30%"),	
+	STATUS_2(2, "开发50%"),
+	STATUS_3(3, "开发80%"),
+	STATUS_4(4, "完成自测"),
+	STATUS_5(5, "过test"),
+	STATUS_6(6, "过stag"),
+	STATUS_7(7, "过pre"),
+	STATUS_8(8, "上生产");
+	
 	
 	private Integer code;
 	private String message;

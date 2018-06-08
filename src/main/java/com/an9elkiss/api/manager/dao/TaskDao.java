@@ -18,4 +18,10 @@ public interface TaskDao {
 	Task findById(Integer id);
 	
 	List<TaskViewCommand> findTaskViewCommands(@Param("searchParams") Map<String, ?> searchParams);
+	
+	Map<String, Object> findTaskTotal(@Param("searchParams") Map<String, ?> searchParams);
+	
+	Map<String, Object> findTaskParentResources(Integer id);
+	
+	List<Task> findByParams(@Param("searchParams") Map<String, ?> searchParams);
 }

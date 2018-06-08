@@ -1,22 +1,57 @@
 package com.an9elkiss.api.manager.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 
 import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
+import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
 public interface TaskApi {
 
-	ResponseEntity<ApiResponseCmd<TaskResultCommand>> weekTask(Map<String,?> searchMap);
+	/**
+	 * 根据memberid和年月周返回这个人的任务信息
+	 * @param searchMap(key:memberId/year/month/week)
+	 * @return
+	 */
+	ResponseEntity<ApiResponseCmd<TaskResultCommand>> weekTask(Map<String,Object> searchMap);
 	
+	/**
+	 * 根據taskCommand同時保存task和taskweek兩張白表
+	 * @param taskCommand
+	 * @return
+	 */
 	ResponseEntity<ApiResponseCmd<TaskCommand>> saveTask(TaskCommand taskCommand);
 
-	ResponseEntity<ApiResponseCmd<Map<String, Map<String, String>>>> commonType();
-
+	/**
+	 * 根據taskCommand同時更新task和taskweek兩張白表
+	 * @param taskCommand
+	 * @return
+	 */
 	ResponseEntity<ApiResponseCmd<TaskCommand>> updateTask(TaskCommand taskCommand);
 	
-	ResponseEntity<ApiResponseCmd<TaskCommand>> findTask(Integer id);
+	/**
+	 * 根据周任务id查询周任务和任务对象
+	 * @param id
+	 * @return
+	 */
+	ResponseEntity<ApiResponseCmd<TaskCommand>> showTask(Integer id);
+	
+	/**
+	 * 返回可分配子任务的父任务列表
+	 * @param searchParams(key:status/isParent)
+	 * @return
+	 */
+	ResponseEntity<ApiResponseCmd<List<Task>>> parentTasks();
+	
+	/**
+	 * 根据parentid查询该任务的剩余可分配资源（计划贡献值、计划工时）
+	 * @param parentId
+	 * @return {key:id(父任务id)/surplusScore(剩余贡献值)/surplusHours(剩余工作时间)}
+	 */
+	ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskParentResources(Integer parentId);
+
 }

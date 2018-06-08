@@ -13,6 +13,12 @@ public class TaskResultCommand {
 	/** 实际工时数统计 */
 	private Integer actualHoursTotal;
 	
+	/** 折算工时统计 */
+	private Integer percentHoursTotal;
+	
+	/** 实际贡献值统计 */
+	private Integer actualScoreTotal;
+	
 	private List<TaskViewCommand> taskCommands;
 
 	public Integer getPlanScoreTotal() {
@@ -45,6 +51,22 @@ public class TaskResultCommand {
 
 	public void setTaskCommands(List<TaskViewCommand> taskCommands) {
 		this.taskCommands = taskCommands;
+	}
+
+	public Integer getPercentHoursTotal() {
+		return percentHoursTotal;
+	}
+
+	public void setPercentHoursTotal(Integer percentHoursTotal) {
+		this.percentHoursTotal = percentHoursTotal;
+	}
+
+	public Integer getActualScoreTotal() {
+		return actualScoreTotal;
+	}
+
+	public void setActualScoreTotal(Integer actualScoreTotal) {
+		this.actualScoreTotal = actualScoreTotal;
 	}
 	
 }

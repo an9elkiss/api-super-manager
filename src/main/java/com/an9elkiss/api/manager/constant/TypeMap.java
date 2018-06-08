@@ -18,32 +18,33 @@ public class TypeMap {
 	
 	public static Map<String,String> getProjectMap(){
 		Map<String,String> map = new HashMap<>();
-		map.put("1", "三星");	
-		map.put("2", "比亚迪");
-		map.put("3", "Esprit");
-		map.put("4", "NBA");
-		map.put("5", "支付宝");
+		map.put(ApiStatus.PROJECT_1.getCode().toString(), ApiStatus.PROJECT_1.getMessage().toString());
+		map.put(ApiStatus.PROJECT_2.getCode().toString(), ApiStatus.PROJECT_2.getMessage().toString());
+		map.put(ApiStatus.PROJECT_3.getCode().toString(), ApiStatus.PROJECT_3.getMessage().toString());
+		map.put(ApiStatus.PROJECT_4.getCode().toString(), ApiStatus.PROJECT_4.getMessage().toString());
+		map.put(ApiStatus.PROJECT_5.getCode().toString(), ApiStatus.PROJECT_5.getMessage().toString());
+		map.put(ApiStatus.PROJECT_6.getCode().toString(), ApiStatus.PROJECT_6.getMessage().toString());
 		return map;
 	}
 	
 	public static Map<String,String> getTagMap(){
 		Map<String,String> map = new HashMap<>();
-		map.put("1", "新功能");	
-		map.put("2", "BUG");
-		map.put("3", "持续改进");
+		map.put(ApiStatus.TAG_1.getCode().toString(), ApiStatus.TAG_1.getMessage().toString());
+		map.put(ApiStatus.TAG_2.getCode().toString(), ApiStatus.TAG_2.getMessage().toString());
+		map.put(ApiStatus.TAG_3.getCode().toString(), ApiStatus.TAG_3.getMessage().toString());
 		return map;
 	}
 	
 	public static Map<String,String> getStatusMap(){
 		Map<String,String> map = new HashMap<>();
-		map.put("1", "开发30%");	
-		map.put("2", "开发50%");
-		map.put("3", "开发80%");
-		map.put("4", "完成自测");	
-		map.put("5", "过test");
-		map.put("6", "过stag");
-		map.put("7", "过pre");
-		map.put("8", "上生产");
+		map.put(ApiStatus.STATUS_1.getCode().toString(), ApiStatus.STATUS_1.getMessage().toString());
+		map.put(ApiStatus.STATUS_2.getCode().toString(), ApiStatus.STATUS_2.getMessage().toString());
+		map.put(ApiStatus.STATUS_3.getCode().toString(), ApiStatus.STATUS_3.getMessage().toString());
+		map.put(ApiStatus.STATUS_4.getCode().toString(), ApiStatus.STATUS_4.getMessage().toString());
+		map.put(ApiStatus.STATUS_5.getCode().toString(), ApiStatus.STATUS_5.getMessage().toString());
+		map.put(ApiStatus.STATUS_6.getCode().toString(), ApiStatus.STATUS_6.getMessage().toString());
+		map.put(ApiStatus.STATUS_7.getCode().toString(), ApiStatus.STATUS_7.getMessage().toString());
+		map.put(ApiStatus.STATUS_8.getCode().toString(), ApiStatus.STATUS_8.getMessage().toString());
 		return map;
 	}
 }

@@ -1,6 +1,7 @@
 package com.an9elkiss.api.manager.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
@@ -20,6 +22,7 @@ import com.an9elkiss.api.manager.dao.TaskDao;
 import com.an9elkiss.api.manager.dao.TaskWeekDao;
 import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.api.manager.model.TaskWeek;
+import com.an9elkiss.api.manager.util.DateTools;
 import com.an9elkiss.commons.auth.JsonFormater;
 import com.an9elkiss.commons.auth.model.Principal;
 import com.an9elkiss.commons.command.ApiResponseCmd;
@@ -27,6 +30,7 @@ import com.an9elkiss.commons.constant.RedisKeyPrefix;
 import com.an9elkiss.commons.util.spring.RedisUtils;
 
 @Service
+@Transactional
 public class TaskServiceImpl implements TaskService {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
@@ -43,14 +47,23 @@ public class TaskServiceImpl implements TaskService {
 	private String CODE_TOP = "TC";
 
 	@Override
-	public ApiResponseCmd<Task> createTask(Task task) {
+	public ApiResponseCmd<Object> createTask(Task task) {
 		taskDao.save(task);
 		return ApiResponseCmd.success(taskDao.findById(task.getId()));
 	}
 
 	@Override
-	public ApiResponseCmd<Object> deleteTask(Integer id) {
-		taskDao.delete(id);
+	public ApiResponseCmd<Object> deleteTask(Integer id, String token) {
+		String json = redisUtils.getString(RedisKeyPrefix.SESSION + token);
+		if (StringUtils.isBlank(json)) {
+			return ApiResponseCmd.deny();
+		}
+		Principal principal = JsonFormater.format(json);
+		Task task = new Task();
+		task.setId(id);
+		task.setUpdateBy(principal.getSubject().getName());
+		task.setStatus(ApiStatus.DELETED.getCode());
+		taskDao.update(task);
 		return ApiResponseCmd.success();
 	}
 
@@ -66,8 +79,22 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public ApiResponseCmd<TaskResultCommand> findTaskResultCommand(Map<String, ?> searchParams) {
+	public ApiResponseCmd<TaskResultCommand> findTaskResultCommand(Map<String, Object> searchParams) {
+		searchParams.put("startDate",
+				DateTools.getFirstDayOfWeek(Integer.parseInt((String) searchParams.get("year")),
+						Integer.parseInt((String) searchParams.get("month")),
+						Integer.parseInt((String) searchParams.get("week"))));
+		searchParams.put("endDate",
+				DateTools.getLastDayOfWeek(Integer.parseInt((String) searchParams.get("year")),
+						Integer.parseInt((String) searchParams.get("month")),
+						Integer.parseInt((String) searchParams.get("week"))));
 		TaskResultCommand taskResultCommand = new TaskResultCommand();
+		Map<String, Object> findTaskTotal = taskDao.findTaskTotal(searchParams);
+		taskResultCommand.setPlanScoreTotal(((BigDecimal) findTaskTotal.get("planScoreTotal")).intValue());
+		taskResultCommand.setPlanHoursTotal(((BigDecimal) findTaskTotal.get("planHoursTotal")).intValue());
+		taskResultCommand.setActualHoursTotal(((BigDecimal) findTaskTotal.get("actualHoursTotal")).intValue());
+		taskResultCommand.setActualScoreTotal(((BigDecimal) findTaskTotal.get("actualScoreTotal")).intValue());
+		taskResultCommand.setPercentHoursTotal(((BigDecimal) findTaskTotal.get("percentHoursTotal")).intValue());
 		List<TaskViewCommand> findTaskViewCommands = taskDao.findTaskViewCommands(searchParams);
 		taskResultCommand.setTaskCommands(findTaskViewCommands);
 		return ApiResponseCmd.success(taskResultCommand);
@@ -141,6 +168,7 @@ public class TaskServiceImpl implements TaskService {
 			BeanUtils.copyProperties(taskCommand, taskWeek);
 			taskCommand.setTaskId(task.getId());
 			taskCommand.setTaskWeekId(taskWeek.getId());
+			updateTaskStatus(task);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			LOGGER.error("转换对象出现异常：", e);
 		}
@@ -150,7 +178,7 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public ApiResponseCmd<TaskCommand> findTaskAndWeek(Integer id) {
 		TaskWeek taskWeek = taskWeekDao.findById(id);
-		Task task = taskDao.findById(taskWeek.getId());
+		Task task = taskDao.findById(taskWeek.getTaskId());
 		TaskCommand taskCommand = new TaskCommand();
 		try {
 			BeanUtils.copyProperties(taskCommand, taskWeek);
@@ -163,4 +191,33 @@ public class TaskServiceImpl implements TaskService {
 		return ApiResponseCmd.success(taskCommand);
 	}
 
+	@Override
+	public ApiResponseCmd<List<Task>> findUsabledParentTaskByParams(Map<String, ?> searchParams) {
+		return ApiResponseCmd.success(taskDao.findByParams(searchParams));
+	}
+
+	@Override
+	public ApiResponseCmd<Map<String, Object>> findTaskParentResources(Integer parentId) {
+		return ApiResponseCmd.success(taskDao.findTaskParentResources(parentId));
+	}
+	
+
+	/**
+	 * 如果父任务资源都分配完了，更新父任务status=2
+	 * @param task
+	 */
+	private void updateTaskStatus(Task task){
+		Integer parentId = task.getParentId();
+		if (null == parentId) {
+			return;
+		}
+		Map<String, Object> findTaskParentResources = taskDao.findTaskParentResources(parentId);
+		BigDecimal surplusScore = (BigDecimal) findTaskParentResources.get("surplusScore");
+		if (surplusScore.doubleValue() <= 0) {
+			task = new Task();
+			task.setId(parentId);
+			task.setStatus(ApiStatus.TASK_PARENT_SUCCESS.getCode());
+			taskDao.update(task);
+		}
+	}
 }

@@ -52,7 +52,8 @@ public class TaskViewCommand {
 	private String updateTime;
 	/** 折算小时数 */
 	private Integer percentHours;
-	
+	/** 职位等级 */
+	private String level;
 
 	public Integer getTaskWeekId() {
 		return taskWeekId;
@@ -277,6 +278,14 @@ public class TaskViewCommand {
 
 	public void setPercentHours(Integer percentHours) {
 		this.percentHours = percentHours;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 
 }

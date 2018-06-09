@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,14 +37,14 @@ public class TaskApiController implements TaskApi {
 	@Override
 	@Access("API_TASK_SAVE_POST")
 	@RequestMapping(value = "/task", produces = { "application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<ApiResponseCmd<TaskCommand>> saveTask(TaskCommand taskCommand) {
+	public ResponseEntity<ApiResponseCmd<TaskCommand>> saveTask(TaskCommand taskCommand, BindingResult result) {
 		return ResponseEntity.ok(taskService.createTaskAndWeek(taskCommand));
 	}
 	
 	@Override
 	@Access("API_TASK_UPDATE_POST")
 	@RequestMapping(value = "/task/{id}", produces = { "application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<ApiResponseCmd<TaskCommand>> updateTask(TaskCommand taskCommand) {
+	public ResponseEntity<ApiResponseCmd<TaskCommand>> updateTask(TaskCommand taskCommand, BindingResult result) {
 		return ResponseEntity.ok(taskService.updateTaskAndWeek(taskCommand));
 	}
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 
 import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
@@ -24,14 +25,14 @@ public interface TaskApi {
 	 * @param taskCommand
 	 * @return
 	 */
-	ResponseEntity<ApiResponseCmd<TaskCommand>> saveTask(TaskCommand taskCommand);
+	ResponseEntity<ApiResponseCmd<TaskCommand>> saveTask(TaskCommand taskCommand, BindingResult result);
 
 	/**
 	 * 根據taskCommand同時更新task和taskweek兩張白表
 	 * @param taskCommand
 	 * @return
 	 */
-	ResponseEntity<ApiResponseCmd<TaskCommand>> updateTask(TaskCommand taskCommand);
+	ResponseEntity<ApiResponseCmd<TaskCommand>> updateTask(TaskCommand taskCommand, BindingResult result);
 	
 	/**
 	 * 根据周任务id查询周任务和任务对象

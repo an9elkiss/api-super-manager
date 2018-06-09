@@ -19,7 +19,7 @@ import com.an9elkiss.commons.auth.spring.AuthInterceptor;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"com.an9elkiss.api.manager.api, com.an9elkiss.api.manager.service, com.an9elkiss.commons.util.spring" })
+		"com.an9elkiss.api.manager.api, com.an9elkiss.api.manager.service, com.an9elkiss.commons.util.spring, com.an9elkiss.commons.auth.spring" })
 @MapperScan("com.an9elkiss.api.manager.dao")
 public class SuperManagerApiBoot extends WebMvcConfigurerAdapter implements CommandLineRunner {
 

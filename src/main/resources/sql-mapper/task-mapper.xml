@@ -200,7 +200,7 @@
 			) parent,
 			(
 				SELECT
-					parent_id,
+					#{id} parent_id,
 					IFNULL(sum(plan_score),0) plan_score,
 					IFNULL(sum(plan_hours),0) plan_hours
 				FROM

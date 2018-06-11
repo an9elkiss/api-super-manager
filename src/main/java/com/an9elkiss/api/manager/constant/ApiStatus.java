@@ -7,6 +7,8 @@ public enum ApiStatus implements Status {
 	// --生命周期----------------------------
 	NEW(1, "新建"),
 	DELETED(21, "已删除"),
+	
+	DO_REPEAT(401, "已经操作过了"),
 
 	// 当父任务下面的子任务贡献值加起来等于总的父任务的贡献值时，将父任务的lifecycle更新为2
 	TASK_PARENT_SUCCESS(2, "当前父任务已分配完毕"),

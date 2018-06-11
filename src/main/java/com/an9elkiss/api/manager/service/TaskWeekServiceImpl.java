@@ -1,6 +1,8 @@
 package com.an9elkiss.api.manager.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.an9elkiss.api.manager.constant.ApiStatus;
+import com.an9elkiss.api.manager.dao.TaskDao;
 import com.an9elkiss.api.manager.dao.TaskWeekDao;
+import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.api.manager.model.TaskWeek;
 import com.an9elkiss.api.manager.util.DateTools;
 import com.an9elkiss.commons.auth.AppContext;
@@ -21,6 +25,9 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 	
 	@Autowired
 	private TaskWeekDao taskWeekDao;
+	
+	@Autowired
+	private TaskDao taskDao;
 
 	@Override
 	public ApiResponseCmd<TaskWeek> createTaskWeek(TaskWeek taskWeek) {
@@ -82,6 +89,52 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 		}
 		
 		return ApiResponseCmd.success();
+	}
+
+	@Override
+	public ApiResponseCmd<Object> copyTaskWeekToNextWeek(Map<String, Object> searchParams) {
+		String year = (String) searchParams.get("year");
+		String month = (String) searchParams.get("month");
+		int week = Integer.parseInt((String) searchParams.get("week"));
+		int taskWeekId = Integer.parseInt((String) searchParams.get("taskWeekId"));
+		
+		TaskWeek taskWeek = taskWeekDao.findById(taskWeekId);
+		
+		if (taskWeek.getStatus().equals(ApiStatus.TASK_WEEK_END.getCode())) {
+			ApiResponseCmd apiResponseCmd = new ApiResponseCmd();
+			apiResponseCmd.setStatus(ApiStatus.DO_REPEAT);
+			return apiResponseCmd;
+		}
+		
+		// 获取这个月有几周
+		Integer weekCount = 0;
+		try {
+			weekCount = DateTools.getWeekCount(year, month);
+		} catch (ParseException e) {
+			return ApiResponseCmd.deny();
+		}
+		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+		
+		// 当前传入的周如果等于本月的总周数，表示该到下个月创建了
+		if (weekCount == week) {
+			TaskWeek tw = new TaskWeek();
+			tw.setTaskId(taskWeek.getTaskId());
+			tw.setEndTime(sdf.format(DateTools.getLastDayOfNextWeek(Integer.parseInt(year), Integer.parseInt(month), week)));
+			tw.setUserId(taskWeek.getUserId());
+			tw.setUserName(taskWeek.getUserName());
+			tw.setLevel(taskWeek.getLevel());
+			tw.setStatus(ApiStatus.NEW.getCode());
+			tw.setCreateBy(taskWeek.getCreateBy());
+			tw.setUpdateBy(taskWeek.getUpdateBy());
+			taskWeekDao.save(tw);
+			
+			// 插入成功后更新下状态表示该任务不可再复制了
+			taskWeek.setStatus(ApiStatus.TASK_WEEK_END.getCode());
+			taskWeekDao.update(taskWeek);	
+		}
+		
+		
+		return null;
 	}
 	
 	

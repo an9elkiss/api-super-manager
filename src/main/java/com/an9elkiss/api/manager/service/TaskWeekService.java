@@ -21,4 +21,11 @@ public interface TaskWeekService {
 	 * @return
 	 */
 	ApiResponseCmd<Object> createLastTaskWeek(Map<String, Object> searchParams);
+	
+	/**
+	 * 拷贝这周任务到下周
+	 * @param searchParams (year/month/week/taskWeekId)
+	 * @return
+	 */
+	ApiResponseCmd<Object> copyTaskWeekToNextWeek(Map<String, Object> searchParams);
 }

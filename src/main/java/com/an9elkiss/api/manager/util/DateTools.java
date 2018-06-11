@@ -146,4 +146,36 @@ public class DateTools {
         calendar.add(Calendar.DAY_OF_MONTH, -1);  
         return calendar.getTime();
 	}
+	
+	/**
+	 * 根据年月周获取下周的第一天
+	 * @param year
+	 * @param month
+	 * @param week
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Date getFirstDayOfNextWeek(int year, int month, int week){
+		Date date = getFirstDayOfWeek(year, month, week);
+        Calendar calendar = Calendar.getInstance();  
+        calendar.setTime(date);  
+        calendar.add(Calendar.DAY_OF_MONTH, 7);  
+        return calendar.getTime();
+	}
+	
+	/**
+	 * 根据年月周获取下周的最后一天
+	 * @param year
+	 * @param month
+	 * @param week
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Date getLastDayOfNextWeek(int year, int month, int week){
+		Date date = getFirstDayOfWeek(year, month, week); 
+        Calendar calendar = Calendar.getInstance();  
+        calendar.setTime(date);  
+        calendar.add(Calendar.DAY_OF_MONTH, 13);  
+        return calendar.getTime();
+	}
 }

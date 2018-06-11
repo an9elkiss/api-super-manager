@@ -15,10 +15,17 @@ public interface TaskWeekApi {
 	 */
 	ResponseEntity<ApiResponseCmd<Object>> deleteTaskWeek(Integer id, String token);
 	
+//	/**
+//	 * 根据传入的年月周，自动获取上个周的未完成任务，创建到当前周
+//	 * @param searchParams year/month/week/memberIds
+//	 * @return
+//	 */
+//	ResponseEntity<ApiResponseCmd<Object>> createLastTaskWeek(Map<String, Object> searchParams);
+	
 	/**
-	 * 根据传入的年月周，自动获取上个周的未完成任务，创建到当前周
-	 * @param searchParams year/month/week/memberIds
+	 * 拷贝这周任务到下周
+	 * @param searchParams (year/month/week/taskWeekId)
 	 * @return
 	 */
-	ResponseEntity<ApiResponseCmd<Object>> createLastTaskWeek(Map<String, Object> searchParams);
+	ResponseEntity<ApiResponseCmd<Object>> copyTaskWeekToNextWeek(Map<String, Object> searchParams);
 }

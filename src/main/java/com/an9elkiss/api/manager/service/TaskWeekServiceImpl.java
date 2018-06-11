@@ -51,6 +51,8 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 
 	@Override
 	public ApiResponseCmd<Object> createLastTaskWeek(Map<String, Object> searchParams) {
+		
+		// 根据当前年月周查询上周的未完成的任务列表
 		int year = Integer.parseInt((String) searchParams.get("year"));
 		int month = Integer.parseInt((String) searchParams.get("month"));
 		int week = Integer.parseInt((String) searchParams.get("week"));

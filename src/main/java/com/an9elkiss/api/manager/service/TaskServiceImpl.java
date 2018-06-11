@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,14 +26,13 @@ import com.an9elkiss.commons.command.ApiResponseCmd;
 @Transactional
 public class TaskServiceImpl implements TaskService {
 	
-	private final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
-	
 	@Autowired
 	private TaskDao taskDao;
 	
 	@Autowired
 	private TaskWeekDao taskWeekDao;
 	
+	/** 订单开头 */
 	private String CODE_PREFIX = "TC";
 
 	@Override
@@ -67,6 +64,8 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public ApiResponseCmd<TaskResultCommand> findTaskResultCommand(Map<String, Object> searchParams) {
+		
+		// 根据年月周计算出这个周的开始结束时间
 		searchParams.put("startDate",
 				DateTools.getFirstDayOfWeek(Integer.parseInt((String) searchParams.get("year")),
 						Integer.parseInt((String) searchParams.get("month")),
@@ -76,12 +75,16 @@ public class TaskServiceImpl implements TaskService {
 						Integer.parseInt((String) searchParams.get("month")),
 						Integer.parseInt((String) searchParams.get("week"))));
 		TaskResultCommand taskResultCommand = new TaskResultCommand();
+		
+		// 查询该周的统计信息
 		Map<String, Object> findTaskTotal = taskDao.findTaskTotal(searchParams);
 		taskResultCommand.setPlanScoreTotal(((BigDecimal) findTaskTotal.get("planScoreTotal")).intValue());
 		taskResultCommand.setPlanHoursTotal(((BigDecimal) findTaskTotal.get("planHoursTotal")).intValue());
 		taskResultCommand.setActualHoursTotal(((BigDecimal) findTaskTotal.get("actualHoursTotal")).intValue());
 		taskResultCommand.setActualScoreTotal(((BigDecimal) findTaskTotal.get("actualScoreTotal")).intValue());
 		taskResultCommand.setPercentHoursTotal(((BigDecimal) findTaskTotal.get("percentHoursTotal")).intValue());
+		
+		// 查询本周任务列表
 		List<TaskViewCommand> findTaskViewCommands = taskDao.findTaskViewCommands(searchParams);
 		taskResultCommand.setTaskCommands(findTaskViewCommands);
 		return ApiResponseCmd.success(taskResultCommand);

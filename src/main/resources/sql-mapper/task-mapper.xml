@@ -154,8 +154,8 @@
 		WHERE
 			task.id = wek.task_id
 			and task.parent_id is null
-			and wek.end_time <![CDATA[>=]]> #{searchParams.startDate}
-			and wek.end_time <![CDATA[<=]]> #{searchParams.endDate}
+			and wek.end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
+			and wek.end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
 			and wek.user_id = #{searchParams.memberId}
 			AND wek.status != 21
 			and task.status != 21
@@ -175,8 +175,8 @@
 		WHERE
 			task.id = wek.task_id
 			AND wek.user_id = #{searchParams.id}
-			and wek.end_time <![CDATA[>=]]> #{searchParams.startDate}
-			and wek.end_time <![CDATA[<=]]> #{searchParams.endDate}
+			and wek.end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
+			and wek.end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
 			AND wek.status != 21
 			and task.status != 21
 	</select>

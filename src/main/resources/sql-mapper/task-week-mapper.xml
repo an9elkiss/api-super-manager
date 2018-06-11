@@ -113,10 +113,10 @@
 		WHERE 1=1
 			and status != 21
 		<if test="searchParams.startDate!=null">
-			and end_time <![CDATA[>=]]> #{searchParams.startDate}
+			and end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
 		</if>
 		<if test="searchParams.endDate!=null">
-			and end_time <![CDATA[<=]]> #{searchParams.endDate}
+			and end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
 		</if>
 		<if test="searchParams.id!=null">
 			and id = #{searchParams.id}

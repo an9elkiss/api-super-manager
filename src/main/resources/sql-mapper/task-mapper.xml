@@ -153,7 +153,7 @@
 			t_task_week wek
 		WHERE
 			task.id = wek.task_id
-			and task.parent_id is null
+			and task.is_parent is null
 			and wek.end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
 			and wek.end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
 			and wek.user_id = #{searchParams.memberId}

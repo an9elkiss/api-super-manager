@@ -134,7 +134,7 @@
 			wek.actual_score actualScore,
 			task.plan_status planStatus,
 			wek.current_status currentStatus,
-			wek.end_time endTime,
+			DATE_FORMAT(wek.end_time,'%Y-%m-%d') endTime,
 			task.plan_hours planHours,
 			wek.actual_hours actualHours,
 			wek.user_id userId,

@@ -36,8 +36,8 @@ public class TaskWeekApiController implements TaskWeekApi {
 
 	@Override
 	@Access("API_TASK_WEEK_COPY")
-	@RequestMapping(value = "/task/week/copy", produces = { "application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<ApiResponseCmd<Object>> copyTaskWeekToNextWeek(Map<String, Object> searchParams) {
+	@RequestMapping(value = "/task/week/copy", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Object>> copyTaskWeekToNextWeek(@RequestParam Map<String, Object> searchParams) {
 		return ResponseEntity.ok(taskWeekService.copyTaskWeekToNextWeek(searchParams));
 	}
 

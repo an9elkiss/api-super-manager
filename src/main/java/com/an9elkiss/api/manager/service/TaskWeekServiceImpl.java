@@ -114,27 +114,23 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 			return ApiResponseCmd.deny();
 		}
 		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+		TaskWeek tw = new TaskWeek();
+		tw.setTaskId(taskWeek.getTaskId());
+		tw.setEndTime(sdf.format(DateTools.getLastDayOfNextWeek(Integer.parseInt(year), Integer.parseInt(month), week)));
+		tw.setUserId(taskWeek.getUserId());
+		tw.setUserName(taskWeek.getUserName());
+		tw.setLevel(taskWeek.getLevel());
+		tw.setStatus(ApiStatus.NEW.getCode());
+		tw.setCreateBy(taskWeek.getCreateBy());
+		tw.setUpdateBy(taskWeek.getUpdateBy());
+		taskWeekDao.save(tw);
 		
-		// 当前传入的周如果等于本月的总周数，表示该到下个月创建了
-		if (weekCount == week) {
-			TaskWeek tw = new TaskWeek();
-			tw.setTaskId(taskWeek.getTaskId());
-			tw.setEndTime(sdf.format(DateTools.getLastDayOfNextWeek(Integer.parseInt(year), Integer.parseInt(month), week)));
-			tw.setUserId(taskWeek.getUserId());
-			tw.setUserName(taskWeek.getUserName());
-			tw.setLevel(taskWeek.getLevel());
-			tw.setStatus(ApiStatus.NEW.getCode());
-			tw.setCreateBy(taskWeek.getCreateBy());
-			tw.setUpdateBy(taskWeek.getUpdateBy());
-			taskWeekDao.save(tw);
-			
-			// 插入成功后更新下状态表示该任务不可再复制了
-			taskWeek.setStatus(ApiStatus.TASK_WEEK_END.getCode());
-			taskWeekDao.update(taskWeek);	
-		}
+		// 插入成功后更新下状态表示该任务不可再复制了
+		taskWeek.setStatus(ApiStatus.TASK_WEEK_END.getCode());
+		taskWeekDao.update(taskWeek);
 		
 		
-		return null;
+		return ApiResponseCmd.success();
 	}
 	
 	

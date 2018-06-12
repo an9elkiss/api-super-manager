@@ -104,7 +104,7 @@ public class TaskServiceImpl implements TaskService {
 		task.setCode(CODE_PREFIX + (new Date().getTime()/1000));
 		
 		// TODO: 计算折算工时,包括一些用户信息，之后可能另外想办法获取，不通过前端传递
-		if (null != taskCommand.getPercent()) {
+		if (null != taskCommand.getPercent() && null != task.getPlanHours()) {
 			task.setPercentHours((int) (task.getPlanHours() * taskCommand.getPercent()));
 		}else{
 			task.setPercentHours(task.getPlanHours());

@@ -15,7 +15,7 @@ public interface TaskApi {
 
 	/**
 	 * 根据memberid和年月周返回这个人的任务信息
-	 * @param searchMap(key:memberId/year/month/week)
+	 * @param searchMap (key:memberId/year/month/week)
 	 * @return
 	 */
 	ResponseEntity<ApiResponseCmd<TaskResultCommand>> weekTask(Map<String,Object> searchMap);
@@ -43,7 +43,7 @@ public interface TaskApi {
 	
 	/**
 	 * 返回可分配子任务的父任务列表
-	 * @param searchParams(key:status/isParent)
+	 * @param searchParams (key:status/isParent)
 	 * @return
 	 */
 	ResponseEntity<ApiResponseCmd<List<Task>>> parentTasks();

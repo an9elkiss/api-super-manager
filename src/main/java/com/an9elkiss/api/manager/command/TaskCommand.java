@@ -51,6 +51,8 @@ public class TaskCommand {
 	private Double percent;
 	/** 职位等级 */
 	private String level;
+	/** 父任务标题 */
+	private String parentTitle;
 	
 
 	public Integer getTaskWeekId() {
@@ -285,6 +287,14 @@ public class TaskCommand {
 
 	public void setLevel(String level) {
 		this.level = level;
+	}
+
+	public String getParentTitle() {
+		return parentTitle;
+	}
+
+	public void setParentTitle(String parentTitle) {
+		this.parentTitle = parentTitle;
 	}
 
 }

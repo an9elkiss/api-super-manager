@@ -2,7 +2,6 @@ package com.an9elkiss.api.manager.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.an9elkiss.api.manager.constant.ApiStatus;
-import com.an9elkiss.api.manager.dao.TaskDao;
 import com.an9elkiss.api.manager.dao.TaskWeekDao;
-import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.api.manager.model.TaskWeek;
 import com.an9elkiss.api.manager.util.DateTools;
 import com.an9elkiss.commons.auth.AppContext;
@@ -25,9 +22,6 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 	
 	@Autowired
 	private TaskWeekDao taskWeekDao;
-	
-	@Autowired
-	private TaskDao taskDao;
 
 	@Override
 	public ApiResponseCmd<TaskWeek> createTaskWeek(TaskWeek taskWeek) {

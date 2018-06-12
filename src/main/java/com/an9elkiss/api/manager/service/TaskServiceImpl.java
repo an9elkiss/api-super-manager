@@ -171,7 +171,9 @@ public class TaskServiceImpl implements TaskService {
 		BeanUtils.copyProperties(taskWeek, taskCommand);
 		taskCommand.setTaskId(task.getId());
 		taskCommand.setTaskWeekId(taskWeek.getId());
-		taskCommand.setParentTitle(taskDao.findById(task.getParentId()).getTitle());
+		if (null != task.getParentId()) {
+			taskCommand.setParentTitle(taskDao.findById(task.getParentId()).getTitle());
+		}		
 		return ApiResponseCmd.success(taskCommand);
 	}
 

@@ -97,9 +97,9 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 		String month = (String) searchParams.get("month");
 		int week = Integer.parseInt((String) searchParams.get("week"));
 		int taskWeekId = Integer.parseInt((String) searchParams.get("taskWeekId"));
-		
 		TaskWeek taskWeek = taskWeekDao.findById(taskWeekId);
 		
+		// 表示已经延后过了
 		if (taskWeek.getStatus().equals(ApiStatus.TASK_WEEK_END.getCode())) {
 			ApiResponseCmd apiResponseCmd = new ApiResponseCmd();
 			apiResponseCmd.setStatus(ApiStatus.DO_REPEAT);
@@ -128,8 +128,6 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 		// 插入成功后更新下状态表示该任务不可再复制了
 		taskWeek.setStatus(ApiStatus.TASK_WEEK_END.getCode());
 		taskWeekDao.update(taskWeek);
-		
-		
 		return ApiResponseCmd.success();
 	}
 	

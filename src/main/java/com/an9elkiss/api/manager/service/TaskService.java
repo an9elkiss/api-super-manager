@@ -10,7 +10,7 @@ import com.an9elkiss.commons.command.ApiResponseCmd;
 
 public interface TaskService {
 
-	ApiResponseCmd<Object> createTask(Task task);
+	ApiResponseCmd<Task> createTask(Task task);
 
 	ApiResponseCmd<Object> deleteTask(Integer id, String token);
 

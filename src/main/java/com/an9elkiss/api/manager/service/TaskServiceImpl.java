@@ -36,7 +36,7 @@ public class TaskServiceImpl implements TaskService {
 	private String CODE_PREFIX = "TC";
 
 	@Override
-	public ApiResponseCmd<Object> createTask(Task task) {
+	public ApiResponseCmd<Task> createTask(Task task) {
 		taskDao.save(task);
 		return ApiResponseCmd.success(taskDao.findById(task.getId()));
 	}

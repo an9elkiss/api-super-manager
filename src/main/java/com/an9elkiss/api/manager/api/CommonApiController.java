@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.an9elkiss.api.manager.constant.TypeMap;
+import com.an9elkiss.api.manager.exception.SuperMngBizException;
 import com.an9elkiss.api.manager.util.DateTools;
 import com.an9elkiss.commons.auth.spring.Access;
 import com.an9elkiss.commons.command.ApiResponseCmd;
@@ -32,7 +33,7 @@ public class CommonApiController implements CommonApi {
 		try {
 			return ResponseEntity.ok(ApiResponseCmd.success(DateTools.getYearMonthWeek(date == null ? new Date() : date)));
 		} catch (ParseException e) {
-			return ResponseEntity.ok(ApiResponseCmd.deny());
+			throw new SuperMngBizException(e);
 		}
 	}
 	
@@ -43,7 +44,7 @@ public class CommonApiController implements CommonApi {
 		try {
 			return ResponseEntity.ok(ApiResponseCmd.success(DateTools.getWeekCount(year,month)));
 		} catch (ParseException e) {
-			return ResponseEntity.ok(ApiResponseCmd.deny());
+			throw new SuperMngBizException(e);
 		}
 	}
 	

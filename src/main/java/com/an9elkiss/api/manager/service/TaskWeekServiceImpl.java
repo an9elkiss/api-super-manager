@@ -59,7 +59,7 @@ public class TaskWeekServiceImpl implements TaskWeekService {
 		int week = Integer.parseInt((String) searchParams.get("week"));
 		searchParams.put("startDate",DateTools.getFirstDayOfLastWeek(year,month,week));
 		searchParams.put("endDate",	DateTools.getLastDayOfLastWeek(year,month,week));
-		searchParams.put("notCurrentStatus", ApiStatus.STATUS_8.getCode());
+		searchParams.put("notCurrentStatus", ApiStatus.STATUS_10.getCode());
 		searchParams.put("notStatus", ApiStatus.TASK_WEEK_END.getCode());
 		List<TaskWeek> findByParams = taskWeekDao.findByParams(searchParams);
 		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");

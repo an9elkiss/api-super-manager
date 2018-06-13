@@ -23,6 +23,7 @@ public enum ApiStatus implements Status {
 	PROJECT_4(4,"NBA"),
 	PROJECT_5(5,"支付宝"),
 	PROJECT_6(6,"飞利浦"),
+	PROJECT_7(7,"其他"),
 	
 	// TypeMap TagMap
 	TAG_1(1,"新功能"),
@@ -35,9 +36,11 @@ public enum ApiStatus implements Status {
 	STATUS_3(3, "开发80%"),
 	STATUS_4(4, "完成自测"),
 	STATUS_5(5, "过test"),
-	STATUS_6(6, "过stag"),
+	STATUS_6(6, "过stage"),
 	STATUS_7(7, "过pre"),
-	STATUS_8(8, "上生产");
+	STATUS_8(8, "上生产"),
+	STATUS_9(9, "其他"),
+	STATUS_10(10, "完成任务");
 	
 	
 	private Integer code;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.an9elkiss.api.manager.dao.TagDao">
+
+
+	<insert id="save" parameterType="com.an9elkiss.api.manager.model.Tag"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `t_task_tag`
+		(`name`, `status`)
+		VALUES (#{name},1);
+	</insert>
+
+	<select id="findById" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.command.TagCommand">
+		SELECT `id`, `name` FROM `t_task_tag` WHERE `id` = #{id}
+	</select>
+	
+	<update id="updateTagStatusById" parameterType="Integer">
+		UPDATE `t_task_tag` SET `status`=0 WHERE `id` = #{id}
+	</update>
+	
+	<delete id="deleteTagById" parameterType="Integer">
+		DELETE FROM `t_task_tag` WHERE id = #{id}
+	</delete>
+	
+	<select id="getAllTags" resultType="com.an9elkiss.api.manager.model.Tag">
+		SELECT `id`, `name` FROM `t_task_tag` WHERE `status`=1
+	</select>
+	
+	<select id="getAllTagsById" resultType="com.an9elkiss.api.manager.model.Tag">
+	select `id`, `name` from `t_task_tag` where `status`=1 AND `id` in 
+    <foreach collection="listID" item="listID" open="(" close=")" separator=",">
+    #{listID}
+    </foreach>
+	</select>
+
+
+</mapper>

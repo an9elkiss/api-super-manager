@@ -115,14 +115,15 @@ public class TaskViewCommand {
 	}
 
 	public String getTags() {
-		if (null != tags && tags != "") {
-			String[] split = tags.split(",");
-			for (int i = 0; i < split.length; i++) {
-				split[i] = (TypeMap.getTagMap().get(split[i]) == null ? split[i] : TypeMap.getTagMap().get(split[i]));
-			}
-			return Arrays.toString(split).replace("[", "").replace("]", "");
-		}
-		return tags;
+//		if (null != tags && tags != "") {
+//			String[] split = tags.split(",");
+//			for (int i = 0; i < split.length; i++) {
+//				//split[i] = (TypeMap.getTagMap().get(split[i]) == null ? split[i] : TypeMap.getTagMap().get(split[i]));
+//			}
+//			return Arrays.toString(split).replace("[", "").replace("]", "");
+//		}
+//		return tags;
+		return this.tags;
 	}
 
 	public void setTags(String tags) {

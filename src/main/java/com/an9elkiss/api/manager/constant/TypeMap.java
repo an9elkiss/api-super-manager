@@ -1,7 +1,10 @@
 package com.an9elkiss.api.manager.constant;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.an9elkiss.api.manager.model.Tag;
 
 public class TypeMap {
 	public static String PROJECT_CODE = "project";
@@ -11,7 +14,7 @@ public class TypeMap {
 	public static Map<String,Map<String,String>> getTypeMap(){
 		Map<String,Map<String,String>> map = new HashMap<>();
 		map.put(PROJECT_CODE, getProjectMap());
-		map.put(TAG_CODE, getTagMap());
+		/*map.put(TAG_CODE, getTagMap());*/
 		map.put(STATUS_CODE, getStatusMap());
 		return map;
 	}
@@ -27,13 +30,21 @@ public class TypeMap {
 		return map;
 	}
 	
-	public static Map<String,String> getTagMap(){
-		Map<String,String> map = new HashMap<>();
-		map.put(ApiStatus.TAG_1.getCode().toString(), ApiStatus.TAG_1.getMessage().toString());
-		map.put(ApiStatus.TAG_2.getCode().toString(), ApiStatus.TAG_2.getMessage().toString());
-		map.put(ApiStatus.TAG_3.getCode().toString(), ApiStatus.TAG_3.getMessage().toString());
+	public Map<String,String> getTagMap(List<Tag> allTagsList){
+        Map<String, String> map = new HashMap<>();
+		for (Tag tag : allTagsList){
+		    map.put(tag.getId().toString(), tag.getName().toString());
+        }
 		return map;
 	}
+	
+//	public static Map<String,String> getTagMap(){
+//	    Map<String,String> map = new HashMap<>();
+//	    map.put(ApiStatus.TAG_1.getCode().toString(), ApiStatus.TAG_1.getMessage().toString());
+//	    map.put(ApiStatus.TAG_2.getCode().toString(), ApiStatus.TAG_2.getMessage().toString());
+//	    map.put(ApiStatus.TAG_3.getCode().toString(), ApiStatus.TAG_3.getMessage().toString());
+//	    return map;
+//	}
 	
 	public static Map<String,String> getStatusMap(){
 		Map<String,String> map = new HashMap<>();

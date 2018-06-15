@@ -1,6 +1,7 @@
 package com.an9elkiss.api.manager.service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,10 @@ import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
 import com.an9elkiss.api.manager.command.TaskViewCommand;
 import com.an9elkiss.api.manager.constant.ApiStatus;
+import com.an9elkiss.api.manager.dao.TagDao;
 import com.an9elkiss.api.manager.dao.TaskDao;
 import com.an9elkiss.api.manager.dao.TaskWeekDao;
+import com.an9elkiss.api.manager.model.Tag;
 import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.api.manager.model.TaskWeek;
 import com.an9elkiss.api.manager.util.DateTools;
@@ -31,6 +34,9 @@ public class TaskServiceImpl implements TaskService {
 	
 	@Autowired
 	private TaskWeekDao taskWeekDao;
+	
+	@Autowired
+    private TagDao tagDao;
 	
 	/** 订单开头 */
 	private String CODE_PREFIX = "TC";
@@ -86,9 +92,32 @@ public class TaskServiceImpl implements TaskService {
 		
 		// 查询本周任务列表
 		List<TaskViewCommand> findTaskViewCommands = taskDao.findTaskViewCommands(searchParams);
+		for (TaskViewCommand taskViewCommand : findTaskViewCommands){
+		    String tags = taskViewCommand.getTags();
+		    if (null != tags && tags != "") {
+		        String[] split = tags.split(",");
+	            
+	            Integer[] arri = new Integer[split.length];
+	            for (int i = 0; i < split.length; i++) {
+	                arri[i]=Integer.parseInt(split[i]);
+	            }
+	            List<Integer> asList = Arrays.asList(arri);
+	            List<Tag> list = tagDao.getAllTagsById(asList);
+	            String [] names = new String[list.size()];
+	            for (int j = 0; j < list.size(); j++){
+	                names[j] = list.get(j).getName();
+                }
+	            taskViewCommand.setTags(Arrays.toString(names).replace("[", "").replace("]", ""));
+		    }
+		    
+		    
+        }
+		
+		
 		taskResultCommand.setTaskCommands(findTaskViewCommands);
 		return ApiResponseCmd.success(taskResultCommand);
 	}
+	
 
 	@Override
 	public ApiResponseCmd<TaskCommand> createTaskAndWeek(TaskCommand taskCommand) {

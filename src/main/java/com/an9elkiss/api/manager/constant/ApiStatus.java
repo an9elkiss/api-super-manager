@@ -40,8 +40,8 @@ public enum ApiStatus implements Status {
 	STATUS_6(6, "过stage"),
 	STATUS_7(7, "过pre"),
 	STATUS_8(8, "上生产"),
-	STATUS_9(9, "其他"),
-	STATUS_10(10, "完成任务");
+	STATUS_9(9, "完成任务"),
+	STATUS_10(10, "其他");
 	
 	
 	private Integer code;

@@ -21,22 +21,14 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public ApiResponseCmd<TagCommand> saveTag(TagCommand tagCommand){
-        if(tagCommand != null && tagCommand.getName()!=null && tagCommand.getName().trim().length()>0){
+        if(tagCommand != null && tagCommand.getName() != null && tagCommand.getName().trim().length()>0 && tagCommand.getName().trim().length() < 5){
             Tag tag = new Tag();
             BeanUtils.copyProperties(tagCommand, tag);
             tagDao.save(tag);
             tagDao.findById(tag.getId());
             return ApiResponseCmd.success(tagDao.findById(tag.getId()));
         }
-//        if(null != name && name.trim().length()>0){
-//            Tag tag = new Tag();
-//            tag.setName(name);
-//            tagDao.save(tag);
-//            tagDao.findById(tag.getId());
-//            return ApiResponseCmd.success(tagDao.findById(tag.getId()));
-//        }
         return ApiResponseCmd.deny();
-        
     }
 
     @Override

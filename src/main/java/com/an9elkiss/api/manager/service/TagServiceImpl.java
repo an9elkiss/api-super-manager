@@ -21,7 +21,7 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public ApiResponseCmd<TagCommand> saveTag(TagCommand tagCommand){
-        if(tagCommand != null && tagCommand.getName() != null && tagCommand.getName().trim().length()>0 && tagCommand.getName().trim().length() < 5){
+        if (tagCommand != null && tagCommand.getName() != null && tagCommand.getName().trim().length() > 0 && tagCommand.getName().trim().length() <= 5){
             Tag tag = new Tag();
             BeanUtils.copyProperties(tagCommand, tag);
             tagDao.save(tag);
@@ -33,7 +33,7 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public ApiResponseCmd<Integer> updateTagStatusById(Integer id){
-        if(null == id){
+        if (null == id){
             return null;
         }
         return ApiResponseCmd.success(tagDao.updateTagStatusById(id));
@@ -41,7 +41,7 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public ApiResponseCmd<Integer> deleteTagById(Integer id){
-        if(null == id){
+        if (null == id){
             return null;
         }
         return ApiResponseCmd.success(tagDao.deleteTagById(id));

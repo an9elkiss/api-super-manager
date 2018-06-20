@@ -3,9 +3,11 @@ package com.an9elkiss.api.manager.service;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -235,4 +237,42 @@ public class TaskServiceImpl implements TaskService {
 			taskDao.update(task);
 		}
 	}
+
+	@Override
+	public ApiResponseCmd<Map<String, Object>> findTaskSorceInfo(Map<String,Object> searchParams) {
+		if(null==searchParams||searchParams.size()<=0) {
+			return ApiResponseCmd.deny();
+		}
+		if(null==searchParams.get("userIds")||"".equals(searchParams.get("userIds"))||null==searchParams.get("month")||null==searchParams.get("week")||null==searchParams.get("year")) {
+			return ApiResponseCmd.deny();
+		}
+		Map<String,Object> params = new HashMap<>();
+		// 根据年月周计算出这个周的开始结束时间
+		params.put("startDate",
+				DateTools.getFirstDayOfWeek(Integer.parseInt((String) searchParams.get("year")),
+						Integer.parseInt((String) searchParams.get("month")),
+						Integer.parseInt((String) searchParams.get("week"))));
+		params.put("endDate",
+				DateTools.getLastDayOfWeek(Integer.parseInt((String) searchParams.get("year")),
+						Integer.parseInt((String) searchParams.get("month")),
+						Integer.parseInt((String) searchParams.get("week"))));
+		String a=searchParams.get("userIds").toString();
+		String str[] = a.split(",");  
+		int array[] = new int[str.length];  
+		for(int i=0;i<str.length;i++){  
+		    array[i]=Integer.parseInt(str[i]); 
+		}
+		Map<String, Object> findTaskTotal = new HashMap<>();
+		/**查询出所有贡献值和实际工时，并以用户id为key值为value存储*/
+		for (int i = 0; i < array.length; i++) {
+			params.put("id", array[i]);
+			findTaskTotal.put(array[i]+"", taskDao.findTaskTotal(params));
+		}
+		if(findTaskTotal.isEmpty()||findTaskTotal.size()==0) {
+			/**数据为空*/
+			return ApiResponseCmd.deny();
+		}
+		return ApiResponseCmd.success(findTaskTotal);
+	}
+
 }

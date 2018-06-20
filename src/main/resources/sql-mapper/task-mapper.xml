@@ -175,6 +175,7 @@
 		WHERE
 			task.id = wek.task_id
 			AND wek.user_id = #{searchParams.id}
+			and task.is_parent is null
 			and wek.end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
 			and wek.end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
 			AND wek.status != 21

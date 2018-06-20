@@ -71,5 +71,17 @@ public class TaskApiController implements TaskApi {
 	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskParentResources(@PathVariable("id") Integer id) {
 		return ResponseEntity.ok(taskService.findTaskParentResources(id));
 	}
+	
+	/***
+	 * 根据用户id查询到所有的贡献值，实际值，折算工时，实际工时
+	 * @param id
+	 * @return
+	 */
+	@Override
+	/*@Access("API_TASK_PARENT_RESOURCE")*/
+	@RequestMapping(value = "/task/parent/resource", produces = { "application/json" }, method = RequestMethod.POST)
+	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskSorceInfo(@RequestParam Map<String,Object> searchParams) {
+		return ResponseEntity.ok(taskService.findTaskSorceInfo(searchParams));
+	}
 
 }

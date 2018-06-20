@@ -59,4 +59,11 @@ public interface TaskService {
 	 * @return {key:id/surplusScore(剩余贡献值)/surplusHours(剩余工作时间)}
 	 */
 	ApiResponseCmd<Map<String, Object>> findTaskParentResources(Integer parentId);
+	
+	/***
+	 * 根据用户id查询到所有的贡献值，实际值，折算工时，实际工时
+	 * @param searchParams
+	 * @return
+	 */
+	ApiResponseCmd<Map<String, Object>> findTaskSorceInfo(Map<String, Object> searchParams);
 }

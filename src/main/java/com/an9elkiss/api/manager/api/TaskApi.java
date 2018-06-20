@@ -54,5 +54,12 @@ public interface TaskApi {
 	 * @return {key:id(父任务id)/surplusScore(剩余贡献值)/surplusHours(剩余工作时间)}
 	 */
 	ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskParentResources(Integer parentId);
+	
+	/***
+	 * 根据用户id查询到所有的贡献值，实际值，折算工时，实际工时
+	 * @param 用户的id，日期
+	 * @return
+	 */
+	ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskSorceInfo(Map<String,Object> searchMap);
 
 }

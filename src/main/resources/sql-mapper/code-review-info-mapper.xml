@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.an9elkiss.api.manager.dao.CodeReviewInfoDao">
+
+
+	<insert id="saveCodeReviewInfo" parameterType="com.an9elkiss.api.manager.model.CodeReviewInfo"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT
+		INTO
+		`t_code_review_info`
+		(`code_review_id`,
+		`modular_type`,
+		`modular_content`,
+		`modular_fraction`,
+		`modular_remarks`,
+		`status`,
+		`create_time`,
+		`update_time`)
+		VALUES
+		<!--item就是List里每一项的对象名，要用","分割每一条数据，最后要";"结尾 -->
+		<foreach collection="list" item="item" index="index"
+			separator="," close=";">
+			(#{item.codeReviewId,jdbcType=BIGINT},
+			#{item.modularType,jdbcType=VARCHAR},
+			#{item.modularContent,jdbcType=VARCHAR},
+			#{item.modularFraction,jdbcType=BIGINT},
+			#{item.modularRemarks,jdbcType=VARCHAR},
+			#{item.status,jdbcType=BIGINT},
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.updateTime,jdbcType=TIMESTAMP})
+		</foreach>
+	</insert>
+
+	<select id="findCodeReviewInfos" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.CodeReviewInfo">
+		SELECT
+		id id,
+		code_review_id codeReviewId,
+		modular_type modularType,
+		modular_content modularContent,
+		modular_fraction modularFraction,
+		modular_remarks modularRemarks,
+		status status,
+		create_time createTime,
+		update_time updateTime
+		from t_code_review_info 
+		where 
+		code_review_id =#{codeReviewId}
+		AND status!=21
+	</select>
+	
+	<update id="update" parameterType="com.an9elkiss.api.manager.model.CodeReviewInfo"
+	>
+	 <foreach collection="list" item="item" index="index" separator=";"> 
+			UPDATE t_code_review_info 
+			SET code_review_id = code_review_id
+			<if test="item.codeReviewId!=null">
+			, code_review_id = #{item.codeReviewId}
+			</if>
+			<if test="item.modularType!=null">
+			, modular_type = #{item.modularType}
+			</if>
+			<if test="item.modularContent!=null">
+			, modular_content = #{item.modularContent}
+			</if>
+			<if test="item.modularFraction!=null">
+			, modular_fraction = #{item.modularFraction}
+			</if>
+			<if test="item.modularRemarks!=null">
+			, modular_remarks = #{item.modularRemarks}
+			</if>
+			<if test="item.updateTime!=null">
+			, update_time = #{item.updateTime}
+			</if>
+			<if test="item.status!=null">
+			, status = #{item.status}
+			</if>
+			 WHERE id = #{item.id}  
+    </foreach> 
+	</update>
+	<update id="updateStatus" parameterType="com.an9elkiss.api.manager.model.CodeReviewInfo">
+			UPDATE t_code_review_info 
+			SET code_review_id = code_review_id
+			<if test="codeReviewId!=null">
+			, code_review_id = #{codeReviewId}
+			</if>
+			<if test="modularType!=null">
+			, modular_type = #{modularType}
+			</if>
+			<if test="modularContent!=null">
+			, modular_content = #{modularContent}
+			</if>
+			<if test="modularFraction!=null">
+			, modular_fraction = #{modularFraction}
+			</if>
+			<if test="modularRemarks!=null">
+			, modular_remarks = #{modularRemarks}
+			</if>
+			<if test="updateTime!=null">
+			, update_time = #{updateTime}
+			</if>
+			<if test="status!=null">
+			, status = #{status}
+			</if>
+			where code_review_id=#{codeReviewId}
+	</update>
+</mapper>

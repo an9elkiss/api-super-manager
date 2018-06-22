@@ -54,6 +54,8 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 		for (CodeReviewInfoCommand codeReviewInfoCommand : codeReviewInfoList) {
 			codeReviewInfoCommand.setStatus(ApiStatus.NEW.getCode());
 			codeReviewInfoCommand.setCodeReviewId(codeReviewCommand.getId());
+			codeReviewInfoCommand.setCreateBy(AppContext.getPrincipal().getName());
+			codeReviewInfoCommand.setUpdateBy(AppContext.getPrincipal().getName());
 		}
 		int saveCodeReviewInfo = codeReviewInfoDao.saveCodeReviewInfo(codeReviewInfoList);
 		if (0 >= saveCodeReviewInfo) {
@@ -91,6 +93,7 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 		codeReviewCommand.setStatus(ApiStatus.DELETED.getCode());
 		codeReviewCommand.setUpdateBy(AppContext.getPrincipal().getName());
 		codeReviewInfoCommand.setCodeReviewId(codeReviewId);
+		codeReviewInfoCommand.setUpdateBy(AppContext.getPrincipal().getName());
 		codeReviewInfoCommand.setStatus(ApiStatus.DELETED.getCode());
 		//修改codereview的信息和详细信息的状态为21删除
 		codeReviewDao.update(codeReviewCommand);
@@ -115,7 +118,10 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 		if("".equals(codeReviewInfos)||null==codeReviewInfos) {
 			return ApiResponseCmd.success();
 		}
-		//1，修改codereview的详细信息
+		for (CodeReviewInfoCommand codeReviewInfoCommand : codeReviewInfoList) {
+			codeReviewInfoCommand.setUpdateBy(AppContext.getPrincipal().getName());
+		}
+		//2，修改codereview的详细信息
 		codeReviewInfoDao.update(codeReviewInfoList);
 		
 		return ApiResponseCmd.success();

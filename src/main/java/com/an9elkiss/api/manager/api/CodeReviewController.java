@@ -83,7 +83,7 @@ public class CodeReviewController implements CodeReviewApi {
 		 ApiResponseCmd<List<CodeReviewInfoCommand>> findCodeReviewInfosByCodeReviewId = codeReviewService.findCodeReviewInfosByCodeReviewId(codeReviewCommand.getId());
 		 CodeReviewCommand codeReview = findCodeReviewsById.getData();
 		 List<CodeReviewInfoCommand> data = findCodeReviewInfosByCodeReviewId.getData();
-		 if(null==data) {
+		 if(null==data||data.isEmpty()) {
 			return  ResponseEntity.ok(null);
 		 }
 		 String jsonstring = gson.toJson(data);

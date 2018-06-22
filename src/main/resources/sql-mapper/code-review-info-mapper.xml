@@ -18,7 +18,7 @@
 		`modular_remarks`,
 		`status`,
 		`create_time`,
-		`update_time`)
+		`update_time`, `create_by`, `update_by`)
 		VALUES
 		<!--item就是List里每一项的对象名，要用","分割每一条数据，最后要";"结尾 -->
 		<foreach collection="list" item="item" index="index"
@@ -30,7 +30,9 @@
 			#{item.modularRemarks,jdbcType=VARCHAR},
 			#{item.status,jdbcType=BIGINT},
 			#{item.createTime,jdbcType=TIMESTAMP},
-			#{item.updateTime,jdbcType=TIMESTAMP})
+			#{item.updateTime,jdbcType=TIMESTAMP},
+			#{item.createBy,jdbcType=VARCHAR},
+			#{item.updateBy,jdbcType=VARCHAR})
 		</foreach>
 	</insert>
 
@@ -45,7 +47,9 @@
 		modular_remarks modularRemarks,
 		status status,
 		create_time createTime,
-		update_time updateTime
+		update_time updateTime,
+		create_by createBy,
+		update_by updateBy
 		from t_code_review_info 
 		where 
 		code_review_id =#{codeReviewId}
@@ -75,6 +79,12 @@
 			<if test="item.updateTime!=null">
 			, update_time = #{item.updateTime}
 			</if>
+			<if test="item.createBy!=null">
+			, create_by = #{item.createBy}
+			</if>
+			<if test="item.updateBy!=null">
+			, update_by = #{item.updateBy}
+			</if>
 			<if test="item.status!=null">
 			, status = #{item.status}
 			</if>
@@ -101,6 +111,12 @@
 			</if>
 			<if test="updateTime!=null">
 			, update_time = #{updateTime}
+			</if>
+			<if test="createBy!=null">
+			, create_by = #{createBy}
+			</if>
+			<if test="updateBy!=null">
+			, update_by = #{updateBy}
 			</if>
 			<if test="status!=null">
 			, status = #{status}

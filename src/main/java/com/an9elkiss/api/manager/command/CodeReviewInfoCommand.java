@@ -20,6 +20,8 @@ public class CodeReviewInfoCommand {
 	private  String modularRemarks;
 
 	private Integer status;
+	private String createBy;
+	private String updateBy;
 	private String createTime;
 	private String updateTime;
 
@@ -94,6 +96,22 @@ public class CodeReviewInfoCommand {
 
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public String getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
 	}
 
 }

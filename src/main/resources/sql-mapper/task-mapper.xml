@@ -116,6 +116,9 @@
 		<if test="searchParams.isParent!=null">
 			and is_parent = #{searchParams.isParent}
 		</if>
+		<if test="searchParams.parentId!=null">
+			and parent_id = #{searchParams.parentId}
+		</if>
 		
 	</select>
 	

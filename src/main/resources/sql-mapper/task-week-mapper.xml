@@ -133,6 +133,9 @@
 		<if test="searchParams.memberIds!=null">
 			and user_id in(${searchParams.memberIds})
 		</if>
+		<if test="searchParams.taskid!=null">
+			and task_id in(${searchParams.taskid})
+		</if>
 	</select>
 	
 </mapper>

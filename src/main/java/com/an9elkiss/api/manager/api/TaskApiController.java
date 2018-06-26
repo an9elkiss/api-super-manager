@@ -66,7 +66,7 @@ public class TaskApiController implements TaskApi {
 	}
 
 	@Override
-	@Access("API_TASK_PARENT_RESOURCE")
+	@Access("API_TASK_GET")
 	@RequestMapping(value = "/task/parent/resource/{id}", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskParentResources(@PathVariable("id") Integer id) {
 		return ResponseEntity.ok(taskService.findTaskParentResources(id));
@@ -82,6 +82,19 @@ public class TaskApiController implements TaskApi {
 	@RequestMapping(value = "/task/parent/resource", produces = { "application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskSorceInfo(@RequestParam Map<String,Object> searchParams) {
 		return ResponseEntity.ok(taskService.findTaskSorceInfo(searchParams));
+	}
+
+	/**
+	 * 根据子任务的id 计算 父任务下的所有兄弟任务的实际贡献值，计划贡献值
+	 * @param 子任务的id
+	 * @return
+	 */
+	@Override
+	@Access("API_TASK_GET")
+	/*@Access("API_TASK_PARENT_RESOURCE")*/
+	@RequestMapping(value = "/task/parent/showTashScore/{taskId}", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> showTaskSorce(@PathVariable("taskId") Integer taskId) {
+		return ResponseEntity.ok(taskService.showTaskSorce(taskId));
 	}
 
 }

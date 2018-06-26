@@ -66,4 +66,11 @@ public interface TaskService {
 	 * @return
 	 */
 	ApiResponseCmd<Map<String, Object>> findTaskSorceInfo(Map<String, Object> searchParams);
+	
+	/***
+	 * 根据子任务的id 计算 父任务下的所有兄弟任务的实际贡献值，计划贡献值
+	 * @param 子任务的id
+	 * @return
+	 */
+	ApiResponseCmd<Map<String, Object>> showTaskSorce(Integer searchParams);
 }

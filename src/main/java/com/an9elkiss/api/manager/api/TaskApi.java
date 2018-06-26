@@ -61,5 +61,12 @@ public interface TaskApi {
 	 * @return
 	 */
 	ResponseEntity<ApiResponseCmd<Map<String, Object>>> findTaskSorceInfo(Map<String,Object> searchMap);
+	
+	/***
+	 * 根据子任务的id 计算 父任务下的所有兄弟任务的实际贡献值，计划贡献值
+	 * @param 子任务的id
+	 * @return
+	 */
+	ResponseEntity<ApiResponseCmd<Map<String, Object>>> showTaskSorce(Integer taskId);
 
 }

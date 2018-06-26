@@ -275,4 +275,66 @@ public class TaskServiceImpl implements TaskService {
 		return ApiResponseCmd.success(findTaskTotal);
 	}
 
+	/**
+	 * 根据子任务的id 计算 父任务下的所有兄弟任务的实际贡献值，计划贡献值
+	 * @param 子任务的id
+	 * @return
+	 */
+	@Override
+	public ApiResponseCmd<Map<String, Object>> showTaskSorce(Integer takeId) {
+		if(null==takeId||"".equals(takeId)) {
+			return ApiResponseCmd.deny();
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		/**计划贡献总值		 */
+		Integer planAllScore = 0;
+		
+		/**实际贡献总值		 */
+		Integer actualAllScore = 0;
+		
+		/**通过takeId查询父id		 */
+		map.put("parentId", taskDao.findById(takeId).getParentId());
+		
+		/**通过父id查询其子id		 */
+		List<Task> tasks = taskDao.findByParams(map);
+		map.clear();
+		
+		/**通过tasks遍历taskWeek 		 */
+		for (Task task : tasks) {
+			map.put("taskid", task.getId());
+			List<TaskWeek> taskWeeks = taskWeekDao.findByParams(map);
+			//如果无TaskWeek则
+			if(taskWeeks==null){
+				return ApiResponseCmd.deny();
+			}else{
+				/**	taskWeeks 与task 抽象为1对1关系	 */
+				TaskWeek taskWeek = taskWeeks.get(0);
+				/**过滤id为takeId的task，不做操作			 */
+				if(task.getId().equals(takeId)){
+					
+				}else{
+					/**通过taskWeek的	Status状态判断为删除状态 且 ActualScore属性不为空  筛选 需要计算的实际贡献值	 */
+					if((ApiStatus.DELETED.getCode() != taskWeek.getStatus())&&taskWeek.getActualScore()!=null){
+						/**实际贡献值累加				 */
+						actualAllScore += taskWeek.getActualScore();
+					}else{
+						/**计划贡献值累加				 
+						 * 过滤计划贡献值为null的情况*/
+						if(task.getPlanScore()!=null){
+							planAllScore += task.getPlanScore();
+						}
+					}
+				}
+			}
+			map.clear();
+		}
+		
+		map.put("actualAllScore", actualAllScore);
+		map.put("planAllScore", planAllScore);
+		
+		return ApiResponseCmd.success(map);
+	}
+
 }

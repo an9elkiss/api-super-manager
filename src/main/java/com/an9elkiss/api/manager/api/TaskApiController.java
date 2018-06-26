@@ -92,7 +92,7 @@ public class TaskApiController implements TaskApi {
 	@Override
 	@Access("API_TASK_GET")
 	/*@Access("API_TASK_PARENT_RESOURCE")*/
-	@RequestMapping(value = "/task/parent/showTashScore/{taskId}", produces = { "application/json" }, method = RequestMethod.GET)
+	@RequestMapping(value = "/task/parent/showTaskScore/{taskId}", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> showTaskSorce(@PathVariable("taskId") Integer taskId) {
 		return ResponseEntity.ok(taskService.showTaskSorce(taskId));
 	}

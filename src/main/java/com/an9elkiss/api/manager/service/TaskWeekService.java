@@ -22,10 +22,18 @@ public interface TaskWeekService {
 	 */
 	ApiResponseCmd<Object> createLastTaskWeek(Map<String, Object> searchParams);
 	
+//	/**
+//	 * 拷贝这周任务到下周
+//	 * @param searchParams (year/month/week/taskWeekId)
+//	 * @return
+//	 */
+//	ApiResponseCmd<Object> copyTaskWeekToNextWeek(Map<String, Object> searchParams);
 	/**
-	 * 拷贝这周任务到下周
+	 * 拷贝这周任务到下周(延后功能需求变更)
+	 * 如果为子任务，则创建下周的子任务task/taskWeek，共同的父任务；
+	 * 如果不为子任务，则创建共同的父任务task/taskWeek，且创建下周的兄弟任务task/taskWeek。
 	 * @param searchParams (year/month/week/taskWeekId)
 	 * @return
 	 */
-	ApiResponseCmd<Object> copyTaskWeekToNextWeek(Map<String, Object> searchParams);
+	ApiResponseCmd<Object> copyWeekToNextWeek(Map<String, Object> searchParams);
 }

@@ -305,9 +305,10 @@ public class TaskServiceImpl implements TaskService {
 		for (Task task : tasks) {
 			map.put("taskid", task.getId());
 			List<TaskWeek> taskWeeks = taskWeekDao.findByParams(map);
+			
 			//如果无TaskWeek则
-			if(taskWeeks==null){
-				return ApiResponseCmd.deny();
+			if(taskWeeks.size() == 0){
+				//return ApiResponseCmd.deny();
 			}else{
 				/**	taskWeeks 与task 抽象为1对1关系	 */
 				TaskWeek taskWeek = taskWeeks.get(0);
@@ -319,11 +320,13 @@ public class TaskServiceImpl implements TaskService {
 					if((ApiStatus.DELETED.getCode() != taskWeek.getStatus())&&taskWeek.getActualScore()!=null){
 						/**实际贡献值累加				 */
 						actualAllScore += taskWeek.getActualScore();
+//						System.out.println(actualAllScore+"----------actualAllScore");
 					}else{
 						/**计划贡献值累加				 
 						 * 过滤计划贡献值为null的情况*/
 						if(task.getPlanScore()!=null){
 							planAllScore += task.getPlanScore();
+//							System.out.println(actualAllScore+"----------planAllScore");
 						}
 					}
 				}

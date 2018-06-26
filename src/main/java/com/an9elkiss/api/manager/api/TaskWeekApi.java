@@ -22,10 +22,17 @@ public interface TaskWeekApi {
 //	 */
 //	ResponseEntity<ApiResponseCmd<Object>> createLastTaskWeek(Map<String, Object> searchParams);
 	
+//	/**
+//	 * 拷贝这周任务到下周
+//	 * @param searchParams (year/month/week/taskWeekId)
+//	 * @return
+//	 */
+//	ResponseEntity<ApiResponseCmd<Object>> copyTaskWeekToNextWeek(Map<String, Object> searchParams);
+	
 	/**
-	 * 拷贝这周任务到下周
+	 * 拷贝这周任务到下周(延后功能需求变更)
 	 * @param searchParams (year/month/week/taskWeekId)
 	 * @return
 	 */
-	ResponseEntity<ApiResponseCmd<Object>> copyTaskWeekToNextWeek(Map<String, Object> searchParams);
+	ResponseEntity<ApiResponseCmd<Object>> copyWeekToNextWeek(Map<String, Object> searchParams);
 }

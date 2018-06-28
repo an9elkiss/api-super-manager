@@ -47,4 +47,17 @@ public class TaskWeekApiController implements TaskWeekApi {
 		return ResponseEntity.ok(taskWeekService.copyWeekToNextWeek(searchParams));
 	}
 
+    @Override
+//    @Access("API_TASK_WEEK_ACTUALSCORE_GET")
+    @RequestMapping(value = "/task/week/actualscore", produces = { "application/json" }, method = RequestMethod.GET)
+    public ResponseEntity<ApiResponseCmd<Map<String, Object>>> findActualScoreByUserIdsAndDate(@RequestParam Map<String, Object> searchParams){
+        return ResponseEntity.ok(taskWeekService.findActualScoreByUserIdsAndDate(searchParams));
+    }
+
+    @Override
+    @RequestMapping(value = "/task/week/actualscoreTotal", produces = { "application/json" }, method = RequestMethod.GET)
+    public ResponseEntity<ApiResponseCmd<Map<String, Object>>> findActualScoreByUserIdsAndDateTotal(@RequestParam Map<String, Object> searchParams){
+        return ResponseEntity.ok(taskWeekService.findActualScoreByUserIdsAndDateTotal(searchParams));
+    }
+
 }

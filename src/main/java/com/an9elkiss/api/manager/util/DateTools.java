@@ -104,15 +104,11 @@ public class DateTools {
 	 * @throws ParseException 
 	 */
 	public static Integer getWeekCount(String year, String month) throws ParseException{
-		String str = year + "-" + month + "-1";
-		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
-		Date date =sdf.parse(str);
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		// 获取当月最后一天
-		calendar.set(Calendar.DAY_OF_MONTH,0);
-		// 获取最后一天是本月的第几周
-		return calendar.get(Calendar.WEEK_OF_MONTH);
+	    Calendar c = Calendar.getInstance();  
+        c.set(Calendar.YEAR, Integer.valueOf(year));  
+        c.set(Calendar.MONTH, (Integer.valueOf(month) - 1));  
+        c.setFirstDayOfWeek(Calendar.MONDAY);   
+        return c.getActualMaximum(Calendar.WEEK_OF_MONTH);
 	}
 	
 	/**

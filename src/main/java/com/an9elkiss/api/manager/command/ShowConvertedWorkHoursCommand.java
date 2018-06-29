@@ -6,12 +6,19 @@ import java.util.Set;
 
 public class ShowConvertedWorkHoursCommand{
 
+    /**
+     * 用户ID
+     */
     private Integer userId;
     
+    /**
+     * 用户姓名
+     */
     private String userName;
     
-    private TaskResultCommand taskResultCommand;
-    
+    /**
+     * echarts legend数据
+     */
     private List<String> legend;
     
     private List<EchartsCommand> echartsCommand;
@@ -65,16 +72,6 @@ public class ShowConvertedWorkHoursCommand{
     }
 
     
-    public TaskResultCommand getTaskResultCommand(){
-        return taskResultCommand;
-    }
-
-    
-    public void setTaskResultCommand(TaskResultCommand taskResultCommand){
-        this.taskResultCommand = taskResultCommand;
-    }
-
-
     
     public List<String> getLegend(){
         return legend;

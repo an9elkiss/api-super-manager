@@ -8,8 +8,14 @@ import com.an9elkiss.api.manager.constant.TypeMap;
 
 public class EchartsCommand{
 
+    /**
+     * 获取项目名称
+     */
     private String projectName;
 
+    /**
+     * 收集每个任务的小时数
+     */
     private List<Integer> totalHours;
 
 
@@ -30,11 +36,29 @@ public class EchartsCommand{
         this.totalHours = totalHours;
     }
     
-    
+    /**
+     * 项目名称
+     */
     private String project;
+    
+    /**
+     * 计划时间
+     */
     private Integer planHours;
+    
+    /**
+     * 预估时间
+     */
     private Integer percentHours;
+    
+    /**
+     * 用户id
+     */
     private Integer memberId;
+    
+    /**
+     * 用户名称
+     */
     private String username;
 
     

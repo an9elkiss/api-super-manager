@@ -19,7 +19,7 @@ import com.an9elkiss.commons.command.ApiResponseCmd;
 
 @Service
 @Transactional
-public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHoursService{
+public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHoursService {
 
     @Autowired
     private ShowConvertedWorkHoursDao showConvertedWorkHoursDao;
@@ -39,7 +39,7 @@ public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHours
             }
             searchParams.put("list", id);
         } else {
-            return null;//deny
+            return apiResponseCmd.success();// deny
         }
         // 根据条件获取报表的数据
         List<EchartsCommand> commands = showConvertedWorkHoursDao.getEchartsData(searchParams);
@@ -49,7 +49,7 @@ public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHours
         Set<String> projects = new HashSet<>();
         Set<Integer> membername = new HashSet<>();
         Map<Integer, String> map = new HashMap<>();
-        for (EchartsCommand echartsCommand : commands){
+        for (EchartsCommand echartsCommand : commands) {
             
             projects.add(echartsCommand.getProject());
             membername.add(echartsCommand.getMemberId());
@@ -65,10 +65,11 @@ public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHours
                 Integer totalHours = 0;
                 for(EchartsCommand echartsCommand : commands) {
                     if(project.equals(echartsCommand.getProject()) && member.equals(echartsCommand.getMemberId())) {
-                        totalHours += echartsCommand.getPercentHours()+echartsCommand.getPlanHours();
+                        // totalHours += echartsCommand.getPercentHours()+echartsCommand.getPlanHours();
+                        totalHours += echartsCommand.getPercentHours();
                     }
                 }
-                if(totalHours == 0){
+                if(totalHours == 0) {
                     totalHours = null;
                 }
                 hours.add(totalHours);

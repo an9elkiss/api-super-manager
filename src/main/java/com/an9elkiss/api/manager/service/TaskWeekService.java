@@ -36,4 +36,32 @@ public interface TaskWeekService {
 	 * @return
 	 */
 	ApiResponseCmd<Object> copyWeekToNextWeek(Map<String, Object> searchParams);
+	
+	
+	/**
+	 * 通过UserIds ,year, month 的条件，进行以人为单位的基本贡献值(actualScore)的查询
+	 * UserIds == null ，返回错误信息（请选择需要展示的用户）
+	 * UserIds ！= null ， 有以下四种情况   
+	 *     year == null ，month == null   返回错误信息（请选择需要展示的时间）  
+	 *     year == null ，month ！= null  返回错误信息（选择时间错误）
+	 *     year ！= null ，month ！= null  返回信息（当前时间进行基本贡献值计算）
+	 *     year ！= null ，month == null  返回信息（当前时间进行基本贡献值计算）
+	 * @param searchParams(year/month/userIds)
+	 * @return
+	 */
+	ApiResponseCmd<Map<String, Object>> findActualScoreByUserIdsAndDate(Map<String, Object> searchParams);
+	
+	
+	/**
+	 * 通过UserIds ,year, month 的条件，进行以人为单位的基本贡献值(actualScore)的查询
+	 * UserIds == null ，返回错误信息（请选择需要展示的用户）
+	 * UserIds ！= null ， 有以下四种情况   
+	 *     year == null ，month == null   返回错误信息（请选择需要展示的时间）  
+	 *     year == null ，month ！= null  返回错误信息（选择时间错误）
+	 *     year ！= null ，month ！= null  返回信息（当前时间进行基本贡献值计算）
+	 *     year ！= null ，month == null  返回信息（当前时间进行基本贡献值计算）
+	 * @param searchParams(year/month/userIds)
+	 * @return
+	 */
+	ApiResponseCmd<Map<String, Object>> findActualScoreByUserIdsAndDateTotal(Map<String, Object> searchParams);
 }

@@ -205,7 +205,7 @@ public class TaskWeekServiceImpl implements TaskWeekService{
         }
         taskDao.save(newTake);
 
-        newWeek.setTaskId(taskWeek.getId());
+        newWeek.setTaskId(newTake.getId());
 
         newWeek.setEndTime(sdf.format(DateTools.getLastDayOfNextWeek(Integer.parseInt(year), Integer.parseInt(month), week)));
         newWeek.setStatus(ApiStatus.NEW.getCode());

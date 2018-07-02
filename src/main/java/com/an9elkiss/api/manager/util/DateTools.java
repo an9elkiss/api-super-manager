@@ -90,6 +90,7 @@ public class DateTools {
 		// 找到本周7天
 		Iterator<Calendar> iterator = DateUtils.iterator(date, DateUtils.RANGE_WEEK_MONDAY);
 		Calendar calendar = iterator.next();
+		calendar.setFirstDayOfWeek(Calendar.MONDAY);   
 		map.put("year", calendar.get(Calendar.YEAR));
 		map.put("month", calendar.get(Calendar.MONTH) + 1);
 		map.put("week", calendar.get(Calendar.WEEK_OF_MONTH));

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,14 +48,12 @@ public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHours
         
         
         // 根据commands中的数据构建报表中的数据
-        Set<String> projects = new HashSet<>();
-        Set<Integer> membername = new HashSet<>();
-        Map<Integer, String> map = new HashMap<>();
+        Set<String> projects = new TreeSet<>();
+        Set<Integer> membername = new TreeSet<>();
+        Map<Integer, String> map = new TreeMap<>();
         for (EchartsCommand echartsCommand : commands) {
-            
             projects.add(echartsCommand.getProject());
             membername.add(echartsCommand.getMemberId());
-            map.put(echartsCommand.getMemberId(), echartsCommand.getUsername());
         }
         
         // 首先根据项目循环，其次在基础上根据人员循环，最终获取数据
@@ -65,6 +65,7 @@ public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHours
                 Integer totalHours = 0;
                 for(EchartsCommand echartsCommand : commands) {
                     if(project.equals(echartsCommand.getProject()) && member.equals(echartsCommand.getMemberId())) {
+                        map.put(echartsCommand.getMemberId(), echartsCommand.getUsername());
                         // totalHours += echartsCommand.getPercentHours()+echartsCommand.getPlanHours();
                         totalHours += echartsCommand.getPercentHours();
                     }
@@ -80,7 +81,11 @@ public class ShowConvertedWorkHoursServiceImpl implements ShowConvertedWorkHours
         }
         
         ShowConvertedWorkHoursCommand showConvertedWorkHoursCommand = new ShowConvertedWorkHoursCommand();
-        showConvertedWorkHoursCommand.setMap(map);
+        Map<Integer, String> map1 = new TreeMap<>();
+        for (Integer member : membername) {
+            map1.put(member, map.get(member));
+        }
+        showConvertedWorkHoursCommand.setMap(map1);
         showConvertedWorkHoursCommand.setEchartsCommand(listechartsCommand);
         showConvertedWorkHoursCommand.setProject(projects);
         return apiResponseCmd.success(showConvertedWorkHoursCommand);

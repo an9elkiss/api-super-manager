@@ -69,10 +69,15 @@ public class ShareServiceImpl implements ShareService {
 		if (null == multipartFile || multipartFile.isEmpty()) {
 			
 		}else{
+			
 			// 更新文件上传服务器地址
 			fileUrl = "sharefile/" + String.valueOf(new java.util.Random().nextInt())
 					+ new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + multipartFile.getOriginalFilename();
 			toFile = new File(fileUrl);
+			File fileParent = toFile.getParentFile(); 
+			if(!fileParent.exists()){ 
+			 fileParent.mkdirs(); 
+			} 
 			try {
 				input = multipartFile.getInputStream();
 				output = new FileOutputStream(toFile);

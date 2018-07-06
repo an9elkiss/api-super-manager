@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.an9elkiss.api.manager.dao.SharePraiseScoreDao">
+	<insert id="save" parameterType="com.an9elkiss.api.manager.model.SharePraiseScore"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		`t_share_praise_score`
+		(`is_praise`,
+		`score`,
+
+		`share_id`,
+
+		`user_id`,
+		`user_name`,
+		`level`,
+
+		`status`,
+		`create_by`,
+		`update_by`,
+		`create_time`,
+		`update_time`)
+		VALUES
+		(#{isPraise},
+		#{score},
+
+		#{shareId},
+
+		#{userId},
+		#{userName},
+		#{level},
+
+		#{status},
+		#{createBy},
+		#{updateBy},
+		#{createTime},
+		#{updateTime});
+	</insert>
+
+	<select id="findBySearchParams" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.model.SharePraiseScore">
+		SELECT
+
+		id id,
+		is_praise isPraise,
+		score score,
+
+		share_id shareId,
+
+		user_id
+		userId,
+		user_name userName,
+		level level,
+
+		status status,
+		create_by
+		createBy,
+		create_time createTime,
+		update_by updateBy,
+		update_time
+		updateTime
+
+		FROM
+		t_share_praise_score
+		WHERE 1=1
+		and status != 21
+		<if test="searchParams.shareId!=null">
+			and share_id = #{searchParams.shareId}
+		</if>
+		<if test="searchParams.userId!=null">
+			and user_id = #{searchParams.userId}
+		</if>
+
+	</select>
+
+	<update id="updateIsPraiseById" parameterType="Integer">
+		UPDATE
+		`t_share_praise_score` SET `is_praise`=#{isPraise} WHERE `id` = #{id}
+	</update>
+	<update id="updateScoreById" parameterType="Integer">
+		UPDATE
+		`t_share_praise_score` SET `score`=#{Score} WHERE `id` = #{id}
+	</update>
+
+</mapper>

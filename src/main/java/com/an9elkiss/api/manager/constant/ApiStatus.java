@@ -7,9 +7,16 @@ public enum ApiStatus implements Status {
 	// --生命周期----------------------------
 	NEW(1, "新建"),
 	DELETED(21, "已删除"),
-	
 	DO_REPEAT(401, "已经操作过了"),
-
+	
+	//分享会点赞
+	SHARE_PRAISE_TURE(301,"已经点过赞了"),
+	SHARE_PRAISE_FALSE(302,"没有点赞"),
+	SHARE_PRAISE_SUCCESS(200,"点赞成功"),
+	
+	//分享会评论
+	SHARE__COMMENT(401, "已经评论过了"),
+	
 	// 当父任务下面的子任务贡献值加起来等于总的父任务的贡献值时，将父任务的lifecycle更新为2
 	TASK_PARENT_SUCCESS(2, "当前父任务已分配完毕"),
 	TASK_IS_PARENT(1, "当前是父任务"),

@@ -81,7 +81,7 @@
 	</update>
 	<update id="updateScoreById" parameterType="Integer">
 		UPDATE
-		`t_share_praise_score` SET `score`=#{Score} WHERE `id` = #{id}
+		`t_share_praise_score` SET `score`=#{score} WHERE `id` = #{id}
 	</update>
 
 </mapper>

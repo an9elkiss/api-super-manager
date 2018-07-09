@@ -152,11 +152,12 @@ public class ShareServiceImpl implements ShareService {
 			searchParams.put("shareId", share.getId());
 			List<SharePraiseScore> findBySearchParams = sharePraiseScoreDao.findBySearchParams(searchParams);
 			for (SharePraiseScore sharePraiseScore : findBySearchParams) {
-				if (sharePraiseScore.getIsPraise().equals(ApiStatus.SHARE_PRAISE_TURE)) {
+				if (sharePraiseScore.getIsPraise().equals(ApiStatus.SHARE_PRAISE_TURE.getCode())) {
 					praiseNum += 1;
 				}
-				if ("".equals(sharePraiseScore.getScore())) {
+				if (null!=sharePraiseScore.getScore()) {
 					average += sharePraiseScore.getScore();
+					num += 1;
 				}
 			}
 			command.setPraiseNum(praiseNum);

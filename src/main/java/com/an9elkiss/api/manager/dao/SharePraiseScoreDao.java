@@ -12,7 +12,7 @@ public interface SharePraiseScoreDao {
 	
 	List<SharePraiseScore> findBySearchParams(@Param("searchParams") Map<String, ?> searchParams);
 	
-	int updateIsPraiseById(Integer isPraise, Integer id);
+	int updateIsPraiseById(@Param("isPraise")Integer isPraise, @Param("id")Integer id);
 	
-	int updateScoreById(Integer score, Integer id);
+	int updateScoreById(@Param("score")Integer score, @Param("id")Integer id);
 }

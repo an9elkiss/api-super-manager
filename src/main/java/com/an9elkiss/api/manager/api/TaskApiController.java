@@ -60,7 +60,7 @@ public class TaskApiController implements TaskApi {
 	@RequestMapping(value = "/task/parents", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<List<Task>>> parentTasks() {
 		Map<String, Integer> searchParams = new HashMap<>();
-		searchParams.put("status", ApiStatus.NEW.getCode());
+//		searchParams.put("status", ApiStatus.NEW.getCode());
 		searchParams.put("isParent", ApiStatus.TASK_IS_PARENT.getCode());
 		return ResponseEntity.ok(taskService.findUsabledParentTaskByParams(searchParams));
 	}

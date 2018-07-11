@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -56,7 +57,7 @@ public class ShareServiceImpl implements ShareService {
 
 	@Override
 	public ApiResponseCmd<ShareCommand> createShare(ShareCommand shareCommand, MultipartFile multipartFile) {
-		if ("".equals(shareCommand)) {
+		if (null == shareCommand) {
 			return ApiResponseCmd.deny();
 		}
 		// 文件上传服务器地址
@@ -66,18 +67,16 @@ public class ShareServiceImpl implements ShareService {
 		InputStream input = null;
 		FileOutputStream output = null;
 		// 如果上传文件不为null,则将文件存到根目录下的sharefile文件下
-		if (null == multipartFile || multipartFile.isEmpty()) {
-			
-		}else{
-			
+		if (null != multipartFile) {
 			// 更新文件上传服务器地址
 			fileUrl = "sharefile/" + String.valueOf(new java.util.Random().nextInt())
 					+ new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + multipartFile.getOriginalFilename();
 			toFile = new File(fileUrl);
-			File fileParent = toFile.getParentFile(); 
-			if(!fileParent.exists()){ 
-			 fileParent.mkdirs(); 
-			} 
+			File fileParent = toFile.getParentFile();
+			// 如果没有sharefile文件夹，创建
+			if (!fileParent.exists()) {
+				fileParent.mkdirs();
+			}
 			try {
 				input = multipartFile.getInputStream();
 				output = new FileOutputStream(toFile);
@@ -105,7 +104,7 @@ public class ShareServiceImpl implements ShareService {
 					}
 				}
 			}
-		
+
 		}
 
 		Share share = new Share();
@@ -132,8 +131,11 @@ public class ShareServiceImpl implements ShareService {
 	 * @return
 	 */
 	@Override
-	public ApiResponseCmd<List<ShareCommand>> showShare(int currentPage, int size) {
+	public ApiResponseCmd<List<ShareCommand>> showShare(Integer currentPage, Integer size) {
 		// 获取所有分享会信息
+		if (null == currentPage || null == size) {
+			return ApiResponseCmd.deny();
+		}
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("start", (currentPage - 1) * size);
 		searchParams.put("size", size);
@@ -155,7 +157,7 @@ public class ShareServiceImpl implements ShareService {
 				if (sharePraiseScore.getIsPraise().equals(ApiStatus.SHARE_PRAISE_TURE.getCode())) {
 					praiseNum += 1;
 				}
-				if (null!=sharePraiseScore.getScore()) {
+				if (null != sharePraiseScore.getScore()) {
 					average += sharePraiseScore.getScore();
 					num += 1;
 				}
@@ -181,6 +183,13 @@ public class ShareServiceImpl implements ShareService {
 	@Override
 	public ResponseEntity<byte[]> downloadFile(String filename, String fileUrl) {
 
+		if (null == filename) {
+			return new ResponseEntity<byte[]>(null, null, HttpStatus.CREATED);
+		}
+		if (null == fileUrl) {
+			return new ResponseEntity<byte[]>(null, null, HttpStatus.CREATED);
+		}
+
 		HttpHeaders headers = new HttpHeaders();
 		String fileName;
 		byte[] b = null;
@@ -196,7 +205,9 @@ public class ShareServiceImpl implements ShareService {
 			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-		} // 为了解决中文名称乱码问题
+		}
+
+		// 为了解决中文名称乱码问题
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		return new ResponseEntity<byte[]>(b, headers, HttpStatus.CREATED);
 	}

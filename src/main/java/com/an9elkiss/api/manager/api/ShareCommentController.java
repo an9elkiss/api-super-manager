@@ -41,7 +41,7 @@ public class ShareCommentController implements ShareCommentApi {
 	@Access("API_FINDSHARECOMMENT")
 	@RequestMapping(value = "/findShareComment", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<List<ShareCommentCommand>>> findShareCommentByShareId(Integer shareId) {
-		return ResponseEntity.ok(shareCommentService.selectShareCommentByShareId(shareId));
+		return ResponseEntity.ok(shareCommentService.findShareCommentByShareId(shareId));
 	}
 	
 	

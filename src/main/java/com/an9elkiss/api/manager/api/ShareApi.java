@@ -28,7 +28,7 @@ public interface ShareApi {
 	 * @param size  每页数量
 	 * @return
 	 */
-	ResponseEntity<ApiResponseCmd<List<ShareCommand>>> showShare(int currentPage ,int size);
+	ResponseEntity<ApiResponseCmd<List<ShareCommand>>> showShare(Integer currentPage ,Integer size);
 	
 	/**
 	 * 下载文件

@@ -17,6 +17,13 @@ public enum ApiStatus implements Status {
 	//分享会评论
 	SHARE__COMMENT(401, "已经评论过了"),
 	
+	//文件树
+	SHARE__FILE_TREE_DELETE(200,"该文件下存在有效文件"),
+	//文件树中的文件类型
+	SHARE__FILE_ROOT(41,"根节点"),
+	SHARE__FILE_DIRECTORY(42,"文件目录节点"),
+	SHARE__FILE_FILE(43,"文件节点"),
+	
 	// 当父任务下面的子任务贡献值加起来等于总的父任务的贡献值时，将父任务的lifecycle更新为2
 	TASK_PARENT_SUCCESS(2, "当前父任务已分配完毕"),
 	TASK_IS_PARENT(1, "当前是父任务"),

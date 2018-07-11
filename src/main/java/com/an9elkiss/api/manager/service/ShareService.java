@@ -24,7 +24,7 @@ public interface ShareService {
 	 * @param size  每页数量
 	 * @return
 	 */
-	ApiResponseCmd<List<ShareCommand>> showShare(int currentPage ,int size);
+	ApiResponseCmd<List<ShareCommand>> showShare(Integer currentPage ,Integer size);
 	
 	
 	/**

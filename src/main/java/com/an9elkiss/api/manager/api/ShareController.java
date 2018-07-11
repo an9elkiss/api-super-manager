@@ -44,7 +44,7 @@ public class ShareController implements ShareApi {
 	@Override
 	@Access("API_SHARE_SHOW")
 	@RequestMapping(value = "/share/show", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ApiResponseCmd<List<ShareCommand>>> showShare(int currentPage ,int size) {
+	public ResponseEntity<ApiResponseCmd<List<ShareCommand>>> showShare(Integer currentPage ,Integer size) {
 		return ResponseEntity.ok(shareService.showShare(currentPage,size));
 	}
 	

@@ -1,6 +1,5 @@
 package com.an9elkiss.api.manager.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,18 +29,28 @@ public class ShareCommentServiceImpl implements ShareCommentService {
 
 	@Override
 	public ApiResponseCmd<ShareCommentCommand> createShareCommand(ShareCommentCommand sharecCmmentCommand) {
-		ShareComment shareComment = new ShareComment();
-		SharePraiseScore sharePraiseScore = new SharePraiseScore();
-
+		if (null == sharecCmmentCommand) {
+			return ApiResponseCmd.deny();
+		}
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("shareId", sharecCmmentCommand.getShareId());
 		searchParams.put("userId", sharecCmmentCommand.getUserId());
+		// 根据分享会id 和人员id 查询点赞打分记录
 		List<SharePraiseScore> findByShareIdAndUserId = sharePraiseScoreDao.findBySearchParams(searchParams);
+
+		SharePraiseScore sharePraiseScore = new SharePraiseScore();
 
 		ApiResponseCmd cmd = new ApiResponseCmd<>();
 
-		// 无点打分点赞信息
-		if (findByShareIdAndUserId.size() == 0) {
+		// 有点打分点赞信息
+		if (!findByShareIdAndUserId.isEmpty()) {
+			if (null != findByShareIdAndUserId.get(0).getScore()) {
+				cmd.setCode(ApiStatus.SHARE__COMMENT.getCode());
+				cmd.setMessage(ApiStatus.SHARE__COMMENT.getMessage());
+				return cmd;
+			}
+			sharePraiseScoreDao.updateScoreById(sharecCmmentCommand.getScore(), findByShareIdAndUserId.get(0).getId());
+		} else {
 			BeanUtils.copyProperties(sharecCmmentCommand, sharePraiseScore);
 			// 维护点赞信息（无点赞）
 			sharePraiseScore.setIsPraise(ApiStatus.SHARE_PRAISE_FALSE.getCode());
@@ -50,16 +59,8 @@ public class ShareCommentServiceImpl implements ShareCommentService {
 			sharePraiseScore.setUpdateBy(AppContext.getPrincipal().getName());
 
 			sharePraiseScoreDao.save(sharePraiseScore);
-		} else {
-			if ("".equals(findByShareIdAndUserId.get(0).getScore())) {
-				sharePraiseScoreDao.updateScoreById(sharecCmmentCommand.getScore(),
-						findByShareIdAndUserId.get(0).getId());
-			} else {
-				cmd.setCode(ApiStatus.SHARE__COMMENT.getCode());
-				cmd.setMessage(ApiStatus.SHARE__COMMENT.getMessage());
-				return cmd;
-			}
 		}
+		ShareComment shareComment = new ShareComment();
 		BeanUtils.copyProperties(sharecCmmentCommand, shareComment);
 		shareComment.setStatus(ApiStatus.NEW.getCode());
 		shareComment.setCreateBy(AppContext.getPrincipal().getName());
@@ -71,28 +72,11 @@ public class ShareCommentServiceImpl implements ShareCommentService {
 	}
 
 	@Override
-	public ApiResponseCmd<List<ShareCommentCommand>> selectShareCommentByShareId(Integer shareId) {
-		if ("".equals(shareId)) {
-			ApiResponseCmd.deny();
+	public ApiResponseCmd<List<ShareCommentCommand>> findShareCommentByShareId(Integer shareId) {
+		if (null == shareId) {
+			return ApiResponseCmd.deny();
 		}
-		Map<String, Object> searchParams = new HashMap<>();
-		searchParams.put("shareId", shareId);
-		List<ShareComment> shareComments = shareCommentDao.findBySearchParams(searchParams);
-		List<ShareCommentCommand> shareCommentCommands = new ArrayList<>();
-
-		for (ShareComment shareComment : shareComments) {
-			searchParams.put("shareId", shareComment.getShareId());
-			searchParams.put("userId", shareComment.getUserId());
-
-			List<SharePraiseScore> findByShareIdAndUserId = sharePraiseScoreDao.findBySearchParams(searchParams);
-
-			ShareCommentCommand shareCommentCommand = new ShareCommentCommand();
-
-			BeanUtils.copyProperties(shareComment, shareCommentCommand);
-			shareCommentCommand.setScore(findByShareIdAndUserId.get(0).getScore());
-			shareCommentCommands.add(shareCommentCommand);
-		}
-
+		List<ShareCommentCommand> shareCommentCommands = shareCommentDao.findByShareId(shareId);
 		return ApiResponseCmd.success(shareCommentCommands);
 	}
 

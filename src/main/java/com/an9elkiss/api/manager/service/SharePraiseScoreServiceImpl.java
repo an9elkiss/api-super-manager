@@ -15,7 +15,7 @@ import com.an9elkiss.commons.command.ApiResponseCmd;
 
 @Service
 public class SharePraiseScoreServiceImpl implements SharePraiseScoreService {
-	
+
 	@Autowired
 	SharePraiseScoreDao sharePraiseScoreDao;
 
@@ -24,32 +24,32 @@ public class SharePraiseScoreServiceImpl implements SharePraiseScoreService {
 	 */
 	@Override
 	public ApiResponseCmd<SharePraiseScore> sharePraise(SharePraiseScore sharePraiseScore) {
-		ApiResponseCmd cmd = new ApiResponseCmd<>();
-		if("".equals(sharePraiseScore.getShareId())||"".equals(sharePraiseScore.getUserId())){
-			return cmd.deny();
+		if (null == sharePraiseScore && null == sharePraiseScore.getShareId() && null == sharePraiseScore.getUserId()) {
+			return ApiResponseCmd.deny();
 		}
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("shareId", sharePraiseScore.getShareId());
 		searchParams.put("userId", sharePraiseScore.getUserId());
 		List<SharePraiseScore> findByShareIdAndUserId = sharePraiseScoreDao.findBySearchParams(searchParams);
-		
-		//查询数据库是否有点赞打分记录   没有点赞打分记录则添加
-		if(findByShareIdAndUserId.size()==0){
+		ApiResponseCmd cmd = new ApiResponseCmd<>();
+
+		if (!findByShareIdAndUserId.isEmpty()) {
+			// 有则点赞打分信息时 有点赞信息返回已经点赞信息 没有点赞信息 更新点赞信息
+			if (ApiStatus.SHARE_PRAISE_TURE.getCode() == findByShareIdAndUserId.get(0).getIsPraise()) {
+				cmd.setCode(ApiStatus.SHARE_PRAISE_TURE.getCode());
+				cmd.setMessage(ApiStatus.SHARE_PRAISE_TURE.getMessage());
+				return cmd;
+			}
+			sharePraiseScore.setUpdateBy(AppContext.getPrincipal().getName());
+			sharePraiseScoreDao.updateIsPraiseById(ApiStatus.SHARE_PRAISE_TURE.getCode(),
+					findByShareIdAndUserId.get(0).getId());
+		} else {
+			// 查询数据库是否有点赞打分记录 没有点赞打分记录则添加
 			sharePraiseScore.setIsPraise(ApiStatus.SHARE_PRAISE_TURE.getCode());
 			sharePraiseScore.setStatus(ApiStatus.NEW.getCode());
 			sharePraiseScore.setCreateBy(AppContext.getPrincipal().getName());
 			sharePraiseScore.setUpdateBy(AppContext.getPrincipal().getName());
 			sharePraiseScoreDao.save(sharePraiseScore);
-		}else{
-			//有则点赞打分信息时    有点赞信息返回已经点赞信息  没有点赞信息  更新点赞信息
-			if(ApiStatus.SHARE_PRAISE_TURE.getCode().equals(findByShareIdAndUserId.get(0).getIsPraise())){
-				cmd.setCode(ApiStatus.SHARE_PRAISE_TURE.getCode());
-				cmd.setMessage(ApiStatus.SHARE_PRAISE_TURE.getMessage());
-				return cmd;
-			}else{
-				sharePraiseScore.setUpdateBy(AppContext.getPrincipal().getName());
-				sharePraiseScoreDao.updateIsPraiseById(ApiStatus.SHARE_PRAISE_TURE.getCode(), findByShareIdAndUserId.get(0).getId());
-			}
 		}
 		cmd.setCode(ApiStatus.SHARE_PRAISE_SUCCESS.getCode());
 		cmd.setMessage(ApiStatus.SHARE_PRAISE_SUCCESS.getMessage());

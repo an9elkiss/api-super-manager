@@ -35,7 +35,7 @@ public class SharePraiseScoreServiceImpl implements SharePraiseScoreService {
 
 		if (!findByShareIdAndUserId.isEmpty()) {
 			// 有则点赞打分信息时 有点赞信息返回已经点赞信息 没有点赞信息 更新点赞信息
-			if (ApiStatus.SHARE_PRAISE_TURE.getCode() == findByShareIdAndUserId.get(0).getIsPraise()) {
+			if (ApiStatus.SHARE_PRAISE_TURE.getCode().equals(findByShareIdAndUserId.get(0).getIsPraise())) {
 				cmd.setCode(ApiStatus.SHARE_PRAISE_TURE.getCode());
 				cmd.setMessage(ApiStatus.SHARE_PRAISE_TURE.getMessage());
 				return cmd;

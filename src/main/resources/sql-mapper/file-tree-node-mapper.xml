@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.an9elkiss.api.manager.dao.FileTreeDao">
+
+
+	<insert id="save" parameterType="com.an9elkiss.api.manager.model.FileTreeNode"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		`t_file_tree_node`
+		(`name`,
+		`file_time`,
+		`description`,
+		`parent_id`,
+		`file_type`,
+
+		`user_id`,
+		`user_name`,
+		`level`,
+
+		`status`,
+		`create_by`,
+		`update_by`,
+		`create_time`,
+		`update_time`)
+		VALUES
+		(#{name},
+		#{fileTime},
+		#{description},
+		#{parentId},
+		#{fileType},
+
+		#{userId},
+		#{userName},
+		#{level},
+
+		#{status},
+		#{createBy},
+		#{updateBy},
+		#{createTime},
+		#{updateTime});
+	</insert>
+
+
+	<select id="findAllFileTree" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.model.FileTreeNode">
+		SELECT
+
+		id id,
+		name name,
+		file_time fileTime,
+		parent_id parentId,
+		file_type fileType,
+
+		user_id userId,
+		user_name userName,
+		level level,
+
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by updateBy,
+		update_time updateTime
+
+		FROM
+		t_file_tree_node
+		WHERE 1=1
+		and status !=21
+		order by file_type
+	</select>
+	<select id="findFileTreeById" parameterType="java.lang.Integer"
+		resultType="com.an9elkiss.api.manager.model.FileTreeNode">
+		SELECT
+
+		id id,
+		name name,
+		description description,
+		file_time fileTime,
+		parent_id parentId,
+		file_type fileType,
+
+		user_id userId,
+		user_name userName,
+		level level,
+
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by updateBy,
+		update_time updateTime
+
+		FROM
+		t_file_tree_node
+		WHERE 1=1
+		and status !=21
+		and id = #{id}
+	</select>
+	
+	
+	<select id="findFileTreeBySearchParams" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.model.FileTreeNode">
+		SELECT
+
+		id id,
+		name name,
+		file_time fileTime,
+		parent_id parentId,
+		file_type fileType,
+
+		user_id userId,
+		user_name userName,
+		level level,
+
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by updateBy,
+		update_time updateTime
+
+		FROM
+		t_file_tree_node
+		WHERE 1=1
+		and status !=21
+		<if test="searchParams.parentId!=null">
+			and parent_id = #{searchParams.parentId}
+		</if>
+	</select>
+
+
+	<update id="update" parameterType="com.an9elkiss.api.manager.model.FileTreeNode">
+		UPDATE t_file_tree_node
+		SET name = name
+		<if test="name!=null">
+			, name = #{name}
+		</if>
+		<if test="description!=null">
+			, description = #{description}
+		</if>
+		<if test="parentId!=null">
+			, parent_id = #{parentId}
+		</if>
+		<if test="status!=null and status!=''">
+			, status = #{status}
+		</if>
+		<if test="updateBy!=null">
+			, update_by = #{updateBy}
+		</if>
+		where id=#{id}
+	</update>
+
+</mapper>

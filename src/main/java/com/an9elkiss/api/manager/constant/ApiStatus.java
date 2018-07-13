@@ -15,14 +15,20 @@ public enum ApiStatus implements Status {
 	SHARE_PRAISE_SUCCESS(200,"点赞成功"),
 	
 	//分享会评论
-	SHARE__COMMENT(401, "已经评论过了"),
+	SHARE_COMMENT(401, "已经评论过了"),
 	
 	//文件树
-	SHARE__FILE_TREE_DELETE(200,"该文件下存在有效文件"),
+	FILE_TREE_DELETE(401,"该文件下存在有效文件"),
+	FILE_TREE_OBJECT_NULL(401,"提交的参数内容为空"),
+	FILE_TREE_PARENTID_NULL(401,"提交的需要新建的文件内容为空"),
+	FILE_TREE_PARENTID_DB_NULL(401,"提交新建的节点id的父级节点id节点无信息"),
+	FILE_TREE_PARENTID_FILETYPE_ERROR(401,"所添加的文件的父节点的文件类型为文件，不允许添加"),
+	FILE_TREE_OPERATE_ERROR(401,"无需要操作的文件"),
+	FILE_TREE_DELETE_ROOT_ERROR(401,"根节点无法删除"),
 	//文件树中的文件类型
-	SHARE__FILE_ROOT(41,"根节点"),
-	SHARE__FILE_DIRECTORY(42,"文件目录节点"),
-	SHARE__FILE_FILE(43,"文件节点"),
+	FILE_TREE_ROOT(41,"根节点"),
+	FILE_TREE_DIRECTORY(42,"文件目录节点"),
+	FILE_TREE_FILE(43,"文件节点"),
 	
 	// 当父任务下面的子任务贡献值加起来等于总的父任务的贡献值时，将父任务的lifecycle更新为2
 	TASK_PARENT_SUCCESS(2, "当前父任务已分配完毕"),

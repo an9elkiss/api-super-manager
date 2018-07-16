@@ -36,20 +36,20 @@ public class ShareCommentServiceImpl implements ShareCommentService {
 		searchParams.put("shareId", sharecCmmentCommand.getShareId());
 		searchParams.put("userId", sharecCmmentCommand.getUserId());
 		// 根据分享会id 和人员id 查询点赞打分记录
-		List<SharePraiseScore> findByShareIdAndUserId = sharePraiseScoreDao.findBySearchParams(searchParams);
+		List<SharePraiseScore> sharePraiseScores = sharePraiseScoreDao.findBySearchParams(searchParams);
 
 		SharePraiseScore sharePraiseScore = new SharePraiseScore();
 
 		ApiResponseCmd cmd = new ApiResponseCmd<>();
 
 		// 有点打分点赞信息
-		if (!findByShareIdAndUserId.isEmpty()) {
-			if (null != findByShareIdAndUserId.get(0).getScore()) {
-				cmd.setCode(ApiStatus.SHARE__COMMENT.getCode());
-				cmd.setMessage(ApiStatus.SHARE__COMMENT.getMessage());
+		if (!sharePraiseScores.isEmpty()) {
+			if (null != sharePraiseScores.get(0).getScore()) {
+				cmd.setCode(ApiStatus.SHARE_COMMENT.getCode());
+				cmd.setMessage(ApiStatus.SHARE_COMMENT.getMessage());
 				return cmd;
 			}
-			sharePraiseScoreDao.updateScoreById(sharecCmmentCommand.getScore(), findByShareIdAndUserId.get(0).getId());
+			sharePraiseScoreDao.updateScoreById(sharecCmmentCommand.getScore(), sharePraiseScores.get(0).getId());
 		} else {
 			BeanUtils.copyProperties(sharecCmmentCommand, sharePraiseScore);
 			// 维护点赞信息（无点赞）

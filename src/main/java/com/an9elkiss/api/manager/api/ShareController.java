@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,6 +60,20 @@ public class ShareController implements ShareApi {
 	@RequestMapping(value = "/share/downloadFile", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<byte[]> downloadFile(String filename, String fileUrl) {
 		return shareService.downloadFile(filename, fileUrl);
+	}
+
+	@Override
+	@Access("API_SHARE_DELETE")
+	@RequestMapping(value = "/share/{id}", produces = { "application/json" }, method = RequestMethod.DELETE)
+	public ResponseEntity<ApiResponseCmd<Object>> deleteShare(@PathVariable("id") Integer id) {
+		return ResponseEntity.ok(shareService.deleteShare(id));
+	}
+
+	@Override
+	@Access("API_SHARE_UPDATE")
+	@RequestMapping(value = "/share/{id}", produces = { "application/json" }, method = RequestMethod.POST)
+	public ResponseEntity<ApiResponseCmd<Object>> updateShare(ShareCommand shareCommand, MultipartFile multipartFile) {
+		return ResponseEntity.ok(shareService.updateShare(shareCommand, multipartFile));
 	}
 
 }

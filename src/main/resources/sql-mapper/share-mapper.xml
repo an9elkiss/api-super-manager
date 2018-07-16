@@ -69,5 +69,61 @@
 		LIMIT
 		#{searchParams.start} , #{searchParams.size}
 	</select>
+	
+	<select id="findById" parameterType="java.lang.Integer"
+		resultType="com.an9elkiss.api.manager.model.Share">
+		SELECT
+
+		id id,
+		title title,
+		description description,
+		share_label shareLabel,
+		share_time shareTime,
+		file_url fileUrl,
+
+		user_id userId,
+		user_name userName,
+		level level,
+
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by updateBy,
+		update_time updateTime
+
+		FROM
+		t_share
+		WHERE 1=1
+		and status != 21
+		and id = #{shareId}
+	</select>
+	
+	
+	<update id="update" parameterType="com.an9elkiss.api.manager.model.Share">
+		UPDATE t_share
+		SET status = status
+		<if test="status!=null and status!=''">
+			, status = #{status}
+		</if>
+		<if test="updateBy!=null">
+			, update_by = #{updateBy}
+		</if>
+		<if test="title!=null">
+			, title = #{title}
+		</if>
+		<if test="description!=null">
+			, description = #{description}
+		</if>
+		<if test="shareLabel!=null">
+			, share_label = #{shareLabel}
+		</if>
+		<if test="shareTime!=null">
+			, share_time = #{shareTime}
+		</if>
+		<if test="fileUrl!=null">
+			, file_url = #{fileUrl}
+		</if>
+		where id=#{id}
+	</update>
 
 </mapper>

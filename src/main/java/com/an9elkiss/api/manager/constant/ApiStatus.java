@@ -16,6 +16,11 @@ public enum ApiStatus implements Status {
 	
 	//分享会评论
 	SHARE_COMMENT(401, "已经评论过了"),
+	SHARE_OBJECT_NULL(401,"提交的参数内容为空"),
+	SHARE_PARENTID_NULL(401,"提交的需要新建的文件内容为空"),
+	SHARE_PARENTID_DB_NULL(401,"提交新建的节点id的父级节点id节点无信息"),
+	SHARE_PARENTID_FILETYPE_ERROR(401,"所添加的文件的父节点的文件类型为文件，不允许添加"),
+	SHARE_OPERATE_ERROR(401,"无需要操作的文件"),
 	
 	//文件树
 	FILE_TREE_DELETE(401,"该文件下存在有效文件"),

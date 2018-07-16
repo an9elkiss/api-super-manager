@@ -5,12 +5,15 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.an9elkiss.api.manager.command.SharePraiseScoreCommand;
 import com.an9elkiss.api.manager.model.SharePraiseScore;
 
 public interface SharePraiseScoreDao {
 	int save(SharePraiseScore sharePraiseScore);
 	
 	List<SharePraiseScore> findBySearchParams(@Param("searchParams") Map<String, ?> searchParams);
+	
+	List<SharePraiseScoreCommand> findByIds(@Param("searchParams") Map<String, ?> searchParams);
 	
 	int updateIsPraiseById(@Param("isPraise")Integer isPraise, @Param("id")Integer id);
 	

@@ -12,4 +12,8 @@ public interface ShareDao {
 	int save(Share share);
 	
 	List<Share> findAllByPage(@Param("searchParams") Map<String, ?> searchParams);
+	
+	int update(Share share);
+	
+	Share findById(@Param("shareId")Integer shareId);
 }

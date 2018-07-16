@@ -179,6 +179,9 @@ public class ShareCommand {
 				+ userName + ", level=" + level + ", status=" + status + ", createBy=" + createBy + ", updateBy="
 				+ updateBy + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
 	}
+
+	
+	
 	
 
 

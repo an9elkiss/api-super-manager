@@ -66,6 +66,37 @@
 		</if>
 
 	</select>
+	
+	<select id="findByIds" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.command.ShareCommentCommand">
+		SELECT
+
+		id id,
+		description description,
+
+		share_id shareId,
+
+		user_id userId,
+		user_name userName,
+		level level,
+
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by updateBy,
+		update_time updateTime,
+		COUNT(share_id) commentNum
+
+		FROM
+		t_share_comment
+		group by share_id
+		HAVING status != 21
+		and share_id in 
+		<foreach item="item" index="index" collection="searchParams.ids" 
+                         open="(" separator="," close=")">
+                        #{item}
+        </foreach>
+	</select>
 
 	<select id="findByShareId" parameterType="java.util.Map"
 		resultType="com.an9elkiss.api.manager.command.ShareCommentCommand">

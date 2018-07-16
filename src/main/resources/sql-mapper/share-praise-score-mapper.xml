@@ -75,6 +75,50 @@
 
 	</select>
 
+
+	<select id="findByIds" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.command.SharePraiseScoreCommand">
+		SELECT
+
+		t1.id id,
+		t1.is_praise isPraise,
+		t1.score score,
+
+		t1.share_id shareId,
+
+		t1.user_id userId,
+		t1.user_name userName,
+		t1.level level,
+
+		t1.status status,
+		t1.create_by createBy,
+		t1.create_time createTime,
+		t1.update_by updateBy,
+		t1.update_time updateTime,
+		ROUND(AVG(t1.score), 0) average,
+
+		(SELECT
+		COUNT(is_praise)
+		FROM
+		t_share_praise_score t2
+
+		WHERE t1.share_id = t2.share_id
+		AND status != 21
+		AND is_praise = 301) praiseNum
+
+		FROM
+		t_share_praise_score t1
+		GROUP BY t1.share_id
+
+		HAVING t1.status != 21
+
+		and t1.share_id in 
+		<foreach item="item" index="index" collection="searchParams.ids" 
+                         open="(" separator="," close=")">
+                        #{item}
+        </foreach>
+	</select>
+
 	<update id="updateIsPraiseById" parameterType="Integer">
 		UPDATE
 		`t_share_praise_score` SET `is_praise`=#{isPraise} WHERE `id` = #{id}

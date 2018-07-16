@@ -35,4 +35,19 @@ public interface ShareService {
 	 */
 	ResponseEntity<byte[]> downloadFile(String filename, String fileUrl);
 	
+	/**
+	 * 
+	 * @param id 需要删除分享会的id
+	 * @return
+	 */
+	ApiResponseCmd<Object> deleteShare(Integer id );
+	
+	/**
+	 * 更新分享会信息
+	 * @param shareCommand 分享会包装类
+	 * @param multipartFile 新修改的文件
+	 * @return
+	 */
+	ApiResponseCmd<Object> updateShare(ShareCommand shareCommand,MultipartFile multipartFile);
+	
 }

@@ -40,6 +40,11 @@ public class ShareCommentCommand {
 	 * 分数
 	 */
 	private Integer score;
+	
+	/**
+	 * 评论数
+	 */
+	private Integer commentNum;
 
 	private Integer status;
 	private String createBy;
@@ -47,6 +52,14 @@ public class ShareCommentCommand {
 	private String createTime;
 	private String updateTime;
 	
+	
+	
+	public Integer getCommentNum() {
+		return commentNum;
+	}
+	public void setCommentNum(Integer commentNum) {
+		this.commentNum = commentNum;
+	}
 	public Integer getScore() {
 		return score;
 	}
@@ -122,11 +135,10 @@ public class ShareCommentCommand {
 	}
 	@Override
 	public String toString() {
-		return "ShareComment [id=" + id + ", description=" + description + ", shareId=" + shareId + ", userId=" + userId
-				+ ", userName=" + userName + ", level=" + level + ", status=" + status + ", createBy=" + createBy
-				+ ", updateBy=" + updateBy + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+		return "ShareCommentCommand [id=" + id + ", description=" + description + ", shareId=" + shareId + ", userId="
+				+ userId + ", userName=" + userName + ", level=" + level + ", score=" + score + ", commentNum="
+				+ commentNum + ", status=" + status + ", createBy=" + createBy + ", updateBy=" + updateBy
+				+ ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
 	}
-	
-	
 
 }

@@ -13,6 +13,9 @@ public interface ShareCommentDao {
 	
 	List<ShareCommentCommand> findByShareId(Integer shareId);
 	
-	List<ShareComment> findBySearchParams(@Param("searchParams") Map<String, ?> searchParams);
+	List<ShareCommentCommand> findBySearchParams(@Param("searchParams") Map<String, ?> searchParams);
+
+	List<ShareCommentCommand> findByIds(@Param("searchParams") Map<String, ?> searchParams);
+	
 	
 }

@@ -39,4 +39,19 @@ public interface ShareApi {
 	ResponseEntity<byte[]> downloadFile(String filename ,String fileUrl);
 	
 	
+	/**
+	 * 删除分享会信息
+	 * @param id  需要删除分享会的id
+	 * @return
+	 */
+	ResponseEntity<ApiResponseCmd<Object>> deleteShare(Integer id);
+	
+	/**
+	 * 更新分享会，并更新上传分享会文件
+	 * @param shareCommand 需要更新的实体包装类
+	 * @param multipartFile 需要更新的文件
+	 * @return
+	 */
+	ResponseEntity<ApiResponseCmd<Object>> updateShare(ShareCommand shareCommand,MultipartFile multipartFile);
+	
 }

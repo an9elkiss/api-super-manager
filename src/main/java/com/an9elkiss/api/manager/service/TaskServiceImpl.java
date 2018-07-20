@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,8 @@ import com.an9elkiss.commons.util.JsonUtils;
 public class TaskServiceImpl implements TaskService {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
+	@Value("${url.api.union.user.allpersons}")
+	private String URL_API_UNION_USER_ALLPERSONS;
 
 	@Autowired
 	private TaskDao taskDao;
@@ -356,7 +359,7 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public ApiResponseCmd<Map<String, List<Integer>>> statisticalTaskMakeBetterByGroup(String token) {
 		// HttpClient 调用api-union-user服务取得人员信息
-		String URL = "http://10.88.93.175:9005/api-union-user/1.0.0/allPersons";
+		String URL = URL_API_UNION_USER_ALLPERSONS;
 		// HttpClient 返回结果
 		String str = null;
 		try {

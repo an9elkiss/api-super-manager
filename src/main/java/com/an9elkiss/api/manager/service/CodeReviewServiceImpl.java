@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(FileTreeServiceImpl.class);
 
+	@Value("${url.api.union.user.allpersons}")
+	private String URL_API_UNION_USER_ALLPERSONS;
+	
 	@Autowired
 	private CodeReviewDao codeReviewDao;
 
@@ -147,7 +151,7 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 	@Override
 	public ApiResponseCmd<Map<String, List<Integer>>> statisticalCodeReviewByGroup(String token) {
 		// HttpClient 调用api-union-user服务取得人员信息
-		String URL = "http://10.88.93.175:9005/api-union-user/1.0.0/allPersons";
+		String URL = URL_API_UNION_USER_ALLPERSONS;
 		// HttpClient 返回结果
 		String str = null;
 		try {

@@ -24,4 +24,12 @@ public interface TaskDao {
 	Map<String, Object> findTaskParentResources(Integer id);
 	
 	List<Task> findByParams(@Param("searchParams") Map<String, ?> searchParams);
+	
+	/**
+	 * 通过 一组人的id 查询改组key:time月全部人的CodeReview数量总和
+	 * @param searchParams->key:ids   value:人的id
+	 * 					  ->key:time  value:需要查询的月份
+	 * @return
+	 */
+	int statisticalTaskMakeBetterByIdsAndTime(@Param("searchParams") Map<String, ?> searchParams);
 }

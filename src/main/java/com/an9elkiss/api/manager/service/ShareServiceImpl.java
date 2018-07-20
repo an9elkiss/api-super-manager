@@ -8,11 +8,13 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -28,14 +30,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.an9elkiss.api.manager.command.ShareCommand;
 import com.an9elkiss.api.manager.command.ShareCommentCommand;
 import com.an9elkiss.api.manager.command.SharePraiseScoreCommand;
+import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.api.manager.constant.ApiStatus;
+import com.an9elkiss.api.manager.constant.GroupManager;
 import com.an9elkiss.api.manager.dao.ShareCommentDao;
 import com.an9elkiss.api.manager.dao.ShareDao;
 import com.an9elkiss.api.manager.dao.SharePraiseScoreDao;
 import com.an9elkiss.api.manager.exception.SuperMngBizException;
 import com.an9elkiss.api.manager.model.Share;
+import com.an9elkiss.api.manager.util.DateTools;
+import com.an9elkiss.api.manager.util.HttpClientUtil;
 import com.an9elkiss.commons.auth.AppContext;
 import com.an9elkiss.commons.command.ApiResponseCmd;
+import com.an9elkiss.commons.util.JsonUtils;
 
 /**
  * 分享会业务层实现类
@@ -268,14 +275,13 @@ public class ShareServiceImpl implements ShareService {
 			cmd.setMessage(ApiStatus.SHARE_OPERATE_ERROR.getMessage());
 			return cmd;
 		}
-		
 
 		// 文件上传服务器地址
 		String fileUrl = null;
 		// 如果上传文件不为null,则将文件存到根目录下的sharefile文件下
 		if (null != multipartFile) {
-			
-			//删除上一次提交的文件
+
+			// 删除上一次提交的文件
 			if (!"".equals(oldShare.getFileUrl())) {
 				File file = new File(oldShare.getFileUrl());
 				// 判断目录或文件是否存在
@@ -293,8 +299,10 @@ public class ShareServiceImpl implements ShareService {
 			InputStream input = null;
 			FileOutputStream output = null;
 			// 更新文件上传服务器地址
-//			fileUrl = "sharefile/" + String.valueOf(new java.util.Random().nextInt())
-//					+ new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + multipartFile.getOriginalFilename();
+			// fileUrl = "sharefile/" + String.valueOf(new
+			// java.util.Random().nextInt())
+			// + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) +
+			// multipartFile.getOriginalFilename();
 			toFile = new File(fileUrl);
 			File fileParent = toFile.getParentFile();
 			// 如果没有sharefile文件夹，创建
@@ -345,6 +353,107 @@ public class ShareServiceImpl implements ShareService {
 		LOGGER.info(" id为{}，姓名为  {} 的用户，更新分享会信息成功", AppContext.getPrincipal().getId(),
 				AppContext.getPrincipal().getName());
 		return ApiResponseCmd.success();
+	}
+
+	@Override
+	public ApiResponseCmd<Map<String, List<Integer>>> statisticalShareByGroup(String token) {
+		// HttpClient 调用api-union-user服务取得人员信息
+		String URL = "http://10.88.93.175:9005/api-union-user/1.0.0/allPersons";
+		// HttpClient 返回结果
+		String str = null;
+		try {
+			str = HttpClientUtil.httpClientGet(URL, token);
+		} catch (ClientProtocolException e) {
+			LOGGER.error(" id为{}，姓名为  {} 的用户，提交查询报表时，系统发送服务器请求失败请求地址{}", AppContext.getPrincipal().getId(),
+					AppContext.getPrincipal().getName(), URL);
+		} catch (IOException e) {
+
+		}
+
+		// 解析http请求的返回结果
+		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
+		List<UserPersonCmd> parse = JsonUtils.parse(responseCmd.getData().toString(), List.class);
+		// 结果中的所有的人员信息
+		List<UserPersonCmd> userPersonCmds = new ArrayList<>();
+		for (Object parse1 : parse) {
+			userPersonCmds.add(JsonUtils.parse(parse1.toString(), UserPersonCmd.class));
+		}
+
+		Map<Integer, UserPersonCmd> userPersonCmdMap = new HashMap<>();
+		// leadid为key 下属为velue
+		Map<Integer, List<UserPersonCmd>> leadMap = new HashMap<>();
+
+		// 通过leadid查找直接下属的信息到leadMap
+		findSubordinateByLeaderid(userPersonCmds, userPersonCmdMap, leadMap);
+
+		// codeReview数量
+		int codeReviewNumber = 0;
+
+		// 返回值信息：key：组长名 value：每组一月到当前月每月的codeReview的数量
+		Map<String, List<Integer>> map = new HashMap<>();
+
+		// 便利组的枚举类GroupManager，枚举类中为每个组的信息
+		for (GroupManager groupManager : GroupManager.values()) {
+			// 用于返回值信息的value信息构造
+			List<Integer> numberList = new ArrayList<>();
+			// 数据库查询参数构造map
+			Map<String, Object> searchParams = new HashMap<>();
+			// 组长全部下级的集合
+			List<UserPersonCmd> users = new ArrayList<>();
+			// 取出组长第一层下级
+			List<UserPersonCmd> list = leadMap.get(groupManager.getId());
+			// 取出组长所有下级到users
+			recursiveUserPerson(users, list, leadMap);
+			// 取出所有下级id
+			for (UserPersonCmd userPersonCmd : users) {
+				// numberList中添加当前组的人员id
+				numberList.add(userPersonCmd.getUserId());
+			}
+			users = new ArrayList<>();
+			// 添加组长id
+			numberList.add(groupManager.getId());
+			searchParams.put("ids", numberList);
+
+			// 清空numberList用于下文中获取当前组每月的codeReview的数量
+			numberList = new ArrayList<>();
+
+			// 计算1月到当前月每月的codeReview的数量
+			for (int i = 0; i < Calendar.getInstance().get(Calendar.MONTH) + 1; i++) {
+				searchParams.put("time",
+						DateTools.getFirstDayOfWeek(Calendar.getInstance().get(Calendar.YEAR), i + 1, 2));
+				codeReviewNumber = shareDao.statisticalShareByIdsAndTime(searchParams);
+				numberList.add(codeReviewNumber);
+			}
+			// 将返回值map中添加当前组的codeReview的统计结果
+			map.put(groupManager.getName(), numberList);
+			numberList = new ArrayList<>();
+		}
+		return ApiResponseCmd.success(map);
+	}
+
+	private void findSubordinateByLeaderid(List<UserPersonCmd> userPersonCmds,
+			Map<Integer, UserPersonCmd> userPersonCmdMap, Map<Integer, List<UserPersonCmd>> leadMap) {
+		for (UserPersonCmd userPersonCmd : userPersonCmds) {
+			userPersonCmdMap.put(userPersonCmd.getUserId(), userPersonCmd);
+			if (leadMap.get(userPersonCmd.getLeadId()) != null) {
+				leadMap.get(userPersonCmd.getLeadId()).add(userPersonCmd);
+			} else {
+				List<UserPersonCmd> list = new ArrayList<UserPersonCmd>();
+				list.add(userPersonCmd);
+				leadMap.put(userPersonCmd.getLeadId(), list);
+			}
+		}
+	}
+
+	private void recursiveUserPerson(List<UserPersonCmd> users, List<UserPersonCmd> list,
+			Map<Integer, List<UserPersonCmd>> leadMap) {
+		users.addAll(list);
+		for (UserPersonCmd userPersonCmd : list) {
+			List<UserPersonCmd> listz = leadMap.get(userPersonCmd.getUserId());
+			if (null != listz && listz.size() > 0) {
+				recursiveUserPerson(users, listz, leadMap);
+			}
+		}
 	}
 
 }

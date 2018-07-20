@@ -125,5 +125,27 @@
 		</if>
 		where id=#{id}
 	</update>
+	
+	<select id="statisticalShareByIdsAndTime" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(id)
+		FROM t_share
+		WHERE
+		t_share.status !=21
+		<if test="searchParams.time!=null">
+			AND
+			DATE_FORMAT(t_share.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+		</if>
+		<if test="searchParams.ids!=null">
+			AND t_share.user_id IN
+			<foreach item="item" index="index" collection="searchParams.ids"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+
+	</select>
+
+
 
 </mapper>

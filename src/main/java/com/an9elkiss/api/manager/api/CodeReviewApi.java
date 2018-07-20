@@ -3,14 +3,13 @@ package com.an9elkiss.api.manager.api;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import com.an9elkiss.api.manager.command.CodeReviewCommand;
 import com.an9elkiss.api.manager.command.CodeReviewInfoCommand;
-import com.an9elkiss.api.manager.command.TaskCommand;
-import com.an9elkiss.api.manager.command.TaskResultCommand;
-import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
 public interface CodeReviewApi {
@@ -52,4 +51,13 @@ public interface CodeReviewApi {
      * @return
      */
     ResponseEntity<ApiResponseCmd<CodeReviewCommand>> updateCodeReviewInfosByCodeReviewId(CodeReviewCommand codeReviewCommand, BindingResult result);
+
+    /***
+     * 根据组信息统计每组CodeReviewId信息(月为单位)
+     * @return Map-key：组名
+     * 		   Map-value：一月到当前月的CodeReviewId统计信息
+     */
+    ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalCodeReviewByGroup(HttpServletRequest request);
+
+    
 }

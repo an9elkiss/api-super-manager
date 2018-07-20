@@ -1,6 +1,9 @@
 package com.an9elkiss.api.manager.api;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +77,13 @@ public class ShareController implements ShareApi {
 	@RequestMapping(value = "/share/{id}", produces = { "application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<ApiResponseCmd<Object>> updateShare(ShareCommand shareCommand, MultipartFile multipartFile) {
 		return ResponseEntity.ok(shareService.updateShare(shareCommand, multipartFile));
+	}
+
+	@Override
+	@Access("API_SHARE_STATISTICAL_GROUP")
+	@RequestMapping(value = "/share/statistical/group", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalShareByGroup(HttpServletRequest request) {
+		return ResponseEntity.ok(shareService.statisticalShareByGroup(request.getParameter("token")));
 	}
 
 }

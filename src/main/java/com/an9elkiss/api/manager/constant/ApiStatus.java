@@ -8,6 +8,9 @@ public enum ApiStatus implements Status {
 	NEW(1, "新建"),
 	DELETED(21, "已删除"),
 	DO_REPEAT(401, "已经操作过了"),
+	//持续改进
+	MAKE_BETTER(3,"持续改进"),
+	
 	
 	//分享会点赞
 	SHARE_PRAISE_TURE(301,"已经点过赞了"),

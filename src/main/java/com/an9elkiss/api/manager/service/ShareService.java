@@ -1,6 +1,7 @@
 package com.an9elkiss.api.manager.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,5 +50,13 @@ public interface ShareService {
 	 * @return
 	 */
 	ApiResponseCmd<Object> updateShare(ShareCommand shareCommand,MultipartFile multipartFile);
+	
+	/**
+	 * 根据组信息统计每组分享会的信息(月为单位)
+     * @return Map-key：组名
+     * 		   Map-value：一月到当前月的分享会统计信息
+	 */
+	ApiResponseCmd<Map<String, List<Integer>>> statisticalShareByGroup(String token);
+	
 	
 }

@@ -6,107 +6,121 @@
 <mapper namespace="com.an9elkiss.api.manager.dao.TaskDao">
 
 
-	<insert id="save" parameterType="com.an9elkiss.api.manager.model.Task" useGeneratedKeys="true"
-		keyProperty="id">
-		INSERT INTO `t_task` 
-		(`code`, `title`, `project`, `tags`, `is_parent`, `parent_id`, `description`, `plan_score`, `plan_status`, `plan_hours`, `status`, `create_by`, `update_by`,`percent_hours`) 
-		VALUES (#{code}, #{title}, #{project}, #{tags}, #{isParent}, #{parentId}, #{description}, #{planScore}, #{planStatus}, #{planHours}, #{status}, #{createBy}, #{updateBy}, #{percentHours});
+	<insert id="save" parameterType="com.an9elkiss.api.manager.model.Task"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `t_task`
+		(`code`,
+		`title`, `project`, `tags`, `is_parent`, `parent_id`, `description`,
+		`plan_score`, `plan_status`, `plan_hours`, `status`, `create_by`,
+		`update_by`,`percent_hours`)
+		VALUES (#{code}, #{title}, #{project},
+		#{tags}, #{isParent}, #{parentId},
+		#{description}, #{planScore},
+		#{planStatus}, #{planHours}, #{status},
+		#{createBy}, #{updateBy},
+		#{percentHours});
 	</insert>
-	  
+
 	<update id="update" parameterType="com.an9elkiss.api.manager.model.Task">
-			UPDATE t_task 
-			SET code = code
-			<if test="title!=null and title!=''">
-				, title = #{title}
-			</if>
-			<if test="project!=null">
-				, project = #{project}
-			</if>
-			<if test="tags!=null and tags!=''">
-				, tags = #{tags}
-			</if>
-			<if test="isParent!=null and isParent!=''">
-				, is_parent = #{isParent}
-			</if>
-			<if test="parentId!=null">
-				, parent_id = #{parentId}
-			</if>
-			<if test="description!=null and description!=''">
-				, description = #{description}
-			</if>
-			<if test="planScore!=null">
-				, plan_score = #{planScore}
-			</if>	
-			<if test="planStatus!=null">
-				, plan_status = #{planStatus}
-			</if>	
-			<if test="planHours!=null">
-				, plan_hours = #{planHours}
-			</if>	
-			<if test="status!=null and status!=''">
-				, status = #{status}
-			</if>	
-			<if test="createBy!=null and createBy!=''">
-				, create_by = #{createBy}
-			</if>
-			<if test="updateBy!=null and updateBy!=''">
-				, update_by = #{updateBy}
-			</if>
-			<if test="percentHours!=null">
-				, percent_hours = #{percentHours}
-			</if>
-				
-			where id=#{id}
+		UPDATE t_task
+		SET code = code
+		<if test="title!=null and title!=''">
+			, title = #{title}
+		</if>
+		<if test="project!=null">
+			, project = #{project}
+		</if>
+		<if test="tags!=null and tags!=''">
+			, tags = #{tags}
+		</if>
+		<if test="isParent!=null and isParent!=''">
+			, is_parent = #{isParent}
+		</if>
+		<if test="parentId!=null">
+			, parent_id = #{parentId}
+		</if>
+		<if test="description!=null and description!=''">
+			, description = #{description}
+		</if>
+		<if test="planScore!=null">
+			, plan_score = #{planScore}
+		</if>
+		<if test="planStatus!=null">
+			, plan_status = #{planStatus}
+		</if>
+		<if test="planHours!=null">
+			, plan_hours = #{planHours}
+		</if>
+		<if test="status!=null and status!=''">
+			, status = #{status}
+		</if>
+		<if test="createBy!=null and createBy!=''">
+			, create_by = #{createBy}
+		</if>
+		<if test="updateBy!=null and updateBy!=''">
+			, update_by = #{updateBy}
+		</if>
+		<if test="percentHours!=null">
+			, percent_hours = #{percentHours}
+		</if>
+
+		where id=#{id}
 	</update>
-	
+
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM t_task
-		WHERE id=#{id}
+		WHERE
+		id=#{id}
 	</delete>
-	
-	<select id="findById" parameterType="Integer" resultType="com.an9elkiss.api.manager.model.Task" >
+
+	<select id="findById" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.Task">
 		SELECT id id,
-			CODE CODE,
-			title title,
-			project project,
-			tags tags,
-			is_parent isParent,
-			parent_id parentId,
-			description description,
-			plan_score planScore,
-			plan_status planStatus,
-			plan_hours planHours,
-			status status,
-			create_by createBy,
-			create_time createTime,
-			update_by updateBy,
-			update_time updateTime,
-			percent_hours percentHours
-		FROM t_task 
+		CODE CODE,
+		title title,
+		project project,
+		tags
+		tags,
+		is_parent isParent,
+		parent_id parentId,
+		description description,
+		plan_score planScore,
+		plan_status planStatus,
+		plan_hours planHours,
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by
+		updateBy,
+		update_time updateTime,
+		percent_hours percentHours
+		FROM t_task
 		WHERE id = #{id}
 	</select>
-	
-	<select id="findByParams" parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.model.Task" >
+
+	<select id="findByParams" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.model.Task">
 		SELECT id id,
-			CODE CODE,
-			title title,
-			project project,
-			tags tags,
-			is_parent isParent,
-			parent_id parentId,
-			description description,
-			plan_score planScore,
-			plan_status planStatus,
-			plan_hours planHours,
-			status status,
-			create_by createBy,
-			create_time createTime,
-			update_by updateBy,
-			update_time updateTime,
-			percent_hours percentHours
-		FROM t_task 
+		CODE CODE,
+		title title,
+		project project,
+		tags tags,
+		is_parent isParent,
+		parent_id parentId,
+		description description,
+		plan_score planScore,
+		plan_status planStatus,
+		plan_hours planHours,
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by
+		updateBy,
+		update_time updateTime,
+		percent_hours percentHours
+		FROM t_task
 		WHERE 1=1
-			and status != 21
+		and status != 21
 		<if test="searchParams.id!=null">
 			and id = #{searchParams.id}
 		</if>
@@ -119,102 +133,223 @@
 		<if test="searchParams.parentId!=null">
 			and parent_id = #{searchParams.parentId}
 		</if>
-		
+
 	</select>
-	
-	<select id="findTaskViewCommands" parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.command.TaskViewCommand" >
+
+	<select id="findTaskViewCommands" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.command.TaskViewCommand">
 		SELECT
-			wek.id taskWeekId,
-			task.id taskId,
-			task.CODE CODE,
-			task.title title,
-			task.parent_id parentId,
-			task.is_parent isParent,
-			task.project project,
-			task.tags tags,
-			task.description description,
-			task.plan_score planScore,
-			wek.actual_score actualScore,
-			task.plan_status planStatus,
-			wek.current_status currentStatus,
-			DATE_FORMAT(wek.end_time,'%Y-%m-%d') endTime,
-			task.plan_hours planHours,
-			wek.actual_hours actualHours,
-			wek.user_id userId,
-			wek.YEAR YEAR,
-			wek.WEEK WEEK,
-			wek.MONTH MONTH,
-			wek.create_by createBy,
-			wek.create_time createTime,
-			wek.update_by updateBy,
-			wek.update_time updateTime,
-			wek.user_name userName,
-			task.percent_hours percentHours,
-			wek.level
+		wek.id taskWeekId,
+		task.id taskId,
+		task.CODE CODE,
+		task.title
+		title,
+		task.parent_id parentId,
+		task.is_parent isParent,
+		task.project
+		project,
+		task.tags tags,
+		task.description description,
+		task.plan_score
+		planScore,
+		wek.actual_score actualScore,
+		task.plan_status planStatus,
+		wek.current_status currentStatus,
+		DATE_FORMAT(wek.end_time,'%Y-%m-%d')
+		endTime,
+		task.plan_hours planHours,
+		wek.actual_hours actualHours,
+		wek.user_id userId,
+		wek.YEAR YEAR,
+		wek.WEEK WEEK,
+		wek.MONTH MONTH,
+		wek.create_by createBy,
+		wek.create_time createTime,
+		wek.update_by
+		updateBy,
+		wek.update_time updateTime,
+		wek.user_name userName,
+		task.percent_hours percentHours,
+		wek.level
 		FROM
-			t_task task,
-			t_task_week wek
+		t_task task,
+		t_task_week
+		wek
 		WHERE
-			task.id = wek.task_id
-			and task.is_parent is null
-			and wek.end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
-			and wek.end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
-			and wek.user_id = #{searchParams.memberId}
-			AND wek.status != 21
-			and task.status != 21
+		task.id = wek.task_id
+		and task.is_parent is null
+		and
+		wek.end_time <![CDATA[>=]]>
+		DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
+		and wek.end_time <![CDATA[<=]]>
+		DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
+		and wek.user_id =
+		#{searchParams.memberId}
+		AND wek.status != 21
+		and task.status != 21
 		order by wek.user_id
 	</select>
-	
-	<select id="findTaskTotal" parameterType="java.util.Map" resultType="java.util.HashMap">
+
+	<select id="findTaskTotal" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
 		SELECT
-			IFNULL(sum(plan_score),0) planScoreTotal,
-			IFNULL(sum(plan_hours),0) planHoursTotal,
-			IFNULL(sum(percent_hours),0) percentHoursTotal,
-			IFNULL(sum(actual_hours),0) actualHoursTotal,
-			IFNULL(sum(actual_score),0) actualScoreTotal
+		IFNULL(sum(plan_score),0) planScoreTotal,
+		IFNULL(sum(plan_hours),0) planHoursTotal,
+		IFNULL(sum(percent_hours),0)
+		percentHoursTotal,
+		IFNULL(sum(actual_hours),0) actualHoursTotal,
+		IFNULL(sum(actual_score),0) actualScoreTotal
 		FROM
-			t_task task,
-			t_task_week wek
+		t_task task,
+		t_task_week wek
 		WHERE
-			task.id = wek.task_id
-			AND wek.user_id = #{searchParams.id}
-			and task.is_parent is null
-			and wek.end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
-			and wek.end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
-			AND wek.status != 21
-			and task.status != 21
+		task.id = wek.task_id
+		AND wek.user_id =
+		#{searchParams.id}
+		and task.is_parent is null
+		and wek.end_time <![CDATA[>=]]>
+		DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
+		and wek.end_time <![CDATA[<=]]>
+		DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
+		AND wek.status != 21
+		and task.status != 21
 	</select>
-	
-	<select id="findTaskParentResources" parameterType="Integer" resultType="java.util.HashMap">
+
+	<select id="findTaskParentResources" parameterType="Integer"
+		resultType="java.util.HashMap">
 		SELECT
-			parent.id,
-			IFNULL((parent.plan_score - child.plan_score),0) surplusScore,
-			IFNULL((parent.plan_hours - child.plan_hours),0) surplusHours
+		parent.id,
+		IFNULL((parent.plan_score -
+		child.plan_score),0) surplusScore,
+		IFNULL((parent.plan_hours -
+		child.plan_hours),0) surplusHours
 		FROM
-			(
-				SELECT
-					id,
-					IFNULL(plan_score,0) plan_score,
-					IFNULL(plan_hours,0) plan_hours
-				FROM
-					t_task
-				WHERE
-					id = #{id}
-					and status != 21
-			) parent,
-			(
-				SELECT
-					#{id} parent_id,
-					IFNULL(sum(plan_score),0) plan_score,
-					IFNULL(sum(plan_hours),0) plan_hours
-				FROM
-					t_task
-				WHERE
-					parent_id = #{id}
-					and status != 21
-			) child
+		(
+		SELECT
+		id,
+		IFNULL(plan_score,0)
+		plan_score,
+		IFNULL(plan_hours,0) plan_hours
+		FROM
+		t_task
 		WHERE
-			parent.id = child.parent_id
+		id = #{id}
+		and status != 21
+		) parent,
+		(
+		SELECT
+		#{id} parent_id,
+		IFNULL(sum(plan_score),0) plan_score,
+		IFNULL(sum(plan_hours),0)
+		plan_hours
+		FROM
+		t_task
+		WHERE
+		parent_id = #{id}
+		and status != 21
+		) child
+		WHERE
+		parent.id = child.parent_id
 	</select>
-	
+
+	<select id="statisticalTaskMakeBetterByIdsAndTime"
+		parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT	DISTINCT 
+				(
+							SELECT COUNT(t.id)
+							FROM t_task t ,t_task_week tw
+							WHERE 
+							t.status != 21
+							AND t.id = tw.task_id
+							AND t.is_parent IS NULL
+							AND t.parent_id IS NULL
+							<if test="searchParams.time!=null">
+								AND
+								DATE_FORMAT(t.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+							</if>
+							<if test="searchParams.tag!=null">
+								AND (t.tags LIKE '%,${searchParams.tag},%''%,3,%' 
+									 OR t.tags LIKE '%,${searchParams.tag}' 
+									 OR t.tags LIKE '${searchParams.tag},%' 
+									 OR t.tags = ${searchParams.tag})
+							</if>
+							<if test="searchParams.ids!=null">
+								AND tw.user_id IN
+								<foreach item="item" index="index" collection="searchParams.ids"
+									open="(" separator="," close=")">
+										#{item}
+								</foreach>
+							</if>
+				)
+				+
+				(		
+						SELECT COUNT(t1.id)
+						FROM 
+						t_task t1 
+						,t_task_week tw1
+						WHERE 
+						t1.status != 21
+						AND t1.is_parent = 1
+						AND t1.id = tw1.task_id
+						<if test="searchParams.time!=null">
+							AND
+							DATE_FORMAT(t1.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+						</if>
+						<if test="searchParams.tag!=null">
+							AND (t1.tags LIKE '%,${searchParams.tag},%''%,3,%' 
+								 OR t1.tags LIKE '%,${searchParams.tag}' 
+								 OR t1.tags LIKE '${searchParams.tag},%' 
+								 OR t1.tags = ${searchParams.tag})
+						</if>
+						<if test="searchParams.ids!=null">
+							AND tw1.user_id IN
+							<foreach item="item" index="index" collection="searchParams.ids"
+								open="(" separator="," close=")">
+									#{item}
+							</foreach>
+						</if>
+				 )
+				 +		
+				 (		
+				 SELECT COUNT(*) 
+							FROM ( 
+						 		SELECT COUNT(t2.id)
+						 		FROM t_task t2
+								WHERE t2.parent_id IN (
+														SELECT t3.id 
+														FROM 
+														t_task t3 
+														,t_task_week tw2
+														WHERE 
+														t3.status != 21
+														AND t3.is_parent = 1
+														AND t3.id = tw2.task_id
+														<if test="searchParams.time!=null">
+															AND
+															DATE_FORMAT(t3.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+														</if>
+														<if test="searchParams.tag!=null">
+															AND !(t3.tags LIKE '%,${searchParams.tag},%''%,3,%' 
+																 OR t3.tags LIKE '%,${searchParams.tag}' 
+																 OR t3.tags LIKE '${searchParams.tag},%' 
+																 OR t3.tags = ${searchParams.tag})
+														</if>
+														<if test="searchParams.ids!=null">
+															AND tw2.user_id IN
+															<foreach item="item" index="index" collection="searchParams.ids"
+																open="(" separator="," close=")">
+																	#{item}
+															</foreach>
+														</if>
+														)
+								AND (t2.tags LIKE '%,3,%' OR t2.tags LIKE '%,3' OR t2.tags LIKE '3,%' OR t2.tags = 3)
+								GROUP BY t2.parent_id
+						)countTable
+				)
+		FROM t_task 
+		
+
+
+	</select>
+
 </mapper>

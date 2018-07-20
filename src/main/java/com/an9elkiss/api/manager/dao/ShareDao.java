@@ -16,4 +16,12 @@ public interface ShareDao {
 	int update(Share share);
 	
 	Share findById(@Param("shareId")Integer shareId);
+	
+	/**
+	 * 通过 一组人的id 查询该组给定月全部人的分享会的数量总和
+	 * @param searchParams->key:ids   value:人的id
+	 * 					  ->key:time  value:需要查询的月份
+	 * @return
+	 */
+	int statisticalShareByIdsAndTime(@Param("searchParams") Map<String, ?> searchParams);
 }

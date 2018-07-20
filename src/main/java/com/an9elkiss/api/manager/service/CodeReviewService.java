@@ -1,6 +1,7 @@
 package com.an9elkiss.api.manager.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.an9elkiss.api.manager.command.CodeReviewCommand;
 import com.an9elkiss.api.manager.command.CodeReviewInfoCommand;
@@ -47,4 +48,11 @@ public interface CodeReviewService {
 	 * @return
 	 */
 	ApiResponseCmd<CodeReviewCommand> updateCodeReview(CodeReviewCommand codeReviewCommand);
+	
+	/**
+	 * 根据组信息统计每组CodeReviewId信息(月为单位)
+     * @return Map-key：组名
+     * 		   Map-value：一月到当前月的CodeReviewId统计信息
+	 */
+	ApiResponseCmd<Map<String, List<Integer>>> statisticalCodeReviewByGroup(String token);
 }

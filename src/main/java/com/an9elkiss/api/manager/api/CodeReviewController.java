@@ -1,6 +1,9 @@
 package com.an9elkiss.api.manager.api;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -89,6 +92,13 @@ public class CodeReviewController implements CodeReviewApi {
 		 String jsonstring = gson.toJson(data);
 		 codeReview.setCodeReviewInfos(jsonstring);
 		 return ResponseEntity.ok(findCodeReviewsById);
+	}
+
+	@Override
+	@Access("API_CODE_REVIEW_STATISTICAL_GROUP")
+	@RequestMapping(value = "/codeReview/statistical/group", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalCodeReviewByGroup(HttpServletRequest request) {
+		return ResponseEntity.ok(codeReviewService.statisticalCodeReviewByGroup(request.getParameter("token")));
 	}
 
 }

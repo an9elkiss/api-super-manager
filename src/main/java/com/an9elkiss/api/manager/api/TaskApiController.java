@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -95,6 +97,13 @@ public class TaskApiController implements TaskApi {
 	@RequestMapping(value = "/task/parent/showTaskScore/{taskId}", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<Map<String, Object>>> showTaskSorce(@PathVariable("taskId") Integer taskId) {
 		return ResponseEntity.ok(taskService.showTaskSorce(taskId));
+	}
+
+	@Override
+	@Access("API_TASK_STATISTICAL_MAKE_BETTER")
+	@RequestMapping(value = "/task/statistical/makebetter/group", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalTaskMakeBetterByGroup(HttpServletRequest request) {
+		return ResponseEntity.ok(taskService.statisticalTaskMakeBetterByGroup(request.getParameter("token")));
 	}
 
 }

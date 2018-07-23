@@ -21,8 +21,8 @@ import com.an9elkiss.commons.auth.spring.AuthInterceptor;
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = {
-		"com.an9elkiss.api.manager.api, com.an9elkiss.api.manager.service, com.an9elkiss.commons.util.spring, com.an9elkiss.commons.auth.spring" })
+@ComponentScan(basePackages = {"com.an9elkiss.api.manager.api, com.an9elkiss.api.manager.service, com.an9elkiss.commons.util.spring, com.an9elkiss.commons.auth.spring, "
+                + "com.an9elkiss.api.manager.wechart.service, com.an9elkiss.api.manager.wechart.model" })
 @MapperScan("com.an9elkiss.api.manager.dao")
 public class SuperManagerApiBoot extends WebMvcConfigurerAdapter implements CommandLineRunner {
 

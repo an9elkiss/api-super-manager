@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ import com.an9elkiss.api.manager.util.DateTools;
 import com.an9elkiss.api.manager.util.HttpClientUtil;
 import com.an9elkiss.commons.auth.AppContext;
 import com.an9elkiss.commons.command.ApiResponseCmd;
+import com.an9elkiss.commons.command.Status;
 import com.an9elkiss.commons.util.JsonUtils;
 
 /**
@@ -155,6 +157,12 @@ public class ShareServiceImpl implements ShareService {
 		searchParams.put("start", (currentPage - 1) * size);
 		searchParams.put("size", size);
 		List<Share> shares = shareDao.findAllByPage(searchParams);
+		if(shares.isEmpty()){
+			ApiResponseCmd apiResponseCmd = new ApiResponseCmd();
+			apiResponseCmd.setCode(ApiStatus.SHARE_OPERATE_ERROR.getCode());
+			apiResponseCmd.setMessage(ApiStatus.SHARE_OPERATE_ERROR.getMessage());
+			return apiResponseCmd;
+		}
 		List<Integer> ids = new ArrayList<>();
 		List<ShareCommand> shareCommands = new ArrayList<>();
 		for (Share share : shares) {

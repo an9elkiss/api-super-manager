@@ -104,6 +104,7 @@
 		FROM t_code_review
 		WHERE
 		t_code_review.status !=21
+		AND t_code_review.total_score IS NOT NULL
 		<if test="searchParams.time!=null">
 			AND
 			DATE_FORMAT(t_code_review.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')

@@ -11,6 +11,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,9 +22,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.an9elkiss.commons.auth.spring.AuthInterceptor;
 
 
+@EnableScheduling
+@RestController
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"com.an9elkiss.api.manager.api, com.an9elkiss.api.manager.service, com.an9elkiss.commons.util.spring, com.an9elkiss.commons.auth.spring" })
+		"com.an9elkiss.api.manager.api, com.an9elkiss.api.manager.service, com.an9elkiss.api.manager.timer, com.an9elkiss.commons.util.spring, com.an9elkiss.commons.auth.spring" })
 @MapperScan("com.an9elkiss.api.manager.dao")
 public class SuperManagerApiBoot extends WebMvcConfigurerAdapter implements CommandLineRunner {
 

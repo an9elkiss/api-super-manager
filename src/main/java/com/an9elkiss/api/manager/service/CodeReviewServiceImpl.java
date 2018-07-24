@@ -219,7 +219,10 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 				numberList.add(codeReviewNumber);
 			}
 			// 将返回值map中添加当前组的codeReview的统计结果
-			map.put(groupManager.getName(), numberList);
+			UserPersonCmd userPersonCmd = new UserPersonCmd();
+			userPersonCmd.setName(groupManager.getName());
+			userPersonCmd.setUserId(groupManager.getId());
+			map.put(JsonUtils.toString(userPersonCmd), numberList);
 			numberList = new ArrayList<>();
 		}
 		return ApiResponseCmd.success(map);

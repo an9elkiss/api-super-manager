@@ -1,6 +1,7 @@
 package com.an9elkiss.api.manager.api;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -53,4 +54,5 @@ public interface FileTreeApi {
 	 * @return
 	 */
 	ResponseEntity<ApiResponseCmd<String>> uploadFile(MultipartFile multipartFile);
+	
 }

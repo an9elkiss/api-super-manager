@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.api.manager.constant.ApiStatus;
+import com.an9elkiss.api.manager.constant.GroupManager;
 import com.an9elkiss.api.manager.dao.FileTreeDao;
 import com.an9elkiss.api.manager.exception.SuperMngBizException;
 import com.an9elkiss.api.manager.model.FileTreeNode;
 import com.an9elkiss.commons.auth.AppContext;
 import com.an9elkiss.commons.command.ApiResponseCmd;
+import com.an9elkiss.commons.util.JsonUtils;
 
 @Service
 public class FileTreeServiceImpl implements FileTreeService {
@@ -247,5 +252,41 @@ public class FileTreeServiceImpl implements FileTreeService {
 
 		return ApiResponseCmd.success(fileUrl);
 	}
+
+    @Override
+    public ApiResponseCmd<Map<String, List<Integer>>> checkoutPreMonthAchievements() {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String format = dateFormat.format(date);
+        Date parse = null;
+        try{
+            parse = dateFormat.parse(format);
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        Map<String, List<Integer>> reasultMap = new HashMap<>();
+        for (GroupManager groupManager : GroupManager.values()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("memberid", groupManager.getId());
+            map.put("date", parse);
+            map.put("name", "绩效目录");
+            map.put("fileTypeDir", ApiStatus.FILE_TREE_DIRECTORY.getCode());
+            map.put("fileTypeFile", ApiStatus.FILE_TREE_FILE.getCode());
+            List<FileTreeNode> fileTreeNodes = fileTreeDao.checkoutPreMonthAchievements(map);
+            UserPersonCmd cmd = new UserPersonCmd();
+            cmd.setUserId(groupManager.getId());
+            cmd.setName(groupManager.getName());
+            if (fileTreeNodes.size() > 0) {
+                List<Integer> value = new ArrayList<>();
+                value.add(fileTreeNodes.size());
+                reasultMap.put(JsonUtils.toString(cmd), value);
+            } else {
+                List<Integer> value = new ArrayList<>();
+                value.add(fileTreeNodes.size());
+                reasultMap.put(JsonUtils.toString(cmd), value);
+            }
+        }
+        return ApiResponseCmd.success(reasultMap);
+    }
 
 }

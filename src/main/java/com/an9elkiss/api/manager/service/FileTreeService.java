@@ -1,6 +1,7 @@
 package com.an9elkiss.api.manager.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,5 +54,9 @@ public interface FileTreeService {
 	 */
 	ApiResponseCmd<String> uploadFile(MultipartFile multipartFile);
 	
+	/**
+	 * 检查每月绩效
+	 */
+	ApiResponseCmd<Map<String, List<Integer>>> checkoutPreMonthAchievements();
 	
 }

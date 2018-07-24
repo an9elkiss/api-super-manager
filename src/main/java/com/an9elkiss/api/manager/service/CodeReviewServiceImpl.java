@@ -166,6 +166,7 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 		// 解析http请求的返回结果
 		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
 		List<UserPersonCmd> parse = JsonUtils.parse(responseCmd.getData().toString(), List.class);
+		
 		// 结果中的所有的人员信息
 		List<UserPersonCmd> userPersonCmds = new ArrayList<>();
 		for (Object parse1 : parse) {

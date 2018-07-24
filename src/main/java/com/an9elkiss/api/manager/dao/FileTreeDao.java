@@ -18,4 +18,6 @@ public interface FileTreeDao {
 	FileTreeNode findFileTreeById(@Param("id") Integer id);
 	
 	int update(FileTreeNode fileTree);
+
+    List<FileTreeNode> checkoutPreMonthAchievements(@Param("searchParams") Map<String, Object> map);
 }

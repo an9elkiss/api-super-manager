@@ -7,6 +7,7 @@ public class UserPersonCmd {
 	private String level;
 	private Double percent;
 	private String name;
+	private Integer userNumber; 
 	public Integer getUserId() {
 		return userId;
 	}
@@ -37,11 +38,13 @@ public class UserPersonCmd {
 	public void setName(String name) {
 		this.name = name;
 	}
-	@Override
-	public String toString() {
-		return "UserPersonCmd [userId=" + userId + ", leadId=" + leadId + ", level=" + level + ", percent=" + percent
-				+ ", name=" + name + "]";
+	public Integer getUserNumber() {
+		return userNumber;
 	}
+	public void setUserNumber(Integer userNumber) {
+		this.userNumber = userNumber;
+	}
+	
 	
 	
 }

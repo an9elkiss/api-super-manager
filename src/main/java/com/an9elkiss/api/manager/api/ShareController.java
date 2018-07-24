@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.an9elkiss.api.manager.command.ShareCommand;
+import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.api.manager.service.ShareService;
 import com.an9elkiss.commons.auth.spring.Access;
 import com.an9elkiss.commons.command.ApiResponseCmd;

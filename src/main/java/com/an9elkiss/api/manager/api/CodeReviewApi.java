@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 
 import com.an9elkiss.api.manager.command.CodeReviewCommand;
 import com.an9elkiss.api.manager.command.CodeReviewInfoCommand;
+import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
 public interface CodeReviewApi {
@@ -54,7 +55,7 @@ public interface CodeReviewApi {
 
     /***
      * 根据组信息统计每组CodeReviewId信息(月为单位)
-     * @return Map-key：组名
+     * @return Map-key：组长信息
      * 		   Map-value：一月到当前月的CodeReviewId统计信息
      */
     ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalCodeReviewByGroup(HttpServletRequest request);

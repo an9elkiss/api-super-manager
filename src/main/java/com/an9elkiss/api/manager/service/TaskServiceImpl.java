@@ -415,18 +415,21 @@ public class TaskServiceImpl implements TaskService {
 			numberList.add(groupManager.getId());
 			searchParams.put("ids", numberList);
 			searchParams.put("tag", ApiStatus.MAKE_BETTER.getCode());
-			// 清空numberList用于下文中获取当前组每月的codeReview的数量
+			// 清空numberList用于下文中获取当前组每月的TaskMakeBetter的数量
 			numberList = new ArrayList<>();
 
-			// 计算1月到当前月每月的codeReview的数量
+			// 计算1月到当前月每月的TaskMakeBetter的数量
 			for (int i = 0; i < Calendar.getInstance().get(Calendar.MONTH) + 1; i++) {
 				searchParams.put("time",
 						DateTools.getFirstDayOfWeek(Calendar.getInstance().get(Calendar.YEAR), i + 1, 2));
 				codeReviewNumber = taskDao.statisticalTaskMakeBetterByIdsAndTime(searchParams);
 				numberList.add(codeReviewNumber);
 			}
-			// 将返回值map中添加当前组的codeReview的统计结果
-			map.put(groupManager.getName(), numberList);
+			// 将返回值map中添加当前组的TaskMakeBetter的统计结果
+			UserPersonCmd userPersonCmd = new UserPersonCmd();
+			userPersonCmd.setName(groupManager.getName());
+			userPersonCmd.setUserId(groupManager.getId());
+			map.put(JsonUtils.toString(userPersonCmd), numberList);
 			numberList = new ArrayList<>();
 		}
 		return ApiResponseCmd.success(map);

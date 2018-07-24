@@ -83,7 +83,7 @@ public interface TaskApi {
 
 	/***
      * 根据组信息统计每组持续改进任务信息(月为单位)
-     * @return Map-key：组名
+     * @return Map-key：组长信息
      * 		   Map-value：一月到当前月的每月的持续改进任务的统计数量
      */
 	ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalTaskMakeBetterByGroup(HttpServletRequest request);

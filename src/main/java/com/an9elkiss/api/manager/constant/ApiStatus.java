@@ -37,6 +37,7 @@ public enum ApiStatus implements Status {
 	FILE_TREE_ROOT(41,"根节点"),
 	FILE_TREE_DIRECTORY(42,"文件目录节点"),
 	FILE_TREE_FILE(43,"文件节点"),
+	FILE_TREE_ACHIEVEMENTS(835, "绩效目录"), // 835为数据库的id 
 	
 	// 当父任务下面的子任务贡献值加起来等于总的父任务的贡献值时，将父任务的lifecycle更新为2
 	TASK_PARENT_SUCCESS(2, "当前父任务已分配完毕"),

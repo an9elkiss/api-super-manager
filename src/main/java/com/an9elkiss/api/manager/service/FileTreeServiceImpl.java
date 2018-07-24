@@ -269,7 +269,7 @@ public class FileTreeServiceImpl implements FileTreeService {
             Map<String, Object> map = new HashMap<>();
             map.put("memberid", groupManager.getId());
             map.put("date", parse);
-            map.put("name", "绩效目录");
+            map.put("name", ApiStatus.FILE_TREE_ACHIEVEMENTS.getMessage());
             map.put("fileTypeDir", ApiStatus.FILE_TREE_DIRECTORY.getCode());
             map.put("fileTypeFile", ApiStatus.FILE_TREE_FILE.getCode());
             List<FileTreeNode> fileTreeNodes = fileTreeDao.checkoutPreMonthAchievements(map);

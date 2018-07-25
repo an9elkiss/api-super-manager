@@ -218,7 +218,7 @@ public class ScheduleTask {
 						String[] persons = { groupManager.getWechartId() };
 						String message = null;
 						// 月底
-						if (new SimpleDateFormat("dd").format(new Date()).equals("25")) {
+						if (new SimpleDateFormat("dd").format(new Date()).equals(getCurrentMonthLastDay())) {
 							if (taskName.equals("codeReview") || taskName.equals("conversation(心声)")) {
 								planNum = userPersonCmd.getUserNumber();
 							}

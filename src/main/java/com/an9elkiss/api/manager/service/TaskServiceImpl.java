@@ -387,10 +387,10 @@ public class TaskServiceImpl implements TaskService {
 		// 通过leadid查找直接下属的信息到leadMap
 		findSubordinateByLeaderid(userPersonCmds, userPersonCmdMap, leadMap);
 
-		// codeReview数量
+		// TaskMakeBetter数量
 		int codeReviewNumber = 0;
 
-		// 返回值信息：key：组长名 value：每组一月到当前月每月的codeReview的数量
+		// 返回值信息：key：组长名 value：每组一月到当前月每月的TaskMakeBetter的数量
 		Map<String, List<Integer>> map = new HashMap<>();
 
 		// 便利组的枚举类GroupManager，枚举类中为每个组的信息
@@ -405,6 +405,8 @@ public class TaskServiceImpl implements TaskService {
 			List<UserPersonCmd> list = leadMap.get(groupManager.getId());
 			// 取出组长所有下级到users
 			recursiveUserPerson(users, list, leadMap);
+			//下级人数
+			Integer number = users.size();
 			// 取出所有下级id
 			for (UserPersonCmd userPersonCmd : users) {
 				// numberList中添加当前组的人员id
@@ -429,6 +431,7 @@ public class TaskServiceImpl implements TaskService {
 			UserPersonCmd userPersonCmd = new UserPersonCmd();
 			userPersonCmd.setName(groupManager.getName());
 			userPersonCmd.setUserId(groupManager.getId());
+			userPersonCmd.setUserNumber(number);
 			map.put(JsonUtils.toString(userPersonCmd), numberList);
 			numberList = new ArrayList<>();
 		}

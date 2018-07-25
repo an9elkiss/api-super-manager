@@ -198,6 +198,8 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 			List<UserPersonCmd> list = leadMap.get(groupManager.getId());
 			// 取出组长所有下级到users
 			recursiveUserPerson(users, list, leadMap);
+			//下级人数
+			Integer number = users.size();
 			// 取出所有下级id
 			for (UserPersonCmd userPersonCmd : users) {
 				// numberList中添加当前组的人员id
@@ -222,6 +224,7 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 			UserPersonCmd userPersonCmd = new UserPersonCmd();
 			userPersonCmd.setName(groupManager.getName());
 			userPersonCmd.setUserId(groupManager.getId());
+			userPersonCmd.setUserNumber(number);
 			map.put(JsonUtils.toString(userPersonCmd), numberList);
 			numberList = new ArrayList<>();
 		}

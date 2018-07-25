@@ -38,7 +38,7 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 
 	@Value("${url.api.union.user.allpersons}")
 	private String URL_API_UNION_USER_ALLPERSONS;
-	
+
 	@Autowired
 	private CodeReviewDao codeReviewDao;
 
@@ -156,17 +156,13 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 		String str = null;
 		try {
 			str = HttpClientUtil.httpClientGet(URL, token);
-		} catch (ClientProtocolException e) {
-			LOGGER.error(" id为{}，姓名为  {} 的用户，提交查询报表时，系统发送服务器请求失败请求地址{}", AppContext.getPrincipal().getId(),
-					AppContext.getPrincipal().getName(), URL);
-		} catch (IOException e) {
-
+		} catch (Exception e) {
+			LOGGER.error("请求所有用户接口错误。{}",e);
 		}
-
 		// 解析http请求的返回结果
 		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
 		List<UserPersonCmd> parse = JsonUtils.parse(responseCmd.getData().toString(), List.class);
-		
+
 		// 结果中的所有的人员信息
 		List<UserPersonCmd> userPersonCmds = new ArrayList<>();
 		for (Object parse1 : parse) {
@@ -198,7 +194,7 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 			List<UserPersonCmd> list = leadMap.get(groupManager.getId());
 			// 取出组长所有下级到users
 			recursiveUserPerson(users, list, leadMap);
-			//下级人数
+			// 下级人数
 			Integer number = users.size();
 			// 取出所有下级id
 			for (UserPersonCmd userPersonCmd : users) {

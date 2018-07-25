@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -44,7 +42,6 @@ import com.an9elkiss.api.manager.util.DateTools;
 import com.an9elkiss.api.manager.util.HttpClientUtil;
 import com.an9elkiss.commons.auth.AppContext;
 import com.an9elkiss.commons.command.ApiResponseCmd;
-import com.an9elkiss.commons.command.Status;
 import com.an9elkiss.commons.util.JsonUtils;
 
 /**
@@ -375,13 +372,9 @@ public class ShareServiceImpl implements ShareService {
 		String str = null;
 		try {
 			str = HttpClientUtil.httpClientGet(URL, token);
-		} catch (ClientProtocolException e) {
-			LOGGER.error(" id为{}，姓名为  {} 的用户，提交查询报表时，系统发送服务器请求失败请求地址{}", AppContext.getPrincipal().getId(),
-					AppContext.getPrincipal().getName(), URL);
-		} catch (IOException e) {
-
+		} catch (Exception e) {
+			LOGGER.error("请求所有用户接口错误。{}",e);
 		}
-
 		// 解析http请求的返回结果
 		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
 		List<UserPersonCmd> parse = JsonUtils.parse(responseCmd.getData().toString(), List.class);

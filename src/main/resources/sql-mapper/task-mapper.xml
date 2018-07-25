@@ -254,102 +254,51 @@
 
 	<select id="statisticalTaskMakeBetterByIdsAndTime"
 		parameterType="java.util.Map" resultType="java.lang.Integer">
-		SELECT	DISTINCT 
-				(
-							SELECT COUNT(t.id)
-							FROM t_task t ,t_task_week tw
-							WHERE 
-							t.status != 21
-							AND t.id = tw.task_id
-							AND t.is_parent IS NULL
-							AND t.parent_id IS NULL
-							<if test="searchParams.time!=null">
-								AND
-								DATE_FORMAT(t.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
-							</if>
-							<if test="searchParams.tag!=null">
-								AND (t.tags LIKE '%,${searchParams.tag},%''%,3,%' 
-									 OR t.tags LIKE '%,${searchParams.tag}' 
-									 OR t.tags LIKE '${searchParams.tag},%' 
-									 OR t.tags = ${searchParams.tag})
-							</if>
-							<if test="searchParams.ids!=null">
-								AND tw.user_id IN
-								<foreach item="item" index="index" collection="searchParams.ids"
+	    SELECT COUNT(tt1.id)
+					  FROM t_task tt1 ,t_task_week tw1
+					  WHERE tt1.status != 21
+					  <if test="searchParams.ids!=null">
+							 AND tw1.user_id IN
+							 <foreach item="item" index="index" collection="searchParams.ids"
 									open="(" separator="," close=")">
-										#{item}
-								</foreach>
-							</if>
-				)
-				+
-				(		
-						SELECT COUNT(t1.id)
-						FROM 
-						t_task t1 
-						,t_task_week tw1
-						WHERE 
-						t1.status != 21
-						AND t1.is_parent = 1
-						AND t1.id = tw1.task_id
-						<if test="searchParams.time!=null">
-							AND
-							DATE_FORMAT(t1.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
-						</if>
-						<if test="searchParams.tag!=null">
-							AND (t1.tags LIKE '%,${searchParams.tag},%''%,3,%' 
-								 OR t1.tags LIKE '%,${searchParams.tag}' 
-								 OR t1.tags LIKE '${searchParams.tag},%' 
-								 OR t1.tags = ${searchParams.tag})
-						</if>
-						<if test="searchParams.ids!=null">
-							AND tw1.user_id IN
-							<foreach item="item" index="index" collection="searchParams.ids"
-								open="(" separator="," close=")">
 									#{item}
 							</foreach>
-						</if>
-				 )
-				 +		
-				 (		
-				 SELECT COUNT(*) 
-							FROM ( 
-						 		SELECT COUNT(t2.id)
-						 		FROM t_task t2
-								WHERE t2.parent_id IN (
-														SELECT t3.id 
-														FROM 
-														t_task t3 
-														,t_task_week tw2
-														WHERE 
-														t3.status != 21
-														AND t3.is_parent = 1
-														AND t3.id = tw2.task_id
-														<if test="searchParams.time!=null">
-															AND
-															DATE_FORMAT(t3.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
-														</if>
-														<if test="searchParams.tag!=null">
-															AND !(t3.tags LIKE '%,${searchParams.tag},%''%,3,%' 
-																 OR t3.tags LIKE '%,${searchParams.tag}' 
-																 OR t3.tags LIKE '${searchParams.tag},%' 
-																 OR t3.tags = ${searchParams.tag})
-														</if>
-														<if test="searchParams.ids!=null">
-															AND tw2.user_id IN
-															<foreach item="item" index="index" collection="searchParams.ids"
-																open="(" separator="," close=")">
-																	#{item}
-															</foreach>
-														</if>
-														)
-								AND (t2.tags LIKE '%,3,%' OR t2.tags LIKE '%,3' OR t2.tags LIKE '3,%' OR t2.tags = 3)
-								GROUP BY t2.parent_id
-						)countTable
-				)
-		FROM t_task 
-		
-
-
+				   	  </if>
+				   	  <if test="searchParams.time!=null">
+						     AND DATE_FORMAT(tt1.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+					  </if>
+					  AND tt1.id = tw1.task_id
+					  AND(
+						  	  (
+							 	  tt1.is_parent IS NULL
+							 	  AND tt1.parent_id IS NULL
+							 	  <if test="searchParams.tag!=null">
+										AND (tt1.tags LIKE '%,${searchParams.tag},%'
+											 OR tt1.tags LIKE '%,${searchParams.tag}' 
+				    						 OR tt1.tags LIKE '${searchParams.tag},%' 
+											 OR tt1.tags = ${searchParams.tag})
+								  </if>
+						  	  )
+						  	  OR
+						 	  (
+							 	  tt1.is_parent = 1
+							 	  AND 
+						          EXISTS(SELECT 1 
+							  	 		 FROM t_task tt2 
+							  	 		 ,t_task_week tw2
+							  	 		 WHERE tt2.status != 21
+										 AND tt2.id = tw2.task_id
+										 AND tt2.plan_status = tw2.current_status							  	 		 
+							  	 		 AND tt1.id = tt2.parent_id 
+							  	 		 <if test="searchParams.tag!=null">
+											AND (tt1.tags LIKE '%,${searchParams.tag},%'
+												 OR tt1.tags LIKE '%,${searchParams.tag}' 
+				    							 OR tt1.tags LIKE '${searchParams.tag},%' 
+												 OR tt1.tags = ${searchParams.tag})
+								 		 </if>
+							  	 		 )
+						  	  )
+					  	 )
 	</select>
 
 </mapper>

@@ -1,6 +1,5 @@
 package com.an9elkiss.api.manager.service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -364,11 +362,8 @@ public class TaskServiceImpl implements TaskService {
 		String str = null;
 		try {
 			str = HttpClientUtil.httpClientGet(URL, token);
-		} catch (ClientProtocolException e) {
-			LOGGER.error(" id为{}，姓名为  {} 的用户，提交查询报表时，系统发送服务器请求失败请求地址{}", AppContext.getPrincipal().getId(),
-					AppContext.getPrincipal().getName(), URL);
-		} catch (IOException e) {
-
+		} catch (Exception e) {
+			LOGGER.error("请求所有用户接口错误。{}",e);
 		}
 
 		// 解析http请求的返回结果
@@ -405,7 +400,7 @@ public class TaskServiceImpl implements TaskService {
 			List<UserPersonCmd> list = leadMap.get(groupManager.getId());
 			// 取出组长所有下级到users
 			recursiveUserPerson(users, list, leadMap);
-			//下级人数
+			// 下级人数
 			Integer number = users.size();
 			// 取出所有下级id
 			for (UserPersonCmd userPersonCmd : users) {

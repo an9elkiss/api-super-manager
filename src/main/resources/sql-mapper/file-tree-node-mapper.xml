@@ -152,33 +152,93 @@
 	
 	<select id="checkoutPreMonthAchievements" parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.model.FileTreeNode">
 		SELECT 
-		realsult.id id,
-		realsult.name name,
-		realsult.file_time fileTime,
-		realsult.parent_id parentId,
-		realsult.file_type fileType,
-
-		realsult.user_id userId,
-		realsult.user_name userName,
-		realsult.level level,
-
-		realsult.status status,
-		realsult.create_by createBy,
-		realsult.create_time createTime,
-		realsult.update_by updateBy,
-		realsult.update_time updateTime
+			realsult.id id,
+			realsult.name name,
+			realsult.file_time fileTime,
+			realsult.parent_id parentId,
+			realsult.file_type fileType,
+	
+			realsult.user_id userId,
+			realsult.user_name userName,
+			realsult.level level,
+	
+			realsult.status status,
+			realsult.create_by createBy,
+			realsult.create_time createTime,
+			realsult.update_by updateBy,
+			realsult.update_time updateTime
 		FROM t_file_tree_node realsult,
 			(
-				SELECT targetdir.* 
-				FROM t_file_tree_node targetdir,
-				(
-					SELECT treenode.id
-					FROM t_file_tree_node treenode
-					WHERE treenode.status != 21 AND treenode.file_type = #{searchParams.fileTypeDir} AND treenode.name=#{searchParams.name}
-				) parentdirid
-				WHERE targetdir.parent_id = parentdirid.id AND targetdir.status != 21 AND targetdir.name = DATE_FORMAT(#{searchParams.date},'%Y-%m') AND targetdir.file_type = #{searchParams.fileTypeDir} AND DATE_FORMAT(targetdir.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.date},'%Y-%m')
+				SELECT 
+					targetdir.* 
+				FROM 
+					t_file_tree_node targetdir,
+					(
+						SELECT 
+							treenode.id
+						FROM 
+							t_file_tree_node treenode
+						WHERE 
+							treenode.status != 21 
+							AND treenode.file_type = #{searchParams.fileTypeDir} 
+							AND treenode.name=#{searchParams.name}
+					) parentdirid
+				WHERE 
+					targetdir.parent_id = parentdirid.id 
+					AND targetdir.status != 21 
+					AND targetdir.name = DATE_FORMAT(#{searchParams.date},'%Y-%m') 
+					AND targetdir.file_type = #{searchParams.fileTypeDir} 
+					AND DATE_FORMAT(targetdir.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.date},'%Y-%m')
 			) target
-		WHERE realsult.parent_id = target.id AND realsult.file_type = #{searchParams.fileTypeFile} AND realsult.user_id=#{searchParams.memberid} AND realsult.status != 21
+		WHERE 
+			realsult.parent_id = target.id 
+			AND realsult.file_type = #{searchParams.fileTypeFile} 
+			AND realsult.user_id=#{searchParams.memberid} 
+			AND realsult.status != 21
 	</select>
+	
+	<select id="checkoutPreMonthHeartSound" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+			COUNT(*)
+		FROM 
+		(
+			SELECT 
+				realsult.user_id
+			FROM 
+				t_file_tree_node realsult,
+					(
+						SELECT 
+							targetdir.* 
+						FROM 
+							t_file_tree_node targetdir,
+								(
+									SELECT 
+										treenode.id
+									FROM 
+										t_file_tree_node treenode
+									WHERE 
+										treenode.status != 21 
+										AND treenode.file_type = #{searchParams.fileTypeDir} 
+										AND treenode.name=#{searchParams.name}
+								) parentdirid
+						WHERE 
+							targetdir.parent_id = parentdirid.id 
+							AND targetdir.status != 21 
+							AND targetdir.name = DATE_FORMAT(#{searchParams.date},'%Y-%m') 
+							AND targetdir.file_type = #{searchParams.fileTypeDir} 
+							AND DATE_FORMAT(targetdir.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.date},'%Y-%m')
+					) target
+			WHERE 
+				realsult.parent_id = target.id 
+				AND realsult.file_type = #{searchParams.fileTypeFile} AND realsult.status != 21 
+				AND realsult.user_id IN 
+					<foreach collection="searchParams.memberids" item="list" open="(" close=")" separator=",">
+				        #{list}
+				    </foreach>
+			GROUP BY 
+				realsult.user_id
+		)size
+	</select>
+
 
 </mapper>

@@ -20,4 +20,6 @@ public interface FileTreeDao {
 	int update(FileTreeNode fileTree);
 
     List<FileTreeNode> checkoutPreMonthAchievements(@Param("searchParams") Map<String, Object> map);
+
+    Integer checkoutPreMonthHeartSound(@Param("searchParams") Map<String, Object> map);
 }

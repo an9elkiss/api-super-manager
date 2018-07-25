@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.api.manager.model.FileTreeNode;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
@@ -58,5 +59,11 @@ public interface FileTreeService {
 	 * 检查每月绩效
 	 */
 	ApiResponseCmd<Map<String, List<Integer>>> checkoutPreMonthAchievements();
+	
+	/**
+	 * 检查每月心声
+	 */
+	ApiResponseCmd<Map<String, List<Integer>>> checkoutPreMonthHeartSound(String token);
+//	ApiResponseCmd<Map<Integer, List<UserPersonCmd>>> checkoutPreMonthHeartSound(String token);
 	
 }

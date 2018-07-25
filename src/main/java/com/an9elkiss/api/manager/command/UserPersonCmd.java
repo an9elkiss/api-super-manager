@@ -44,6 +44,10 @@ public class UserPersonCmd {
 	public void setUserNumber(Integer userNumber) {
 		this.userNumber = userNumber;
 	}
+    @Override
+    public String toString(){
+        return "UserPersonCmd [userId=" + userId + ", leadId=" + leadId + ", level=" + level + ", percent=" + percent + ", name=" + name + ", userNumber=" + userNumber + "]";
+    }
 	
 	
 	

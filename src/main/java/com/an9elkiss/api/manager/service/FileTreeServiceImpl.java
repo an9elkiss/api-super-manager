@@ -367,6 +367,7 @@ public class FileTreeServiceImpl implements FileTreeService{
             UserPersonCmd userPersonCmd = new UserPersonCmd();
             userPersonCmd.setName(groupManager.getName());
             userPersonCmd.setUserId(groupManager.getId());
+            userPersonCmd.setUserNumber(memberids.size());
             List<Integer> listCount = new ArrayList<Integer>();
             listCount.add(count);
             resultMap.put(JsonUtils.toString(userPersonCmd), listCount);

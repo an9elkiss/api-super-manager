@@ -6,98 +6,110 @@
 <mapper namespace="com.an9elkiss.api.manager.dao.CodeReviewDao">
 
 
-	<insert id="saveCodeReview" parameterType="com.an9elkiss.api.manager.model.CodeReview"
-		useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO `t_code_review`
-		(`user_id`, `code_review_time`, `user_label`, `codeReview_judges`,
-		`total_score`, `flag_score`, `status`, `create_by`, `create_time`,
-		`update_by`, `update_time`)
-		VALUES (#{userId}, #{codeReviewTime},
-		#{userLabel}, #{codeReviewJudges},
-		#{totalScore}, #{flagScore},
-		#{status}, #{createBy}, #{createTime},
-		#{updateBy}, #{updateTime});
+	<insert id="saveCodeReview" parameterType="com.an9elkiss.api.manager.model.CodeReview" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO `t_code_review` 
+		(`user_id`, 
+		`code_review_time`, 
+		`user_label`, 
+		`codeReview_judges`, 
+		`total_score`, 
+		`code_review_level`,
+		`flag_score`, 
+		`status`,  
+		`create_by`, 
+		`create_time`, 
+		`update_by`, 
+		`update_time`) 
+		VALUES (#{userId}, 
+		#{codeReviewTime}, 
+		#{userLabel}, 
+		#{codeReviewJudges}, 
+		#{totalScore}, 
+		#{codeReviewlevel}, 
+		#{flagScore}, 
+		#{status}, 
+		#{createBy}, 
+		#{createTime}, 
+		#{updateBy}, 
+		#{updateTime});
 	</insert>
-
-	<select id="findCodeReviewsByUserId" parameterType="Integer"
-		resultType="com.an9elkiss.api.manager.model.CodeReview">
+	
+	<select id="findCodeReviewsByUserId" parameterType="Integer" resultType="com.an9elkiss.api.manager.model.CodeReview" >
 		SELECT id id,
-		user_id userId,
-		code_review_time
-		codeReviewTime,
-		user_label userLabel,
-		codeReview_judges
-		codeReviewJudges,
-		total_score totalScore,
-		flag_score flagScore,
-		status
-		status,
-		create_by createBy,
-		create_time createTime,
-		update_by updateBy,
-		update_time updateTime
-		FROM t_code_review
-		WHERE user_id = #{userId}
-		AND
-		status!=21
+				user_id userId,
+				code_review_time codeReviewTime,
+				user_label userLabel,
+				codeReview_judges codeReviewJudges,
+				total_score totalScore,
+				code_review_level codeReviewlevel,
+				flag_score flagScore,
+				status status,
+				create_by createBy,
+				create_time createTime,
+				update_by updateBy,
+				update_time updateTime
+			FROM t_code_review 
+			WHERE user_id = #{userId}
+			AND status!=21
 	</select>
-	<select id="findCodeReviewsById" parameterType="Integer"
-		resultType="com.an9elkiss.api.manager.command.CodeReviewCommand">
+	<select id="findCodeReviewsById" parameterType="Integer" resultType="com.an9elkiss.api.manager.command.CodeReviewCommand" >
 		SELECT id id,
-		user_id userId,
-		code_review_time
-		codeReviewTime,
-		user_label userLabel,
-		codeReview_judges
-		codeReviewJudges,
-		total_score totalScore,
-		flag_score flagScore,
-		status
-		status,
-		create_by createBy,
-		create_time createTime,
-		update_by updateBy,
-		update_time updateTime
-		FROM t_code_review
-		WHERE id = #{id}
-		AND status!=21
+				user_id userId,
+				code_review_time codeReviewTime,
+				user_label userLabel,
+				codeReview_judges codeReviewJudges,
+				total_score totalScore,
+				code_review_level codeReviewlevel,
+				flag_score flagScore,
+				status status,
+				create_by createBy,
+				create_time createTime,
+				update_by updateBy,
+				update_time updateTime
+			FROM t_code_review 
+			WHERE id = #{id}
+			AND status!=21
 	</select>
-	<update id="update" parameterType="com.an9elkiss.api.manager.model.CodeReview">
-		UPDATE t_code_review
-		SET user_id = user_id
-		<if test="userId!=null">
+	  <update id="update" parameterType="com.an9elkiss.api.manager.model.CodeReview" >
+			UPDATE t_code_review 
+			SET user_id = user_id
+			<if test="userId!=null">
 			, user_id = #{userId}
-		</if>
-		<if test="codeReviewTime!=null">
+			</if>
+			<if test="codeReviewTime!=null">
 			, code_review_time = #{codeReviewTime}
-		</if>
-		<if test="userLabel!=null">
+			</if>
+			<if test="userLabel!=null">
 			, user_label = #{userLabel}
-		</if>
-		<if test="codeReviewJudges!=null">
+			</if>
+			<if test="codeReviewJudges!=null">
 			, codeReview_judges = #{codeReviewJudges}
-		</if>
-		<if test="flagScore!=null">
+			</if>
+			<if test="flagScore!=null">
 			, flag_score = #{flagScore}
-		</if>
-		<if test="totalScore!=null">
+			</if>
+			<if test="totalScore!=null">
 			, total_score = #{totalScore}
-		</if>
-		<if test="status!=null">
+			</if>
+			<if test="codeReviewlevel!=null">
+			, code_review_level = #{codeReviewlevel}
+			</if>
+			<if test="status!=null">
 			, status = #{status}
-		</if>
-		<if test="createBy!=null">
+			</if>
+			<if test="createBy!=null">
 			, create_by = #{createBy}
-		</if>
-		<if test="updateBy!=null">
+			</if>
+			<if test="updateBy!=null">
 			, update_by = #{updateBy}
-		</if>
-		<if test="updateTime!=null">
+			</if>
+			<if test="updateTime!=null">
 			, update_time = #{updateTime}
-		</if>
-		where id=#{id}
+			</if>
+			where id=#{id}
 	</update>
-
+	
 	<select id="statisticalCodeReviewByIdsAndTime" parameterType="java.util.Map"
 		resultType="java.lang.Integer">
 		SELECT COUNT(id)

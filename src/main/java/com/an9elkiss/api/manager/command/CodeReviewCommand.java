@@ -20,6 +20,9 @@ public class CodeReviewCommand {
 
 	/** 总分 */
 	private Integer totalScore;
+	
+	/** codeReview 难易程度	 */
+	private String codeReviewlevel;
 
 	/** 标记是否有评分（true，false） */
 	private Boolean flagScore;
@@ -55,6 +58,15 @@ public class CodeReviewCommand {
 
 	public void setCodeReviewTime(String codeReviewTime) {
 		this.codeReviewTime = codeReviewTime;
+	}
+
+	
+	public String getCodeReviewlevel() {
+		return codeReviewlevel;
+	}
+
+	public void setCodeReviewlevel(String codeReviewlevel) {
+		this.codeReviewlevel = codeReviewlevel;
 	}
 
 	public String getUserLabel() {

@@ -32,4 +32,13 @@ public interface CodeReviewDao {
 	 * @return
 	 */
 	int statisticalCodeReviewByIdsAndTime(@Param("searchParams") Map<String, ?> searchParams);
+	
+	/**
+	 * 
+	 * @param searchParams
+	 * searchParams.ids 小组成员id
+	 * searchParams.time 月份
+	 * @return 当月符合条件的CodeReview
+	 */
+	List<CodeReviewCommand> statisticalCodeReviewByIdsAndTimeInfo(@Param("searchParams") Map<String, ?> searchParams);
 }

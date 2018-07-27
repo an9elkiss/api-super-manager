@@ -130,4 +130,39 @@
 		</if>
 
 	</select>
+	
+	<select id="statisticalCodeReviewByIdsAndTimeInfo" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.command.CodeReviewCommand">
+		SELECT 
+				id id,
+				user_id userId,
+				code_review_time codeReviewTime,
+				user_label userLabel,
+				codeReview_judges codeReviewJudges,
+				total_score totalScore,
+				code_review_level codeReviewlevel,
+				flag_score flagScore,
+				status status,
+				create_by createBy,
+				create_time createTime,
+				update_by updateBy,
+				update_time updateTime
+		FROM t_code_review
+		WHERE
+		t_code_review.status !=21
+		AND t_code_review.total_score IS NOT NULL
+		<if test="searchParams.time!=null">
+			AND
+			DATE_FORMAT(t_code_review.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+		</if>
+		<if test="searchParams.ids!=null">
+			AND t_code_review.user_id IN
+			<foreach item="item" index="index" collection="searchParams.ids"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+
+	</select>
+	
 </mapper>

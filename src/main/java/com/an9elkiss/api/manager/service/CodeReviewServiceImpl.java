@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,24 +149,15 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 
 	@Override
 	public ApiResponseCmd<Map<String, List<Integer>>> statisticalCodeReviewByGroup(String token) {
-		// HttpClient 调用api-union-user服务取得人员信息
-		String URL = URL_API_UNION_USER_ALLPERSONS;
 		// HttpClient 返回结果
 		String str = null;
 		try {
-			str = HttpClientUtil.httpClientGet(URL, token);
+			// HttpClient 调用api-union-user服务取得人员信息
+			str = HttpClientUtil.httpClientGet(URL_API_UNION_USER_ALLPERSONS, token);
 		} catch (Exception e) {
-			LOGGER.error("请求所有用户接口错误。{}",e);
+			LOGGER.warn("请求所有用户接口错误。{}", e);
 		}
-		// 解析http请求的返回结果
-		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
-		List<UserPersonCmd> parse = JsonUtils.parse(responseCmd.getData().toString(), List.class);
-
-		// 结果中的所有的人员信息
-		List<UserPersonCmd> userPersonCmds = new ArrayList<>();
-		for (Object parse1 : parse) {
-			userPersonCmds.add(JsonUtils.parse(parse1.toString(), UserPersonCmd.class));
-		}
+		List<UserPersonCmd> userPersonCmds = stringToObject(str);
 
 		Map<Integer, UserPersonCmd> userPersonCmdMap = new HashMap<>();
 		// leadid为key 下属为velue
@@ -248,6 +240,98 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 				recursiveUserPerson(users, listz, leadMap);
 			}
 		}
+	}
+
+	@Override
+	public ApiResponseCmd<Map<String, List<CodeReviewCommand>>> statisticalCodeReviewByGroupInfo(String token,
+			Integer month, String groupManagerIds) {
+		ApiResponseCmd cmd = new ApiResponseCmd<>();
+		if (null == month || StringUtils.isEmpty(groupManagerIds) || StringUtils.isEmpty(token)) {
+			LOGGER.warn(" id为{}，姓名为  {} 的用户，{}", AppContext.getPrincipal().getId(), AppContext.getPrincipal().getName(),
+					ApiStatus.CODE_REVIEW_PARAMETER_NULL.getMessage());
+			cmd.setCode(ApiStatus.CODE_REVIEW_PARAMETER_NULL.getCode());
+			cmd.setMessage(ApiStatus.CODE_REVIEW_PARAMETER_NULL.getMessage());
+			return ApiResponseCmd.success();
+		}
+
+		// 解析组长们的id为数组
+		Integer[] ids = getIds(groupManagerIds);
+
+		// HttpClient 返回结果
+		String str = null;
+		try {
+			// HttpClient 调用api-union-user服务取得人员信息
+			str = HttpClientUtil.httpClientGet(URL_API_UNION_USER_ALLPERSONS, token);
+		} catch (Exception e) {
+			LOGGER.error("请求所有用户接口错误。{}", e);
+		}
+		// 解析http请求的返回结果
+		List<UserPersonCmd> userPersonCmds = stringToObject(str);
+
+		Map<Integer, UserPersonCmd> userPersonCmdMap = new HashMap<>();
+		// leadid为key 下属为velue
+		Map<Integer, List<UserPersonCmd>> leadMap = new HashMap<>();
+
+		// 通过leadid查找直接下属的信息到leadMap
+		findSubordinateByLeaderid(userPersonCmds, userPersonCmdMap, leadMap);
+
+		// 返回值信息：key：组长名 value：每组一月到当前月每月的codeReview的数量
+		Map<String, List<CodeReviewCommand>> map = new HashMap<>();
+
+		List<CodeReviewCommand> codeReviewCommands = new ArrayList<>();
+
+		for (Integer groupManagerId : ids) {
+			for (GroupManager groupManager : GroupManager.values()) {
+				if (groupManager.getId() == groupManagerId) {
+					// 取出组长第一层下级
+					List<UserPersonCmd> list = leadMap.get(groupManagerId);
+					// 组长全部下级的集合
+					List<UserPersonCmd> users = new ArrayList<>();
+					// 取出组长所有下级到users
+					recursiveUserPerson(users, list, leadMap);
+					// 用于返回值信息的value信息构造
+					List<Integer> numberList = new ArrayList<>();
+					for (UserPersonCmd userPersonCmd : users) {
+						// numberList中添加当前组的人员id
+						numberList.add(userPersonCmd.getUserId());
+					}
+					// 添加组长id
+					numberList.add(groupManagerId);
+					// 数据库查询参数构造map
+					Map<String, Object> searchParams = new HashMap<>();
+					searchParams.put("ids", numberList);
+					searchParams.put("time",
+							DateTools.getFirstDayOfWeek(Calendar.getInstance().get(Calendar.YEAR), month, 2));
+					codeReviewCommands = codeReviewDao.statisticalCodeReviewByIdsAndTimeInfo(searchParams);
+					UserPersonCmd userPersonCmd = new UserPersonCmd();
+					userPersonCmd.setName(groupManager.getName());
+					userPersonCmd.setUserId(groupManager.getId());
+					map.put(JsonUtils.toString(userPersonCmd), codeReviewCommands);
+				}
+			}
+		}
+		return ApiResponseCmd.success(map);
+	}
+
+	private List<UserPersonCmd> stringToObject(String str) {
+		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
+		List<UserPersonCmd> parse = JsonUtils.parse(responseCmd.getData().toString(), List.class);
+
+		// 结果中的所有的人员信息
+		List<UserPersonCmd> userPersonCmds = new ArrayList<>();
+		for (Object parse1 : parse) {
+			userPersonCmds.add(JsonUtils.parse(parse1.toString(), UserPersonCmd.class));
+		}
+		return userPersonCmds;
+	}
+
+	private Integer[] getIds(String groupManagerIds) {
+		String ids[] = groupManagerIds.split(",");
+		Integer array[] = new Integer[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			array[i] = Integer.parseInt(ids[i]);
+		}
+		return array;
 	}
 
 }

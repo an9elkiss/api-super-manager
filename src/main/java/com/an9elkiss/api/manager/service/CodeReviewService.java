@@ -8,6 +8,8 @@ import com.an9elkiss.api.manager.command.CodeReviewInfoCommand;
 import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
+import scala.Int;
+
 public interface CodeReviewService {
 	/***
 	 * 创建新的codeReview
@@ -53,7 +55,22 @@ public interface CodeReviewService {
 	/**
 	 * 根据组信息统计每组CodeReviewId信息(月为单位)
      * @return Map-key：组长信息
-     * 		   Map-value：一月到当前月的CodeReviewId统计信息
+     * 		   Map-value：一月到当前月的CodeReview统计信息
 	 */
 	ApiResponseCmd<Map<String, List<Integer>>> statisticalCodeReviewByGroup(String token);
+	
+	/**
+	 * 根据组信息统计每组CodeReviewId信息(月为单位)
+     * @return Map-key：组长信息
+     * 		   Map-value：一月到当前月的CodeReview统计信息
+	 */
+	
+	/**
+	 * 
+	 * @param token
+	 * @param month month 月份
+	 * @param groupManagerIds 组长ids
+	 * @return  Map-key：组长信息 Map-value：一个月的CodeReview统计信息
+	 */
+	ApiResponseCmd<Map<String, List<CodeReviewCommand>>> statisticalCodeReviewByGroupInfo(String token,Integer month, String groupManagerIds);
 }

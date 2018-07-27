@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.an9elkiss.api.manager.command.CodeReviewCommand;
 import com.an9elkiss.api.manager.command.CodeReviewInfoCommand;
-import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.api.manager.service.CodeReviewService;
 import com.an9elkiss.commons.auth.spring.Access;
 import com.an9elkiss.commons.command.ApiResponseCmd;
@@ -101,5 +100,15 @@ public class CodeReviewController implements CodeReviewApi {
 	public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalCodeReviewByGroup(HttpServletRequest request) {
 		return ResponseEntity.ok(codeReviewService.statisticalCodeReviewByGroup(request.getParameter("token")));
 	}
+
+	@Override
+	@Access("API_CODE_REVIEW_STATISTICAL_GROUP_INFO")
+	@RequestMapping(value = "/codeReview/statistical/group/info", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Map<String, List<CodeReviewCommand>>>> statisticalCodeReviewByGroupInfo(
+			HttpServletRequest request, Integer month, String groupManagerIds) {
+		return ResponseEntity.ok(codeReviewService.statisticalCodeReviewByGroupInfo(request.getParameter("token"), month, groupManagerIds));
+	}
+	
+	
 
 }

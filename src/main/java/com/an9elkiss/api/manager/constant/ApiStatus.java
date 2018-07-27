@@ -25,6 +25,10 @@ public enum ApiStatus implements Status {
 	SHARE_PARENTID_FILETYPE_ERROR(401,"所添加的文件的父节点的文件类型为文件，不允许添加"),
 	SHARE_OPERATE_ERROR(401,"无需要操作的文件"),
 	
+	
+	CODE_REVIEW_PARAMETER_NULL(401, "提交的参数为空"),
+	
+	
 	//文件树
 	FILE_TREE_DELETE(401,"该文件下存在有效文件"),
 	FILE_TREE_OBJECT_NULL(401,"提交的参数内容为空"),
@@ -45,6 +49,7 @@ public enum ApiStatus implements Status {
 	TASK_IS_PARENT(1, "当前是父任务"),
 	TASK_WEEK_SUCCESS(8, "任务已完成"),
 	TASK_WEEK_END(2, "当前任务已经被复制过了"),
+	
 	
 	// TypeMap ProjectMap
 	PROJECT_1(1,"三星"),

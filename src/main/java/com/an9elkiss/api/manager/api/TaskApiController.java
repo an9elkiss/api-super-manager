@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
+import com.an9elkiss.api.manager.command.TaskViewCommand;
 import com.an9elkiss.api.manager.constant.ApiStatus;
 import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.api.manager.service.TaskService;
@@ -104,6 +105,14 @@ public class TaskApiController implements TaskApi {
 	@RequestMapping(value = "/task/statistical/makebetter/group", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalTaskMakeBetterByGroup(HttpServletRequest request) {
 		return ResponseEntity.ok(taskService.statisticalTaskMakeBetterByGroup(request.getParameter("token")));
+	}
+	
+	@Override
+	@Access("API_TASK_STATISTICAL_MAKE_BETTER_INFO")
+	@RequestMapping(value = "/task/statistical/group/info", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Map<String, List<TaskViewCommand>>>> statisticalTaskMakeBetterByGroupInfo(
+			HttpServletRequest request, Integer month, String groupManagerIds) {
+		return ResponseEntity.ok(taskService.statisticalTaskMakeBetterByGroupInfo(request.getParameter("token"), month, groupManagerIds));
 	}
 
 }

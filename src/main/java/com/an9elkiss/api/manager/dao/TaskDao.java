@@ -26,10 +26,18 @@ public interface TaskDao {
 	List<Task> findByParams(@Param("searchParams") Map<String, ?> searchParams);
 	
 	/**
-	 * 通过 一组人的id 查询改组key:time月全部人的CodeReview数量总和
+	 * 通过 一组人的id 查询改组key:time月全部人的持续改进任务 的数量总和
 	 * @param searchParams->key:ids   value:人的id
 	 * 					  ->key:time  value:需要查询的月份
 	 * @return
 	 */
 	int statisticalTaskMakeBetterByIdsAndTime(@Param("searchParams") Map<String, ?> searchParams);
+	
+	/**
+	 * 通过 一组人的id 查询改组key:time月全部人的持续改进任务 详情
+	 * @param searchParams->key:ids   value:人的id
+	 * 					  ->key:time  value:需要查询的月份
+	 * @return
+	 */
+	List<TaskViewCommand> findstatisticalTaskMakeBetterByIdsAndTime(@Param("searchParams") Map<String, ?> searchParams);
 }

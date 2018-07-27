@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
-import com.an9elkiss.api.manager.command.UserPersonCmd;
+import com.an9elkiss.api.manager.command.TaskViewCommand;
 import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
@@ -91,4 +91,16 @@ public interface TaskService {
 	 */
 	ApiResponseCmd<Map<String, List<Integer>>> statisticalTaskMakeBetterByGroup(String token);
 
+	/**
+	 * 
+	 * @param token
+	 * @param month
+	 *            month 月份
+	 * @param groupManagerIds
+	 *            组长ids
+	 * @return Map-key：组长信息 Map-value：一个月的持续改进任务统计信息
+	 */
+	ApiResponseCmd<Map<String, List<TaskViewCommand>>> statisticalTaskMakeBetterByGroupInfo(String token, Integer month,
+			String groupManagerIds);
+	
 }

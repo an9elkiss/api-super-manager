@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 
 import com.an9elkiss.api.manager.command.TaskCommand;
 import com.an9elkiss.api.manager.command.TaskResultCommand;
+import com.an9elkiss.api.manager.command.TaskViewCommand;
 import com.an9elkiss.api.manager.model.Task;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
@@ -82,10 +83,21 @@ public interface TaskApi {
 	ResponseEntity<ApiResponseCmd<Map<String, Object>>> showTaskSorce(Integer taskId);
 
 	/***
-     * 根据组信息统计每组持续改进任务信息(月为单位)
-     * @return Map-key：组长信息
-     * 		   Map-value：一月到当前月的每月的持续改进任务的统计数量
-     */
-	ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalTaskMakeBetterByGroup(HttpServletRequest request);
+	 * 根据组信息统计每组持续改进任务信息(月为单位)
+	 * 
+	 * @return Map-key：组长信息 Map-value：一月到当前月的每月的持续改进任务的统计数量
+	 */
+	ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalTaskMakeBetterByGroup(
+			HttpServletRequest request);
+
+	/**
+	 * 
+	 * @param request token
+	 * @param month month 月份
+	 * @param groupManagerIds 组长ids
+	 * @return  Map-key：组长信息 Map-value：一个月的持续改进任务统计信息详情
+	 */
+	ResponseEntity<ApiResponseCmd<Map<String, List<TaskViewCommand>>>> statisticalTaskMakeBetterByGroupInfo(
+			HttpServletRequest request, Integer month, String groupManagerIds);
 
 }

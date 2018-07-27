@@ -133,6 +133,7 @@
 		<if test="searchParams.parentId!=null">
 			and parent_id = #{searchParams.parentId}
 		</if>
+			
 
 	</select>
 
@@ -178,15 +179,27 @@
 		WHERE
 		task.id = wek.task_id
 		and task.is_parent is null
-		and
-		wek.end_time <![CDATA[>=]]>
-		DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
-		and wek.end_time <![CDATA[<=]]>
-		DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
-		and wek.user_id =
-		#{searchParams.memberId}
+		<if test="searchParams.startDate!=null">		
+			and wek.end_time <![CDATA[>=]]>
+			DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
+		</if>
+		<if test="searchParams.endDate!=null">	
+			and wek.end_time <![CDATA[<=]]>
+			DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
+		</if>
+		<if test="searchParams.memberId!=null">	
+			and wek.user_id =
+			#{searchParams.memberId}
+		</if>
 		AND wek.status != 21
 		and task.status != 21
+		<if test="searchParams.parentTaskIds!=null">
+			and task.parent_id in
+			<foreach item="item" index="index" collection="searchParams.ids"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>	
 		order by wek.user_id
 	</select>
 
@@ -255,6 +268,83 @@
 	<select id="statisticalTaskMakeBetterByIdsAndTime"
 		parameterType="java.util.Map" resultType="java.lang.Integer">
 	    SELECT COUNT(tt1.id)
+					  FROM t_task tt1 ,t_task_week tw1
+					  WHERE tt1.status != 21
+					  <if test="searchParams.ids!=null">
+							 AND tw1.user_id IN
+							 <foreach item="item" index="index" collection="searchParams.ids"
+									open="(" separator="," close=")">
+									#{item}
+							</foreach>
+				   	  </if>
+				   	  <if test="searchParams.time!=null">
+						     AND DATE_FORMAT(tt1.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+					  </if>
+					  AND tt1.id = tw1.task_id
+					  AND(
+						  	  (
+							 	  tt1.is_parent IS NULL
+							 	  AND tt1.parent_id IS NULL
+							 	  <if test="searchParams.tag!=null">
+										AND (tt1.tags LIKE '%,${searchParams.tag},%'
+											 OR tt1.tags LIKE '%,${searchParams.tag}' 
+				    						 OR tt1.tags LIKE '${searchParams.tag},%' 
+											 OR tt1.tags = ${searchParams.tag})
+								  </if>
+						  	  )
+						  	  OR
+						 	  (
+							 	  tt1.is_parent = 1
+							 	  AND 
+						          EXISTS(SELECT 1 
+							  	 		 FROM t_task tt2 
+							  	 		 ,t_task_week tw2
+							  	 		 WHERE tt2.status != 21
+										 AND tt2.id = tw2.task_id
+										 AND tt2.plan_status = tw2.current_status							  	 		 
+							  	 		 AND tt1.id = tt2.parent_id 
+							  	 		 <if test="searchParams.tag!=null">
+											AND (tt1.tags LIKE '%,${searchParams.tag},%'
+												 OR tt1.tags LIKE '%,${searchParams.tag}' 
+				    							 OR tt1.tags LIKE '${searchParams.tag},%' 
+												 OR tt1.tags = ${searchParams.tag})
+								 		 </if>
+							  	 		 )
+						  	  )
+					  	 )
+	</select>
+
+
+<select id="findstatisticalTaskMakeBetterByIdsAndTime"
+		parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.command.TaskViewCommand">
+	    SELECT 
+		    tw1.id taskWeekId,
+			tt1.id taskId,
+			tt1.CODE CODE,
+			tt1.title title,
+			tt1.parent_id parentId,
+			tt1.is_parent isParent,
+			tt1.project project,
+			tt1.tags tags,
+			tt1.description description,
+			tt1.plan_score planScore,
+			tw1.actual_score actualScore,
+			tt1.plan_status planStatus,
+			tw1.current_status currentStatus,
+			DATE_FORMAT(tw1.end_time,'%Y-%m-%d') endTime,
+			tt1.plan_hours planHours,
+			tw1.actual_hours actualHours,
+			tw1.user_id userId,
+			tw1.YEAR YEAR,
+			tw1.WEEK WEEK,
+			tw1.MONTH MONTH,
+			tw1.create_by createBy,
+			tw1.create_time createTime,
+			tw1.update_by updateBy,
+			tw1.update_time updateTime,
+			tw1.user_name userName,
+			tt1.percent_hours percentHours,
+			tw1.level
 					  FROM t_task tt1 ,t_task_week tw1
 					  WHERE tt1.status != 21
 					  <if test="searchParams.ids!=null">

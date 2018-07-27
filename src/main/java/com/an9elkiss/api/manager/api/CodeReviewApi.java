@@ -71,7 +71,7 @@ public interface CodeReviewApi {
 	 * @param request token
 	 * @param month month 月份
 	 * @param groupManagerIds 组长ids
-	 * @return  Map-key：组长信息 Map-value：一个月的CodeReview统计信息
+	 * @return  Map-key：组长信息 Map-value：一个月的CodeReview统计信息详情
 	 */
 	ResponseEntity<ApiResponseCmd<Map<String, List<CodeReviewCommand>>>> statisticalCodeReviewByGroupInfo(
 			HttpServletRequest request,Integer month,String groupManagerIds);

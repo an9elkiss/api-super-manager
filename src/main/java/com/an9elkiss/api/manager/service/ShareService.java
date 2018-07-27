@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.an9elkiss.api.manager.command.ShareCommand;
-import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 
 public interface ShareService {
@@ -59,5 +58,15 @@ public interface ShareService {
 	 */
 	ApiResponseCmd<Map<String, List<Integer>>> statisticalShareByGroup(String token);
 	
-	
+	/**
+	 * 
+	 * @param token
+	 * @param month
+	 *            month 月份
+	 * @param groupManagerIds
+	 *            组长ids
+	 * @return Map-key：组长信息 Map-value：一个月的CodeReview统计信息
+	 */
+	ApiResponseCmd<Map<String, List<ShareCommand>>> statisticalShareByGroupInfo(String token, Integer month,
+			String groupManagerIds);
 }

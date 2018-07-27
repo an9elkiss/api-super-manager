@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.an9elkiss.api.manager.command.ShareCommand;
-import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.api.manager.service.ShareService;
 import com.an9elkiss.commons.auth.spring.Access;
 import com.an9elkiss.commons.command.ApiResponseCmd;
@@ -85,6 +84,14 @@ public class ShareController implements ShareApi {
 	@RequestMapping(value = "/share/statistical/group", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalShareByGroup(HttpServletRequest request) {
 		return ResponseEntity.ok(shareService.statisticalShareByGroup(request.getParameter("token")));
+	}
+
+	@Override
+	@Access("API_SHARE_STATISTICAL_GROUP_INFO")
+	@RequestMapping(value = "/share/statistical/group/info", produces = { "application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ApiResponseCmd<Map<String, List<ShareCommand>>>> statisticalShareByGroupInfo(
+			HttpServletRequest request, Integer month, String groupManagerIds) {
+		return ResponseEntity.ok(shareService.statisticalShareByGroupInfo(request.getParameter("token"), month, groupManagerIds));
 	}
 
 }

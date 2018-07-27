@@ -248,14 +248,11 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 		ApiResponseCmd cmd = new ApiResponseCmd<>();
 		if (null == month || StringUtils.isEmpty(groupManagerIds) || StringUtils.isEmpty(token)) {
 			LOGGER.warn(" id为{}，姓名为  {} 的用户，{}", AppContext.getPrincipal().getId(), AppContext.getPrincipal().getName(),
-					ApiStatus.CODE_REVIEW_PARAMETER_NULL.getMessage());
-			cmd.setCode(ApiStatus.CODE_REVIEW_PARAMETER_NULL.getCode());
-			cmd.setMessage(ApiStatus.CODE_REVIEW_PARAMETER_NULL.getMessage());
-			return ApiResponseCmd.success();
+					ApiStatus.PARAMETER_NULL.getMessage());
+			cmd.setCode(ApiStatus.PARAMETER_NULL.getCode());
+			cmd.setMessage(ApiStatus.PARAMETER_NULL.getMessage());
+			return cmd;
 		}
-
-		// 解析组长们的id为数组
-		Integer[] ids = getIds(groupManagerIds);
 
 		// HttpClient 返回结果
 		String str = null;
@@ -263,7 +260,19 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 			// HttpClient 调用api-union-user服务取得人员信息
 			str = HttpClientUtil.httpClientGet(URL_API_UNION_USER_ALLPERSONS, token);
 		} catch (Exception e) {
-			LOGGER.error("请求所有用户接口错误。{}", e);
+			cmd.setCode(ApiStatus.REQUEST_USERAPI_ERROR.getCode());
+			cmd.setMessage(ApiStatus.REQUEST_USERAPI_ERROR.getMessage());
+			LOGGER.warn("id为{}，姓名为  {} 的用户{}。Exception:{}", AppContext.getPrincipal().getId(),
+					AppContext.getPrincipal().getName(), ApiStatus.REQUEST_USERAPI_ERROR.getMessage(), e);
+			return cmd;
+		}
+
+		if (StringUtils.isEmpty(str)) {
+			cmd.setCode(ApiStatus.REQUEST_USERAPI_NULL.getCode());
+			cmd.setMessage(ApiStatus.REQUEST_USERAPI_NULL.getMessage());
+			LOGGER.warn("id为{}，姓名为  {} 的用户{}。", AppContext.getPrincipal().getId(), AppContext.getPrincipal().getName(),
+					ApiStatus.REQUEST_USERAPI_NULL.getMessage());
+			return cmd;
 		}
 		// 解析http请求的返回结果
 		List<UserPersonCmd> userPersonCmds = stringToObject(str);
@@ -275,11 +284,14 @@ public class CodeReviewServiceImpl implements CodeReviewService {
 		// 通过leadid查找直接下属的信息到leadMap
 		findSubordinateByLeaderid(userPersonCmds, userPersonCmdMap, leadMap);
 
-		// 返回值信息：key：组长名 value：每组一月到当前月每月的codeReview的数量
+		// 返回值信息：key：组长名 value：每组当一个月的codeReview详情
 		Map<String, List<CodeReviewCommand>> map = new HashMap<>();
 
 		List<CodeReviewCommand> codeReviewCommands = new ArrayList<>();
 
+		// 解析组长们的id为数组
+		Integer[] ids = getIds(groupManagerIds);
+		
 		for (Integer groupManagerId : ids) {
 			for (GroupManager groupManager : GroupManager.values()) {
 				if (groupManager.getId() == groupManagerId) {

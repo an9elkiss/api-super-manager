@@ -11,6 +11,10 @@ public enum ApiStatus implements Status {
 	//持续改进
 	MAKE_BETTER(3,"持续改进"),
 	
+	//通用消息
+	PARAMETER_NULL(401, "提交的参数为空"),
+	REQUEST_USERAPI_ERROR(401, "请求失败"),
+	REQUEST_USERAPI_NULL(401, "无数据"),
 	
 	//分享会点赞
 	SHARE_PRAISE_TURE(301,"已经点过赞了"),
@@ -24,10 +28,6 @@ public enum ApiStatus implements Status {
 	SHARE_PARENTID_DB_NULL(401,"提交新建的节点id的父级节点id节点无信息"),
 	SHARE_PARENTID_FILETYPE_ERROR(401,"所添加的文件的父节点的文件类型为文件，不允许添加"),
 	SHARE_OPERATE_ERROR(401,"无需要操作的文件"),
-	
-	
-	CODE_REVIEW_PARAMETER_NULL(401, "提交的参数为空"),
-	
 	
 	//文件树
 	FILE_TREE_DELETE(401,"该文件下存在有效文件"),

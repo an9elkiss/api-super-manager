@@ -24,4 +24,6 @@ public interface ShareDao {
 	 * @return
 	 */
 	int statisticalShareByIdsAndTime(@Param("searchParams") Map<String, ?> searchParams);
+	
+	List<Share> findBySearchParams(@Param("searchParams") Map<String, ?> searchParams);
 }

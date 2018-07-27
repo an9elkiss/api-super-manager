@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -57,7 +58,7 @@ public class ShareServiceImpl implements ShareService {
 
 	@Value("${url.api.union.user.allpersons}")
 	private String URL_API_UNION_USER_ALLPERSONS;
-	
+
 	@Autowired
 	private ShareDao shareDao;
 
@@ -154,7 +155,7 @@ public class ShareServiceImpl implements ShareService {
 		searchParams.put("start", (currentPage - 1) * size);
 		searchParams.put("size", size);
 		List<Share> shares = shareDao.findAllByPage(searchParams);
-		if(shares.isEmpty()){
+		if (shares.isEmpty()) {
 			ApiResponseCmd apiResponseCmd = new ApiResponseCmd();
 			apiResponseCmd.setCode(ApiStatus.SHARE_OPERATE_ERROR.getCode());
 			apiResponseCmd.setMessage(ApiStatus.SHARE_OPERATE_ERROR.getMessage());
@@ -373,7 +374,7 @@ public class ShareServiceImpl implements ShareService {
 		try {
 			str = HttpClientUtil.httpClientGet(URL, token);
 		} catch (Exception e) {
-			LOGGER.error("请求所有用户接口错误。{}",e);
+			LOGGER.error("请求所有用户接口错误。{}", e);
 		}
 		// 解析http请求的返回结果
 		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
@@ -464,4 +465,145 @@ public class ShareServiceImpl implements ShareService {
 		}
 	}
 
+	@Override
+	public ApiResponseCmd<Map<String, List<ShareCommand>>> statisticalShareByGroupInfo(String token, Integer month,
+			String groupManagerIds) {
+		ApiResponseCmd cmd = new ApiResponseCmd<>();
+		if (null == month || StringUtils.isEmpty(groupManagerIds) || StringUtils.isEmpty(token)) {
+			LOGGER.warn(" id为{}，姓名为  {} 的用户，{}", AppContext.getPrincipal().getId(), AppContext.getPrincipal().getName(),
+					ApiStatus.PARAMETER_NULL.getMessage());
+			cmd.setCode(ApiStatus.PARAMETER_NULL.getCode());
+			cmd.setMessage(ApiStatus.PARAMETER_NULL.getMessage());
+			return cmd;
+		}
+
+		// HttpClient 返回结果
+		String str = null;
+		try {
+			// HttpClient 调用api-union-user服务取得人员信息
+			str = HttpClientUtil.httpClientGet(URL_API_UNION_USER_ALLPERSONS, token);
+		} catch (Exception e) {
+			cmd.setCode(ApiStatus.REQUEST_USERAPI_ERROR.getCode());
+			cmd.setMessage(ApiStatus.REQUEST_USERAPI_ERROR.getMessage());
+			LOGGER.warn("id为{}，姓名为  {} 的用户{}。Exception:{}", AppContext.getPrincipal().getId(),
+					AppContext.getPrincipal().getName(), ApiStatus.REQUEST_USERAPI_ERROR.getMessage(), e);
+			return cmd;
+		}
+
+		if (StringUtils.isEmpty(str)) {
+			cmd.setCode(ApiStatus.REQUEST_USERAPI_NULL.getCode());
+			cmd.setMessage(ApiStatus.REQUEST_USERAPI_NULL.getMessage());
+			LOGGER.warn("id为{}，姓名为  {} 的用户{}。", AppContext.getPrincipal().getId(), AppContext.getPrincipal().getName(),
+					ApiStatus.REQUEST_USERAPI_NULL.getMessage());
+			return cmd;
+		}
+		// 解析http请求的返回结果
+		List<UserPersonCmd> userPersonCmds = stringToObject(str);
+
+		Map<Integer, UserPersonCmd> userPersonCmdMap = new HashMap<>();
+		// leadid为key 下属为velue
+		Map<Integer, List<UserPersonCmd>> leadMap = new HashMap<>();
+
+		// 通过leadid查找直接下属的信息到leadMap
+		findSubordinateByLeaderid(userPersonCmds, userPersonCmdMap, leadMap);
+
+		// 返回值信息：key：组长名 value：每组一个月的Share详情
+		Map<String, List<ShareCommand>> map = new HashMap<>();
+
+		// 解析组长们的id为数组
+		Integer[] ids = getIds(groupManagerIds);
+		
+		for (Integer groupManagerId : ids) {
+			for (GroupManager groupManager : GroupManager.values()) {
+				List<ShareCommand> shareCommands = new ArrayList<>();
+				if (groupManager.getId() == groupManagerId) {
+					// 取出组长第一层下级
+					List<UserPersonCmd> list = leadMap.get(groupManagerId);
+					// 组长全部下级的集合
+					List<UserPersonCmd> users = new ArrayList<>();
+					// 取出组长所有下级到users
+					recursiveUserPerson(users, list, leadMap);
+					// 用于返回值信息的value信息构造
+					List<Integer> numberList = new ArrayList<>();
+					for (UserPersonCmd userPersonCmd : users) {
+						// numberList中添加当前组的人员id
+						numberList.add(userPersonCmd.getUserId());
+					}
+					// 添加组长id
+					numberList.add(groupManagerId);
+					// 数据库查询参数构造map
+					Map<String, Object> searchParams = new HashMap<>();
+					searchParams.put("ids", numberList);
+					searchParams.put("time",
+							DateTools.getFirstDayOfWeek(Calendar.getInstance().get(Calendar.YEAR), month, 2));
+					List<Share> shares = shareDao.findBySearchParams(searchParams);
+					List<Integer> shareIds = new ArrayList<>();
+
+					// 将分享会的点赞数、平均分、评论数封装到shareCommands
+					getShareCommentPraiseScore(shareCommands, shares, shareIds);
+					UserPersonCmd userPersonCmd = new UserPersonCmd();
+					userPersonCmd.setName(groupManager.getName());
+					userPersonCmd.setUserId(groupManager.getId());
+					map.put(JsonUtils.toString(userPersonCmd), shareCommands);
+				}
+			}
+		}
+		return ApiResponseCmd.success(map);
+	}
+
+	private void getShareCommentPraiseScore(List<ShareCommand> shareCommands, List<Share> shares,
+			List<Integer> shareIds) {
+		for (Share share : shares) {
+			ShareCommand command = new ShareCommand();
+			BeanUtils.copyProperties(share, command);
+			shareCommands.add(command);
+
+			shareIds.add(share.getId());
+		}
+
+		if (!shareIds.isEmpty()) {
+			Map<String, Object> searchParams = new HashMap<>();
+			searchParams.put("ids", shareIds);
+			// 评论数
+			List<ShareCommentCommand> shareCommentCommands = shareCommentDao.findByIds(searchParams);
+			// 点赞数、平均分
+			List<SharePraiseScoreCommand> sharePraiseScoreCommands = sharePraiseScoreDao.findByIds(searchParams);
+			for (ShareCommand shareCommand : shareCommands) {
+				// 评论数
+				for (ShareCommentCommand shareCommentCommand : shareCommentCommands) {
+					if (shareCommentCommand.getShareId().equals(shareCommand.getId())) {
+						shareCommand.setCommentNum(shareCommentCommand.getCommentNum());
+					}
+				}
+				// 评论分数、点赞数
+				for (SharePraiseScoreCommand sharePraiseScoreCommand : sharePraiseScoreCommands) {
+					if (sharePraiseScoreCommand.getShareId().equals(shareCommand.getId())) {
+						shareCommand.setAverage(sharePraiseScoreCommand.getAverage());
+						shareCommand.setPraiseNum(sharePraiseScoreCommand.getPraiseNum());
+					}
+				}
+			}
+		}
+	}
+
+	private List<UserPersonCmd> stringToObject(String str) {
+		ApiResponseCmd<List<UserPersonCmd>> responseCmd = JsonUtils.parse(str, ApiResponseCmd.class);
+		List<UserPersonCmd> parse = JsonUtils.parse(responseCmd.getData().toString(), List.class);
+
+		// 结果中的所有的人员信息
+		List<UserPersonCmd> userPersonCmds = new ArrayList<>();
+		for (Object parse1 : parse) {
+			userPersonCmds.add(JsonUtils.parse(parse1.toString(), UserPersonCmd.class));
+		}
+		return userPersonCmds;
+	}
+
+	private Integer[] getIds(String groupManagerIds) {
+		String ids[] = groupManagerIds.split(",");
+		Integer array[] = new Integer[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			array[i] = Integer.parseInt(ids[i]);
+		}
+		return array;
+	}
 }

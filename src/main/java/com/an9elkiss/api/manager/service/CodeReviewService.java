@@ -5,72 +5,80 @@ import java.util.Map;
 
 import com.an9elkiss.api.manager.command.CodeReviewCommand;
 import com.an9elkiss.api.manager.command.CodeReviewInfoCommand;
-import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.commons.command.ApiResponseCmd;
-
-import scala.Int;
 
 public interface CodeReviewService {
 	/***
 	 * 创建新的codeReview
+	 * 
 	 * @param codeReviewCommand
 	 * @return
 	 */
 	ApiResponseCmd<CodeReviewCommand> createCodeReviewInfo(CodeReviewCommand codeReviewCommand);
-	
+
 	/***
 	 * 根据当前选中的用户id去查询所有的codeReview
-	 * @param userId 用户id
+	 * 
+	 * @param userId
+	 *            用户id
 	 * @return
 	 */
 	ApiResponseCmd<List<CodeReviewCommand>> findCodeReviewsByUserId(Integer userId);
-	
+
 	/***
 	 * 根据id去查询codeReview
+	 * 
 	 * @param id
 	 * @return
 	 */
 	ApiResponseCmd<CodeReviewCommand> findCodeReviewsById(Integer id);
+
 	/***
 	 * 根据当前选中的codeReviewid去查询所有的codeReview详细信息
-	 * @param codeReviewId 
+	 * 
+	 * @param codeReviewId
 	 * @return
 	 */
 	ApiResponseCmd<List<CodeReviewInfoCommand>> findCodeReviewInfosByCodeReviewId(Integer codeReviewId);
-	
+
 	/***
 	 * 根据codeReviewId逻辑删除两个表的数据
+	 * 
 	 * @param codeReviewId
 	 * @return
 	 */
 	ApiResponseCmd<Integer> deleteCodeReview(Integer codeReviewId);
-	
+
 	/***
 	 * 根据codeReviewInfo的id修改详细信息
+	 * 
 	 * @param codeReviewCommand
 	 * @return
 	 */
 	ApiResponseCmd<CodeReviewCommand> updateCodeReview(CodeReviewCommand codeReviewCommand);
-	
+
 	/**
 	 * 根据组信息统计每组CodeReviewId信息(月为单位)
-     * @return Map-key：组长信息
-     * 		   Map-value：一月到当前月的CodeReview统计信息
+	 * 
+	 * @return Map-key：组长信息 Map-value：一月到当前月的CodeReview统计信息
 	 */
 	ApiResponseCmd<Map<String, List<Integer>>> statisticalCodeReviewByGroup(String token);
-	
+
 	/**
 	 * 根据组信息统计每组CodeReviewId信息(月为单位)
-     * @return Map-key：组长信息
-     * 		   Map-value：一月到当前月的CodeReview统计信息
+	 * 
+	 * @return Map-key：组长信息 Map-value：一月到当前月的CodeReview统计信息
 	 */
-	
+
 	/**
 	 * 
 	 * @param token
-	 * @param month month 月份
-	 * @param groupManagerIds 组长ids
-	 * @return  Map-key：组长信息 Map-value：一个月的CodeReview统计信息
+	 * @param month
+	 *            month 月份
+	 * @param groupManagerIds
+	 *            组长ids
+	 * @return Map-key：组长信息 Map-value：一个月的CodeReview统计信息
 	 */
-	ApiResponseCmd<Map<String, List<CodeReviewCommand>>> statisticalCodeReviewByGroupInfo(String token,Integer month, String groupManagerIds);
+	ApiResponseCmd<Map<String, List<CodeReviewCommand>>> statisticalCodeReviewByGroupInfo(String token, Integer month,
+			String groupManagerIds);
 }

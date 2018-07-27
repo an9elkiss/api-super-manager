@@ -145,6 +145,45 @@
 		</if>
 
 	</select>
+	
+	<select id="findBySearchParams" parameterType="java.util.Map"
+		resultType="com.an9elkiss.api.manager.model.Share">
+		SELECT 
+		
+		id id,
+		title title,
+		description description,
+		share_label shareLabel,
+		share_time shareTime,
+		file_url fileUrl,
+
+		user_id userId,
+		user_name userName,
+		level level,
+
+		status status,
+		create_by createBy,
+		create_time createTime,
+		update_by updateBy,
+		update_time updateTime
+		
+		FROM t_share
+		WHERE
+		t_share.status !=21
+		<if test="searchParams.time!=null">
+			AND
+			DATE_FORMAT(t_share.create_time,'%Y-%m')=DATE_FORMAT(#{searchParams.time},'%Y-%m')
+		</if>
+		<if test="searchParams.ids!=null">
+			AND t_share.user_id IN
+			<foreach item="item" index="index" collection="searchParams.ids"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+
+	</select>
+	
 
 
 

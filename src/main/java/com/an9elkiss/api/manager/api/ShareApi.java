@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.an9elkiss.api.manager.command.ShareCommand;
-import com.an9elkiss.api.manager.command.UserPersonCmd;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 /**
  * 分享会api
@@ -65,4 +64,14 @@ public interface ShareApi {
      */
     ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalShareByGroup(HttpServletRequest request);
 	
+    /**
+	 * 
+	 * @param request token
+	 * @param month month 月份
+	 * @param groupManagerIds 组长ids
+	 * @return  Map-key：组长信息 Map-value：一个月的Share统计信息详情
+	 */
+	ResponseEntity<ApiResponseCmd<Map<String, List<ShareCommand>>>> statisticalShareByGroupInfo(
+			HttpServletRequest request,Integer month,String groupManagerIds);
+
 }

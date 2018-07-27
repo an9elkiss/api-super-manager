@@ -91,11 +91,14 @@
 		t_share_comment
 		group by share_id
 		HAVING status != 21
-		and share_id in 
-		<foreach item="item" index="index" collection="searchParams.ids" 
-                         open="(" separator="," close=")">
-                        #{item}
-        </foreach>
+		<if test="searchParams.ids!=null">
+			and share_id in 
+			<foreach item="item" index="index" collection="searchParams.ids" 
+	                         open="(" separator="," close=")">
+	                        #{item}
+	        </foreach>
+		</if>
+		
 	</select>
 
 	<select id="findByShareId" parameterType="java.util.Map"

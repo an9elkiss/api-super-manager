@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.an9elkiss.api.manager.dao.ProjectPlanPhaseCheckDao">
+
+
+	<insert id="saveProjectPlanPhaseCheck" parameterType="com.an9elkiss.api.manager.model.ProjectPlanPhaseCheck"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		`t_project_plan_phase_check`
+			(`plan_phase_id`,`plan_check_time`,`actual_check_time`,
+			`plan_status`,`actual_status`,`description`,`user_id`,
+			`user_name`, `lifecycle`, `create_time`,`update_time`)
+		VALUES
+			(#{planPhaseId},#{planCheckTime},#{actualCheckTime},
+			#{planStatus},#{actualStatus},#{description},#{userId},
+			#{userName},#{lifecycle},#{createTime},#{updateTime});
+	</insert>
+
+	<select id="findProjectPlanPhaseCheckById" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.ProjectPlanPhaseCheck">
+		SELECT
+			id id,
+			plan_phase_id planPhaseId,
+			plan_check_time planCheckTime,
+			actual_check_time actualCheckTime,
+			plan_status planStatus,
+			actual_status actualStatus,
+			description,
+			user_id userId,
+			user_name userName,
+			lifecycle,
+			create_time createTime,
+			update_time updateTime
+		from 
+			t_project_plan_phase_check 
+		where 
+			id = #{id}
+			and lifecycle != 21
+	</select>
+	
+	<select id="findProjectPlanPhaseChecksByProjectPlanPhaseIds" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.ProjectPlanPhaseCheck">
+		SELECT
+			id id,
+			plan_phase_id planPhaseId,
+			plan_check_time planCheckTime,
+			actual_check_time actualCheckTime,
+			plan_status planStatus,
+			actual_status actualStatus,
+			description,
+			user_id userId,
+			user_name userName,
+			lifecycle,
+			create_time createTime,
+			update_time updateTime
+		from 
+			t_project_plan_phase_check 
+		where 
+			lifecycle != 21
+			AND t_project_plan_phase_check.plan_phase_id in (
+				<foreach collection="list" item="item" index="index" separator="," >
+					#{item}
+				</foreach>
+			)
+	</select>
+	
+	<update id="updateProjectPlanPhaseCheck" parameterType="com.an9elkiss.api.manager.model.ProjectPlanPhaseCheck">
+		UPDATE 
+			t_project_plan_phase_check 
+		SET 
+			id = id
+			<if test="planCheckTime != null">
+			, plan_check_time = #{planCheckTime}
+			</if>
+			<if test="actualCheckTime != null">
+			, actual_check_time = #{actualCheckTime}
+			</if>
+			<if test="planStatus != null">
+			, plan_status = #{planStatus}
+			</if>
+			<if test="actualStatus != null">
+			, actual_status = #{actualStatus}
+			</if>
+			<if test="userId != null">
+			, user_id = #{userId}
+			</if>
+			<if test="userName != null">
+			, user_name = #{userName}
+			</if>
+			<if test="description != null">
+			, description = #{description}
+			</if>
+		where 
+			id = #{id}
+	</update>
+	
+	<update id="deleteProjectPlanPhaseCheck" parameterType="com.an9elkiss.api.manager.model.ProjectPlanPhaseCheck">
+		UPDATE 
+			t_project_plan_phase_check 
+		SET 
+			lifecycle = 21
+		where 
+			id = #{id}
+	</update>
+	
+</mapper>

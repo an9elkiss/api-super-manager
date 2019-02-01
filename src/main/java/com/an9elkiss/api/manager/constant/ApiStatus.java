@@ -4,8 +4,11 @@ import com.an9elkiss.commons.command.Status;
 
 public enum ApiStatus implements Status {
 	
+    SUCCESS(200,"成功"),
+    
 	// --生命周期----------------------------
 	NEW(1, "新建"),
+	COMPLETE(2, "完成"),
 	DELETED(21, "已删除"),
 	DO_REPEAT(401, "已经操作过了"),
 	//持续改进
@@ -50,6 +53,22 @@ public enum ApiStatus implements Status {
 	TASK_WEEK_SUCCESS(8, "任务已完成"),
 	TASK_WEEK_END(2, "当前任务已经被复制过了"),
 	
+	// 任务计划开始
+	PROJECTPLANTRACKING_SAVE_CHECK_DENY(100001,"任务计划新建时参数校验错误"),
+	PROJECTPLANTRACKING_UPDATE_CHECK_DENY(100002,"任务计划更新时参数校验错误"),
+	PROJECTPLANTRACKING_FINDBYPARAMETERS_CHECK_DENY(100003,"任务计划条件查询时参数校验错误"),
+	
+	PROJECTPLANPHASE_SAVE_CHECK_DENY(100004,"为任务计划新增计划阶段时参数校验错误"),
+	PROJECTPLANPHASE_UPDATE_CHECK_DENY(100005,"计划阶段更新时参数校验错误"),
+	PROJECTPLANPHASE_SAVE_CHECK_TIME_DENY(100006,"为任务计划新增计划阶段更新时计划时间参数校验错误"),
+	
+	PROJECTPLANPHASECHECK_SAVE_CHECK_DENY(100007,"为任务计划阶段新增阶段检查点时参数校验错误"),
+	PROJECTPLANPHASECHECK_UPDATE_CHECK_DENY(100008,"为任务计划阶段新增阶段检查点时参数校验错误"),
+	PROJECTPLANPHASECHECK_SAVE_CHECK_TIME_DENY(100009,"为任务计划阶段新增阶段检查点时计划检查时间参数校验错误"),
+	
+	PROJECTPLANPHASECHECK_PROJECTPLANTRACKING_GET_PROJECTPLANPHASES_CHECK_DENY(100010,"通过projectPlanTracking构建projectPlanPhases时，参数校验失败"),
+	PROJECTPLANPHASECHECK_PROJECTPLANTRACKING_GET_PROJECTPLANPHASES_TIME_CHECK_DENY(100011,"通过projectPlanTracking构建projectPlanPhases时，传入的时间不合法"),
+	// 任务计划结束
 	
 	// TypeMap ProjectMap
 	PROJECT_1(1,"三星"),

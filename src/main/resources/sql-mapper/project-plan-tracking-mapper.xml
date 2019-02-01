@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.an9elkiss.api.manager.dao.ProjectPlanTrackingDao">
+
+
+	<insert id="saveProjectPlanTracking" parameterType="com.an9elkiss.api.manager.model.ProjectPlanTracking"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		`t_project_plan_tracking`
+			(`name`,`project`,`project_level`,`plan_start_time`,`plan_end_time`,
+			`description`,`task_id`,`user_id`,`user_name`,`lifecycle`,`create_time`,`update_time`)
+		VALUES
+			(#{name},#{project},#{projectLevel},#{planStartTime},#{planEndTime},
+			#{description},#{taskId},#{userId},#{userName},#{lifecycle},#{createTime},#{updateTime});
+	</insert>
+
+
+	<select id="findProjectPlanTrackingById" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.ProjectPlanTracking">
+		SELECT
+			id,
+			name,
+			project,
+			project_level projectLevel,
+			plan_start_time planStartTime,
+			plan_end_time planEndTime,
+			description,
+			task_id taskId,
+			user_id userId,
+			user_name userName,
+			lifecycle,
+			create_time createTime,
+			update_time updateTime
+		from 
+			t_project_plan_tracking 
+		where 
+			id = #{id}
+			AND lifecycle != 21
+	</select>
+	
+	<update id="updateProjectPlanTracking" parameterType="com.an9elkiss.api.manager.model.ProjectPlanTracking">
+		UPDATE 
+			t_project_plan_tracking 
+		SET 
+			id = id
+			<if test="name != null">
+				, name = #{name}
+			</if>
+			<if test="project != null">
+				, project = #{project}
+			</if>
+			<if test="projectLevel != null">
+				, project_level = #{projectLevel}
+			</if>
+			<if test="planStartTime != null">
+				, plan_start_time = #{planStartTime}
+			</if>
+			<if test="planEndTime != null">
+				, plan_end_time = #{planEndTime}
+			</if>
+			<if test="description != null">
+				, description = #{description}
+			</if>
+			<if test="taskId != null">
+				, task_id = #{taskId}
+			</if>
+			<if test="userId != null">
+				, user_id = #{userId}
+			</if>
+			<if test="userName != null">
+				, user_name = #{userName}
+			</if>
+			<if test="lifecycle != null">
+				, lifecycle = #{lifecycle}
+			</if>
+		where 
+			id = #{id}
+			and lifecycle != 21
+	</update>
+	
+	<update id="deleteProjectPlanTracking" parameterType="com.an9elkiss.api.manager.model.ProjectPlanTracking">
+		UPDATE 
+			t_project_plan_tracking 
+		SET 
+			lifecycle = 21
+		where 
+			id = #{id}
+	</update>
+	
+	<select id="findProjectPlanTrackingByParameters" parameterType="com.an9elkiss.api.manager.model.ProjectPlanTracking"
+		resultType="com.an9elkiss.api.manager.model.ProjectPlanTracking">
+		SELECT
+			id,
+			name,
+			project,
+			project_level projectLevel,
+			plan_start_time planStartTime,
+			plan_end_time planEndTime,
+			description,
+			task_id taskId,
+			user_id userId,
+			user_name userName,
+			lifecycle,
+			create_time createTime,
+			update_time updateTime
+		from 
+			t_project_plan_tracking 
+		where 
+			lifecycle != 21
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				and name like CONCAT('%', #{name}, '%')
+			</if>
+			<if test="project != null">
+				and project = #{project}
+			</if>
+			<if test="planStartTime != null">
+				and plan_start_time >= #{planStartTime}
+			</if>
+			<if test="planEndTime != null">
+				and plan_start_time &lt;= #{planEndTime}
+			</if>
+			<if test="taskId != null">
+				and task_id = #{taskId}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="lifecycle != null">
+				and lifecycle = #{lifecycle}
+			</if>
+	</select>
+	
+</mapper>

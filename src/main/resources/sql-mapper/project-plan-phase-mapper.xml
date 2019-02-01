@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.an9elkiss.api.manager.dao.ProjectPlanPhaseDao">
+
+
+	<insert id="saveProjectPlanPhase" parameterType="com.an9elkiss.api.manager.model.ProjectPlanPhase"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO 
+		`t_project_plan_phase`
+			(`plan_tracking_id`,`type`,`plan_start_time`,`plan_end_time`,
+			`actual_start_time`,`actual_end_time`,`description`,`lifecycle`, 
+			`create_time`,`update_time`)
+		VALUES
+			(#{planTrackingId},#{type},#{planStartTime},#{planEndTime},
+			#{actualStartTime},#{actualEndTime},#{description},#{lifecycle},
+			#{createTime},#{updateTime});
+		
+	</insert>
+
+	<select id="findProjectPlanPhaseById" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.ProjectPlanPhase">
+		SELECT
+			id id,
+			plan_tracking_id planTrackingId,
+			type,
+			plan_start_time planStartTime,
+			plan_end_time planEndTime,
+			actual_start_time actualStartTime,
+			actual_end_time actualEndTime,
+			description,
+			lifecycle,
+			create_time createTime,
+			update_time updateTime
+		from 
+			t_project_plan_phase 
+		where 
+			id = #{id}
+			AND lifecycle != 21
+	</select>
+	
+	<select id="findProjectPlanPhasesByProjectPlanTrackingId" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.ProjectPlanPhase">
+		SELECT
+			id id,
+			plan_tracking_id planTrackingId,
+			type,
+			plan_start_time planStartTime,
+			plan_end_time planEndTime,
+			actual_start_time actualStartTime,
+			actual_end_time actualEndTime,
+			description,
+			lifecycle,
+			create_time createTime,
+			update_time updateTime
+		from 
+			t_project_plan_phase
+		where 
+			lifecycle != 21
+			AND plan_tracking_id = #{id}
+	</select>
+	
+	<update id="updateProjectPlanPhase" parameterType="com.an9elkiss.api.manager.model.ProjectPlanPhase">
+		UPDATE 
+			t_project_plan_phase 
+		SET 
+			id = id
+			<if test="type != null">
+			, type = #{type}
+			</if>
+			<if test="planStartTime != null">
+			, plan_start_time = #{planStartTime}
+			</if>
+			<if test="planEndTime != null">
+			, plan_end_time = #{planEndTime}
+			</if>
+			<if test="actualStartTime != null">
+			, actual_start_time = #{actualStartTime}
+			</if>
+			<if test="actualEndTime != null">
+			, actual_end_time = #{actualEndTime}
+			</if>
+			<if test="description != null">
+			, description = #{description}
+			</if>
+		where 
+			id = #{id}
+	</update>
+	
+	<update id="deleteProjectPlanPhase" parameterType="com.an9elkiss.api.manager.model.ProjectPlanPhase">
+		UPDATE 
+			t_project_plan_phase 
+		SET 
+			lifecycle = 21
+		where 
+			id = #{id}
+	</update>
+	
+	<select id="findProjectPlanPhasesById" parameterType="Integer"
+		resultType="com.an9elkiss.api.manager.model.ProjectPlanPhase">
+		SELECT
+			id id,
+			plan_tracking_id planTrackingId,
+			type,
+			plan_start_time planStartTime,
+			plan_end_time planEndTime,
+			actual_start_time actualStartTime,
+			actual_end_time actualEndTime,
+			description,
+			lifecycle,
+			create_time createTime,
+			update_time updateTime
+		from 
+			t_project_plan_phase
+		where 
+			lifecycle != 21
+			AND id = #{id}
+	</select>
+	
+</mapper>

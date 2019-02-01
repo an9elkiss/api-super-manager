@@ -1,8 +1,14 @@
 package com.an9elkiss.api.manager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.MultipartConfigElement;
 
 import org.mybatis.spring.annotation.MapperScan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +17,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -30,6 +37,10 @@ import com.an9elkiss.commons.auth.spring.AuthInterceptor;
 @MapperScan("com.an9elkiss.api.manager.dao")
 public class SuperManagerApiBoot extends WebMvcConfigurerAdapter implements CommandLineRunner {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    private static final String DATE_TIME_FORMATE = "yyyy-MM-dd HH:mm:ss";
+    
 	@Override
 	public void run(String... arg0) throws Exception {
 		if (arg0.length > 0 && arg0[0].equals("exitcode")) {
@@ -51,6 +62,23 @@ public class SuperManagerApiBoot extends WebMvcConfigurerAdapter implements Comm
 
 	}
 
+	@Bean
+	public Converter<String, Date> convertDateTime(){
+	    return new Converter<String, Date>(){
+	        @Override
+	        public Date convert(String source) {
+	            Date date = null;
+	            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_TIME_FORMATE);
+	            try{
+	                date = simpleDateFormat.parse(source);
+	            }catch (ParseException e){
+	                LOGGER.info("parse date failed!" + e);
+	            }
+	            return date;
+	        }
+	    };
+	}
+	
 	/**
 	 * 实现封装PUT请求的From体至Command
 	 * 

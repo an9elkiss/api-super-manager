@@ -136,7 +136,8 @@ public class ProjectPlanPhaseCheckServiceImpl implements ProjectPlanPhaseCheckSe
         }
         Date planCheckTime = projectPlanPhaseCheck.getPlanCheckTime();
 
-        if (!planCheckTime.after(projectPlanPhases.getPlanStartTime()) || !planCheckTime.before(projectPlanPhases.getPlanEndTime())){
+        
+        if (!isEffectiveDate(planCheckTime, projectPlanPhases.getPlanStartTime(), projectPlanPhases.getPlanEndTime())){
             LOGGER.info("阶段检查点的检查时间和阶段计划的计划时间不匹配");
             return false;
         }
@@ -149,6 +150,36 @@ public class ProjectPlanPhaseCheckServiceImpl implements ProjectPlanPhaseCheckSe
         return true;
     }
 
+    /**
+     * 判断当前时间是否在[startTime, endTime]区间，注意时间格式要一致
+     * 
+     * @param nowTime 当前时间
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    public boolean isEffectiveDate(Date nowTime, Date startTime, Date endTime) {
+        if (nowTime.getTime() == startTime.getTime()
+                || nowTime.getTime() == endTime.getTime()) {
+            return true;
+        }
+
+        Calendar date = Calendar.getInstance();
+        date.setTime(nowTime);
+
+        Calendar begin = Calendar.getInstance();
+        begin.setTime(startTime);
+
+        Calendar end = Calendar.getInstance();
+        end.setTime(endTime);
+
+        if (date.after(begin) && date.before(end)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     private Date getPlanCheckTime(Date planCheckTime){
         Calendar calBegin = Calendar.getInstance();
         calBegin.setTime(planCheckTime);
@@ -250,10 +281,9 @@ public class ProjectPlanPhaseCheckServiceImpl implements ProjectPlanPhaseCheckSe
         // 测试此日期是否在指定日期之后
         while (dEnd.after(calBegin.getTime())){
 
+            
             int i = calBegin.get(Calendar.DAY_OF_WEEK);
-
-            calBegin.add(Calendar.DAY_OF_MONTH, 1);
-
+            
             if (!isWeekEnd){
                 // 排除周末
                 if (i == 1 || i == 7){
@@ -262,6 +292,8 @@ public class ProjectPlanPhaseCheckServiceImpl implements ProjectPlanPhaseCheckSe
             }
 
             dateList.add(calBegin.getTime());
+            
+            calBegin.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         return dateList;

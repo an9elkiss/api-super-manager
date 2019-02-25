@@ -122,6 +122,9 @@
 			<if test="planStartTime != null">
 				and plan_start_time >= #{planStartTime}
 			</if>
+			<if test="projectLevel != null">
+				and project_level = #{projectLevel}
+			</if>
 			<if test="planEndTime != null">
 				and plan_start_time &lt;= #{planEndTime}
 			</if>
@@ -134,6 +137,7 @@
 			<if test="lifecycle != null">
 				and lifecycle = #{lifecycle}
 			</if>
+			order by id desc
 	</select>
 	
 </mapper>

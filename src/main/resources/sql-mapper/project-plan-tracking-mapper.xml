@@ -119,14 +119,11 @@
 			<if test="project != null">
 				and project = #{project}
 			</if>
-			<if test="planStartTime != null">
-				and plan_start_time >= #{planStartTime}
+			<if test="planStartTime != null and planEndTime != null">
+				and	plan_end_time >= #{planStartTime} and #{planEndTime} >= plan_start_time
 			</if>
 			<if test="projectLevel != null">
 				and project_level = #{projectLevel}
-			</if>
-			<if test="planEndTime != null">
-				and plan_start_time &lt;= #{planEndTime}
 			</if>
 			<if test="taskId != null">
 				and task_id = #{taskId}

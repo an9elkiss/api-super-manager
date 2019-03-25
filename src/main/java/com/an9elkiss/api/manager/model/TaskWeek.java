@@ -1,7 +1,5 @@
 package com.an9elkiss.api.manager.model;
 
-import java.util.Date;
-
 public class TaskWeek {
 
 	/** 周任务id */

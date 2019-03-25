@@ -21,94 +21,96 @@ import com.an9elkiss.commons.command.ApiResponseCmd;
 import com.google.gson.Gson;
 
 @Controller
-public class CodeReviewController implements CodeReviewApi {
+public class CodeReviewController implements CodeReviewApi{
 
+    @Autowired
+    private CodeReviewService codeReviewService;
 
-	@Autowired
-	private CodeReviewService codeReviewService;
-	
-	private Gson gson = new Gson();
-	/**
-	 * 创建codeReview信息接口
-	 */
-	@Override
-	@Access("API_CODE_REVIEW_CREATE")
-	@RequestMapping(value = "/codeReview", produces = { "application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<ApiResponseCmd<CodeReviewCommand>> saveCodeReviewInfo(CodeReviewCommand codeReviewCommand,
-			BindingResult result) {
-		return ResponseEntity.ok(codeReviewService.createCodeReviewInfo(codeReviewCommand));
-	}
+    private Gson gson = new Gson();
 
-	/**
-	 * 根据userId查到改用户所有的codeReview
-	 */
-	@Override
-	@Access("API_CODE_REVIEW_GET")
-	@RequestMapping(value = "/codeReview/{userId}", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ApiResponseCmd<List<CodeReviewCommand>>> findCodeReviews(@PathVariable("userId")Integer userId) {
-		return ResponseEntity.ok(codeReviewService.findCodeReviewsByUserId(userId));
-	}
+    /**
+     * 创建codeReview信息接口
+     */
+    @Override
+    @Access("API_CODE_REVIEW_CREATE")
+    @RequestMapping(value = "/codeReview",produces = { "application/json" },method = RequestMethod.POST)
+    public ResponseEntity<ApiResponseCmd<CodeReviewCommand>> saveCodeReviewInfo(CodeReviewCommand codeReviewCommand,BindingResult result){
+        return ResponseEntity.ok(codeReviewService.createCodeReviewInfo(codeReviewCommand));
+    }
 
-	/***
-	 * 根据codeReviewId查到详细的codeReview信息
-	 */
-	@Override
-	@Access("API_CODE_REVIEW_INFO_GET")
-	@RequestMapping(value = "/codeReview/codeReviewInfo/{codeReviewId}", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ApiResponseCmd<List<CodeReviewInfoCommand>>> findCodeReviewInfos(@PathVariable("codeReviewId")Integer codeReviewId) {
-		return ResponseEntity.ok(codeReviewService.findCodeReviewInfosByCodeReviewId(codeReviewId));
-	}
+    /**
+     * 根据userId查到改用户所有的codeReview
+     */
+    @Override
+    @Access("API_CODE_REVIEW_GET")
+    @RequestMapping(value = "/codeReview/{userId}",produces = { "application/json" },method = RequestMethod.GET)
+    public ResponseEntity<ApiResponseCmd<List<CodeReviewCommand>>> findCodeReviews(@PathVariable("userId") Integer userId){
+        return ResponseEntity.ok(codeReviewService.findCodeReviewsByUserId(userId));
+    }
 
-	/***
-	 * 根据codeReviewId逻辑删除所有的codereview
-	 */
-	@Override
-	@Access("API_CODE_REVIEW_DELETE")
-	@RequestMapping(value = "/codeReview/delete/{codeReviewId}", produces = { "application/json" }, method = RequestMethod.DELETE)
-	public ResponseEntity<ApiResponseCmd<Integer>> deleteCodeReviewInfos(@PathVariable("codeReviewId")Integer codeReviewId) {
-		
-		return ResponseEntity.ok(codeReviewService.deleteCodeReview(codeReviewId));
-	}
+    /***
+     * 根据codeReviewId查到详细的codeReview信息
+     */
+    @Override
+    @Access("API_CODE_REVIEW_INFO_GET")
+    @RequestMapping(value = "/codeReview/codeReviewInfo/{codeReviewId}",produces = { "application/json" },method = RequestMethod.GET)
+    public ResponseEntity<ApiResponseCmd<List<CodeReviewInfoCommand>>> findCodeReviewInfos(@PathVariable("codeReviewId") Integer codeReviewId){
+        return ResponseEntity.ok(codeReviewService.findCodeReviewInfosByCodeReviewId(codeReviewId));
+    }
 
-	/***
-	 * 修改codereview信息数据
-	 */
-	@Override
-	@Access("API_CODE_REVIEW_UPDATE")
-	@RequestMapping(value = "/codeReview/codeReviewInfo/update", produces = { "application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<ApiResponseCmd<CodeReviewCommand>> updateCodeReviewInfosByCodeReviewId(
-			CodeReviewCommand codeReviewCommand, BindingResult result) {
-		 if(null==codeReviewCommand.getId()) {
-				return  ResponseEntity.ok(null);
-			 }
-		 codeReviewService.updateCodeReview(codeReviewCommand);
-		 ApiResponseCmd<CodeReviewCommand> findCodeReviewsById = codeReviewService.findCodeReviewsById(codeReviewCommand.getId());
-		 ApiResponseCmd<List<CodeReviewInfoCommand>> findCodeReviewInfosByCodeReviewId = codeReviewService.findCodeReviewInfosByCodeReviewId(codeReviewCommand.getId());
-		 CodeReviewCommand codeReview = findCodeReviewsById.getData();
-		 List<CodeReviewInfoCommand> data = findCodeReviewInfosByCodeReviewId.getData();
-		 if(null==data||data.isEmpty()) {
-			return  ResponseEntity.ok(null);
-		 }
-		 String jsonstring = gson.toJson(data);
-		 codeReview.setCodeReviewInfos(jsonstring);
-		 return ResponseEntity.ok(findCodeReviewsById);
-	}
+    /***
+     * 根据codeReviewId逻辑删除所有的codereview
+     */
+    @Override
+    @Access("API_CODE_REVIEW_DELETE")
+    @RequestMapping(value = "/codeReview/delete/{codeReviewId}",produces = { "application/json" },method = RequestMethod.DELETE)
+    public ResponseEntity<ApiResponseCmd<Integer>> deleteCodeReviewInfos(@PathVariable("codeReviewId") Integer codeReviewId){
 
-	@Override
-	@Access("API_CODE_REVIEW_STATISTICAL_GROUP")
-	@RequestMapping(value = "/codeReview/statistical/group", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalCodeReviewByGroup(HttpServletRequest request) {
-		return ResponseEntity.ok(codeReviewService.statisticalCodeReviewByGroup(request.getParameter("token")));
-	}
+        return ResponseEntity.ok(codeReviewService.deleteCodeReview(codeReviewId));
+    }
 
-	@Override
-	@Access("API_CODE_REVIEW_STATISTICAL_GROUP_INFO")
-	@RequestMapping(value = "/codeReview/statistical/group/info", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ApiResponseCmd<Map<String, List<CodeReviewCommand>>>> statisticalCodeReviewByGroupInfo(
-			HttpServletRequest request, Integer month, String groupManagerIds) {
-		return ResponseEntity.ok(codeReviewService.statisticalCodeReviewByGroupInfo(request.getParameter("token"), month, groupManagerIds));
-	}
-	
-	
+    /***
+     * 修改codereview信息数据
+     */
+    @Override
+    @Access("API_CODE_REVIEW_UPDATE")
+    @RequestMapping(value = "/codeReview/codeReviewInfo/update",produces = { "application/json" },method = RequestMethod.POST)
+    public ResponseEntity<ApiResponseCmd<CodeReviewCommand>> updateCodeReviewInfosByCodeReviewId(CodeReviewCommand codeReviewCommand,BindingResult result){
+        if (null == codeReviewCommand.getId()){
+            return ResponseEntity.ok(null);
+        }
+        codeReviewService.updateCodeReview(codeReviewCommand);
+        ApiResponseCmd<CodeReviewCommand> findCodeReviewsById = codeReviewService.findCodeReviewsById(codeReviewCommand.getId());
+        ApiResponseCmd<List<CodeReviewInfoCommand>> findCodeReviewInfosByCodeReviewId = codeReviewService.findCodeReviewInfosByCodeReviewId(codeReviewCommand.getId());
+        CodeReviewCommand codeReview = findCodeReviewsById.getData();
+        List<CodeReviewInfoCommand> data = findCodeReviewInfosByCodeReviewId.getData();
+        if (null == data || data.isEmpty()){
+            return ResponseEntity.ok(null);
+        }
+        String jsonstring = gson.toJson(data);
+        codeReview.setCodeReviewInfos(jsonstring);
+        return ResponseEntity.ok(findCodeReviewsById);
+    }
+
+    @Override
+    @Access("API_CODE_REVIEW_STATISTICAL_GROUP")
+    @RequestMapping(value = "/codeReview/statistical/group",produces = { "application/json" },method = RequestMethod.GET)
+    public ResponseEntity<ApiResponseCmd<Map<String, List<Integer>>>> statisticalCodeReviewByGroup(HttpServletRequest request){
+        return ResponseEntity.ok(codeReviewService.statisticalCodeReviewByGroup(request.getParameter("token")));
+    }
+
+    @Override
+    @Access("API_CODE_REVIEW_STATISTICAL_GROUP_INFO")
+    @RequestMapping(value = "/codeReview/statistical/group/info",produces = { "application/json" },method = RequestMethod.GET)
+    public ResponseEntity<ApiResponseCmd<Map<String, List<CodeReviewCommand>>>> statisticalCodeReviewByGroupInfo(HttpServletRequest request,Integer month,String groupManagerIds){
+        return ResponseEntity.ok(codeReviewService.statisticalCodeReviewByGroupInfo(request.getParameter("token"), month, groupManagerIds));
+    }
+
+    @Override
+    @Access("API_CODE_REVIEW_ID_GET")
+    @RequestMapping(value = "/codeReview",produces = { "application/json" },method = RequestMethod.GET)
+    public ResponseEntity<ApiResponseCmd<CodeReviewCommand>> findCodeReview(Integer id){
+        return ResponseEntity.ok(codeReviewService.findCodeReviewsById(id));
+    }
 
 }

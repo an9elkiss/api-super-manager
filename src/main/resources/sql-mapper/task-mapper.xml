@@ -9,16 +9,17 @@
 	<insert id="save" parameterType="com.an9elkiss.api.manager.model.Task"
 		useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `t_task`
-		(`code`,
-		`title`, `project`, `tags`, `is_parent`, `parent_id`, `description`,
-		`plan_score`, `plan_status`, `plan_hours`, `status`, `create_by`,
-		`update_by`,`percent_hours`)
-		VALUES (#{code}, #{title}, #{project},
-		#{tags}, #{isParent}, #{parentId},
-		#{description}, #{planScore},
-		#{planStatus}, #{planHours}, #{status},
-		#{createBy}, #{updateBy},
-		#{percentHours});
+		(`code`,`title`, `project`, `tags`, `is_parent`,
+		`parent_id`, `description`,`plan_score`, `plan_status`, `plan_hours`, 
+		`status`, `create_by`,`update_by`,`percent_hours`,`jira_url`,
+		`plan_tracking_id`,`document_type`,`flow_chart_url`,`interface_url`,`db_design_url`,
+		`review_user_id`,`review_id`)
+		VALUES 
+		(#{code}, #{title}, #{project},#{tags}, #{isParent}, 
+		#{parentId},#{description}, #{planScore},#{planStatus}, #{planHours}, 
+		#{status},#{createBy}, #{updateBy},#{percentHours},#{jiraUrl},
+		#{planTrackingId},#{documentType},#{flowChartUrl},#{interfaceUrl},#{dbDesignUrl},
+		#{reviewUserId},#{reviewId});
 	</insert>
 
 	<update id="update" parameterType="com.an9elkiss.api.manager.model.Task">
@@ -63,7 +64,30 @@
 		<if test="percentHours!=null">
 			, percent_hours = #{percentHours}
 		</if>
-
+		<if test="jiraUrl!=null">
+			, jira_url = #{jiraUrl}
+		</if>
+		<if test="planTrackingId!=null">
+			, plan_tracking_id = #{planTrackingId}
+		</if>
+		<if test="documentType!=null">
+			, document_type = #{documentType}
+		</if>
+		<if test="flowChartUrl!=null">
+			, flow_chart_url = #{flowChartUrl}
+		</if>
+		<if test="interfaceUrl!=null">
+			, interface_url = #{interfaceUrl}
+		</if>
+		<if test="dbDesignUrl!=null">
+			, db_design_url = #{dbDesignUrl}
+		</if>
+		<if test="reviewUserId!=null">
+			, review_user_id = #{reviewUserId}
+		</if>
+		<if test="reviewId!=null">
+			, review_id = #{reviewId}
+		</if>
 		where id=#{id}
 	</update>
 
@@ -75,25 +99,34 @@
 
 	<select id="findById" parameterType="Integer"
 		resultType="com.an9elkiss.api.manager.model.Task">
-		SELECT id id,
-		CODE CODE,
-		title title,
-		project project,
-		tags
-		tags,
-		is_parent isParent,
-		parent_id parentId,
-		description description,
-		plan_score planScore,
-		plan_status planStatus,
-		plan_hours planHours,
-		status status,
-		create_by createBy,
-		create_time createTime,
-		update_by
-		updateBy,
-		update_time updateTime,
-		percent_hours percentHours
+		SELECT 
+			id id,
+			CODE CODE,
+			title title,
+			project project,
+			tags
+			tags,
+			is_parent isParent,
+			parent_id parentId,
+			description description,
+			plan_score planScore,
+			plan_status planStatus,
+			plan_hours planHours,
+			status status,
+			create_by createBy,
+			create_time createTime,
+			update_by
+			updateBy,
+			update_time updateTime,
+			percent_hours percentHours,
+			jira_url jiraUrl,
+			plan_tracking_id planTrackingId,
+			document_type documentType,
+			flow_chart_url flowChartUrl,
+			interface_url interfaceUrl,
+			db_design_url dbDesignUrl,
+			review_user_id reviewUserId,
+			review_id reviewId
 		FROM t_task
 		WHERE id = #{id}
 	</select>
@@ -117,7 +150,15 @@
 		update_by
 		updateBy,
 		update_time updateTime,
-		percent_hours percentHours
+		percent_hours percentHours,
+		jira_url jiraUrl,
+		plan_tracking_id planTrackingId,  
+		document_type documentType,
+		flow_chart_url flowChartUrl,
+		interface_url interfaceUrl, 
+		db_design_url dbDesignUrl,
+		review_user_id reviewUserId,
+		review_id reviewId
 		FROM t_task
 		WHERE 1=1
 		and status != 21
@@ -140,42 +181,44 @@
 	<select id="findTaskViewCommands" parameterType="java.util.Map"
 		resultType="com.an9elkiss.api.manager.command.TaskViewCommand">
 		SELECT
-		wek.id taskWeekId,
-		task.id taskId,
-		task.CODE CODE,
-		task.title
-		title,
-		task.parent_id parentId,
-		task.is_parent isParent,
-		task.project
-		project,
-		task.tags tags,
-		task.description description,
-		task.plan_score
-		planScore,
-		wek.actual_score actualScore,
-		task.plan_status planStatus,
-		wek.current_status currentStatus,
-		DATE_FORMAT(wek.end_time,'%Y-%m-%d')
-		endTime,
-		task.plan_hours planHours,
-		wek.actual_hours actualHours,
-		wek.user_id userId,
-		wek.YEAR YEAR,
-		wek.WEEK WEEK,
-		wek.MONTH MONTH,
-		wek.create_by createBy,
-		wek.create_time createTime,
-		wek.update_by
-		updateBy,
-		wek.update_time updateTime,
-		wek.user_name userName,
-		task.percent_hours percentHours,
-		wek.level
+			wek.id taskWeekId,
+			task.id taskId,
+			task.CODE CODE,
+			task.title title,
+			task.parent_id parentId,
+			task.is_parent isParent,
+			task.project project,
+			task.tags tags,
+			task.description description,
+			task.plan_score planScore,
+			wek.actual_score actualScore,
+			task.plan_status planStatus,
+			wek.current_status currentStatus,
+			DATE_FORMAT(wek.end_time,'%Y-%m-%d') endTime,
+			task.plan_hours planHours,
+			wek.actual_hours actualHours,
+			wek.user_id userId,
+			wek.YEAR YEAR,
+			wek.WEEK WEEK,
+			wek.MONTH MONTH,
+			wek.create_by createBy,
+			wek.create_time createTime,
+			wek.update_by updateBy,
+			wek.update_time updateTime,
+			wek.user_name userName,
+			task.percent_hours percentHours,
+			wek.level level,
+			task.jira_url jiraUrl,
+			task.plan_tracking_id planTrackingId,
+			task.document_type documentType,
+			task.flow_chart_url flowChartUrl,
+			task.interface_url interfaceUrl,
+			task.db_design_url dbDesignUrl,
+			task.review_user_id reviewUserId,
+			task.review_id reviewId
 		FROM
-		t_task task,
-		t_task_week
-		wek
+			t_task task,
+			t_task_week wek
 		WHERE
 		task.id = wek.task_id
 		and task.is_parent is null
@@ -391,4 +434,29 @@
 					  	 )
 	</select>
 
+	<select id="findTaskViewCommandByDocumentTree"
+		resultType="com.an9elkiss.api.manager.command.TaskViewCommand">
+		select
+			DISTINCT (wek.id) as taskWeekId,
+			task.title title,
+			task.project project,
+			task.tags tags,
+			task.parent_id parentId
+		from
+		 	t_task task,
+		 	t_task_week wek,
+		 	mysql.help_topic b
+		WHERE
+			b.help_topic_id &lt; ( length( task.tags ) - length( replace( task.tags, ',', '' ))+ 1 )
+			AND task.id = wek.task_id
+			AND task.is_parent is null
+			AND wek.status != 21
+			AND task.status != 21
+			<if test="listID!=null">
+			 	AND substring_index( substring_index( task.tags, ',', b.help_topic_id + 1 ), ',',- 1 ) in
+				<foreach collection="listID" item="listID" open="(" close=")" separator=",">
+			    #{listID}
+			    </foreach>
+		    </if>
+	</select>
 </mapper>

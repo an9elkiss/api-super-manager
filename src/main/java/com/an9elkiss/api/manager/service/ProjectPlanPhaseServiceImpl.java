@@ -47,7 +47,7 @@ public class ProjectPlanPhaseServiceImpl implements ProjectPlanPhaseService{
         if (!checkPlanTime(projectPlanPhase)){
             // 计划时间参数校验错误
             LOGGER.info("计划时间参数校验错误");
-            return new ApiResponseCmd<ProjectPlanPhase>(ApiStatus.PROJECTPLANPHASE_SAVE_CHECK_TIME_DENY);
+            return new ApiResponseCmd<ProjectPlanPhase>(ApiStatus.PROJECTPLANPHASE_CHECK_TIME_DENY);
         }
 
         projectPlanPhase = saveProjectPlanPhase(projectPlanPhase);
@@ -63,7 +63,7 @@ public class ProjectPlanPhaseServiceImpl implements ProjectPlanPhaseService{
         if (!checkPlanTime(projectPlanPhase)){
             // 计划时间参数校验错误
             LOGGER.info("计划时间参数校验错误");
-            return new ApiResponseCmd<ProjectPlanPhase>(ApiStatus.PROJECTPLANPHASE_SAVE_CHECK_TIME_DENY);
+            return new ApiResponseCmd<ProjectPlanPhase>(ApiStatus.PROJECTPLANPHASE_CHECK_TIME_DENY);
         }
 
         projectPlanPhaseDao.updateProjectPlanPhase(projectPlanPhase);

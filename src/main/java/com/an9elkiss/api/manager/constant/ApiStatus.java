@@ -60,7 +60,7 @@ public enum ApiStatus implements Status {
 	
 	PROJECTPLANPHASE_SAVE_CHECK_DENY(100004,"为任务计划新增计划阶段时参数校验错误"),
 	PROJECTPLANPHASE_UPDATE_CHECK_DENY(100005,"计划阶段更新时参数校验错误"),
-	PROJECTPLANPHASE_SAVE_CHECK_TIME_DENY(100006,"为任务计划新增计划阶段更新时计划时间参数校验错误"),
+	PROJECTPLANPHASE_CHECK_TIME_DENY(100006,"为任务计划新增计划阶段更新时计划时间参数校验错误"),
 	
 	PROJECTPLANPHASECHECK_SAVE_CHECK_DENY(100007,"为任务计划阶段新增阶段检查点时参数校验错误"),
 	PROJECTPLANPHASECHECK_UPDATE_CHECK_DENY(100008,"为任务计划阶段新增阶段检查点时参数校验错误"),

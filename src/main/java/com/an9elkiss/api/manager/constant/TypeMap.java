@@ -29,6 +29,8 @@ public class TypeMap {
 		map.put(ApiStatus.PROJECT_6.getCode().toString(), ApiStatus.PROJECT_6.getMessage().toString());
 		map.put(ApiStatus.PROJECT_7.getCode().toString(), ApiStatus.PROJECT_7.getMessage().toString());
 		map.put(ApiStatus.PROJECT_8.getCode().toString(), ApiStatus.PROJECT_8.getMessage().toString());
+		map.put(ApiStatus.PROJECT_9.getCode().toString(), ApiStatus.PROJECT_9.getMessage().toString());
+		map.put(ApiStatus.PROJECT_10.getCode().toString(), ApiStatus.PROJECT_10.getMessage().toString());
 		return map;
 	}
 	

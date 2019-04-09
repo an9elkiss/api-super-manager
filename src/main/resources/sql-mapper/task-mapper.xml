@@ -174,10 +174,25 @@
 		<if test="searchParams.parentId!=null">
 			and parent_id = #{searchParams.parentId}
 		</if>
-			
-
 	</select>
 
+	<select id="findParent" parameterType="java.util.Map"
+	resultType="java.util.Map">
+			SELECT 
+			id id,
+			title title,
+			project project
+			FROM t_task
+			WHERE status != 21
+			<if test="searchParams.isParent!=null">
+				and is_parent = #{searchParams.isParent}
+			</if>
+			order by update_time desc
+			<if test="searchParams.limit!=null">
+				limit #{searchParams.limit}
+			</if>
+	</select>
+	
 	<select id="findTaskViewCommands" parameterType="java.util.Map"
 		resultType="com.an9elkiss.api.manager.command.TaskViewCommand">
 		SELECT

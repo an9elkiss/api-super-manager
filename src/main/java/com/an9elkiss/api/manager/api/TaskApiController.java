@@ -61,10 +61,10 @@ public class TaskApiController implements TaskApi {
 	@Override
 	@Access("API_TASK_PARENTS")
 	@RequestMapping(value = "/task/parents", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ApiResponseCmd<List<Task>>> parentTasks() {
+	public ResponseEntity<ApiResponseCmd<List<Map<String, Object>>>> parentTasks(@RequestParam(defaultValue="50") Integer limit) {
 		Map<String, Integer> searchParams = new HashMap<>();
-//		searchParams.put("status", ApiStatus.NEW.getCode());
 		searchParams.put("isParent", ApiStatus.TASK_IS_PARENT.getCode());
+		searchParams.put("limit", limit);
 		return ResponseEntity.ok(taskService.findUsabledParentTaskByParams(searchParams));
 	}
 

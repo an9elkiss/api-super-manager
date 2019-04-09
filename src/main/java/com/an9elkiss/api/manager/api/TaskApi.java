@@ -56,7 +56,7 @@ public interface TaskApi {
 	 *            (key:status/isParent)
 	 * @return
 	 */
-	ResponseEntity<ApiResponseCmd<List<Task>>> parentTasks();
+	ResponseEntity<ApiResponseCmd<List<Map<String, Object>>>> parentTasks(Integer limit);
 
 	/**
 	 * 根据parentid查询该任务的剩余可分配资源（计划贡献值、计划工时）

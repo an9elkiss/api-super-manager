@@ -24,6 +24,8 @@ public interface TaskDao{
     Map<String, Object> findTaskParentResources(Integer id);
 
     List<Task> findByParams(@Param("searchParams") Map<String, ?> searchParams);
+    
+    List<Map<String, Object>> findParent(@Param("searchParams") Map<String, ?> searchParams);
 
     /**
      * 通过 一组人的id 查询改组key:time月全部人的持续改进任务 的数量总和

@@ -57,7 +57,7 @@ public interface TaskService {
 	 * @param searchParams(key:status/isParent)
 	 * @return
 	 */
-	ApiResponseCmd<List<Task>> findUsabledParentTaskByParams(Map<String, ?> searchParams);
+	ApiResponseCmd<List<Map<String, Object>>> findUsabledParentTaskByParams(Map<String, ?> searchParams);
 
 	/**
 	 * 根据parentid查询该任务的剩余可分配资源（计划贡献值、计划工时）

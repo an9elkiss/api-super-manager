@@ -219,8 +219,8 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public ApiResponseCmd<List<Task>> findUsabledParentTaskByParams(Map<String, ?> searchParams) {
-		return ApiResponseCmd.success(taskDao.findByParams(searchParams));
+	public ApiResponseCmd<List<Map<String, Object>>> findUsabledParentTaskByParams(Map<String, ?> searchParams) {
+		return ApiResponseCmd.success(taskDao.findParent(searchParams));
 	}
 
 	@Override

@@ -81,6 +81,8 @@ public enum ApiStatus implements Status {
 	PROJECT_8(8,"其他"),
 	PROJECT_9(9,"adobe"),
 	PROJECT_10(10,"nike团购"),
+	PROJECT_11(11,"a9"),
+	PROJECT_12(12,"鹰眼"),
 	
 	// TypeMap TagMap
 	TAG_1(1,"新功能"),

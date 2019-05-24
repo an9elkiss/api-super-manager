@@ -9,6 +9,8 @@ public class Tag{
     private String name;
     /** 是否删除 */
     private Integer status;
+    /** 是否需要归档统计 */
+    private Integer needArchive;
     
     
     public Integer getId(){
@@ -36,6 +38,16 @@ public class Tag{
     
     public void setStatus(Integer status){
         this.status = status;
+    }
+
+    
+    public Integer getNeedArchive(){
+        return needArchive;
+    }
+
+    
+    public void setNeedArchive(Integer needArchive){
+        this.needArchive = needArchive;
     }
 
     

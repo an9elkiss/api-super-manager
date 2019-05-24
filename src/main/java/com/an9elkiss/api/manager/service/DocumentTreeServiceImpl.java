@@ -28,12 +28,8 @@ public class DocumentTreeServiceImpl implements DocumentTreeService{
 
     private final Logger LOGGER = LoggerFactory.getLogger(DocumentTreeServiceImpl.class);
 
-    /**
-     * 文档树所需要展示的标签,逗号隔开
-     */
-    @Value("${documentTreeTags}")
-    private String documentTreeTags;
-
+    private final Integer NEED_ARCHIVE = 1;
+    
     /**
      * 已归档标签
      */
@@ -294,15 +290,9 @@ public class DocumentTreeServiceImpl implements DocumentTreeService{
     private Map<Integer, String> getDocumentTreeTagsMap(List<Tag> allTags){
 
         Map<Integer, String> documentTreeTagsMap = new HashMap<>();
-        if (StringUtils.isEmpty(documentTreeTags)){
-            return documentTreeTagsMap;
-        }
-        List<String> documentTreeTagsSplit = Arrays.asList(documentTreeTags.split(","));
-        if (documentTreeTagsSplit.isEmpty()){
-            return documentTreeTagsMap;
-        }
+        
         for (Tag tag : allTags){
-            if (documentTreeTagsSplit.contains(tag.getName())){
+            if (NEED_ARCHIVE.equals(tag.getNeedArchive())){
                 documentTreeTagsMap.put(tag.getId(), tag.getName());
             }
         }

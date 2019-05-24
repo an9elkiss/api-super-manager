@@ -27,7 +27,7 @@
 	</delete>
 	
 	<select id="getAllTags" resultType="com.an9elkiss.api.manager.model.Tag">
-		SELECT `id`, `name` FROM `t_task_tag` WHERE `status`=1
+		SELECT `id`, `name`, `needArchive` FROM `t_task_tag` WHERE `status`=1
 	</select>
 	
 	<select id="getAllTagsById" resultType="com.an9elkiss.api.manager.model.Tag">

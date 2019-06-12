@@ -166,9 +166,6 @@ public class TaskViewCommand{
     }
 
     public String getProject(){
-        if (null != project && project != ""){
-            return (TypeMap.getProjectMap().get(project) == null ? project : TypeMap.getProjectMap().get(project));
-        }
         return project;
     }
 

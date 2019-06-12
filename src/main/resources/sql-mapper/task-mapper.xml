@@ -202,7 +202,7 @@
 			task.title title,
 			task.parent_id parentId,
 			task.is_parent isParent,
-			task.project project,
+			project.project project,
 			task.tags tags,
 			task.description description,
 			task.plan_score planScore,
@@ -233,9 +233,11 @@
 			task.review_id reviewId
 		FROM
 			t_task task,
-			t_task_week wek
+			t_task_week wek,
+			t_project project
 		WHERE
 		task.id = wek.task_id
+		and project.code = task.project
 		and task.is_parent is null
 		<if test="searchParams.startDate!=null">		
 			and wek.end_time <![CDATA[>=]]>
@@ -454,15 +456,17 @@
 		select
 			DISTINCT (wek.id) as taskWeekId,
 			task.title title,
-			task.project project,
+			project.project project,
 			task.tags tags,
 			task.parent_id parentId
 		from
 		 	t_task task,
 		 	t_task_week wek,
+		 	t_project project,
 		 	mysql.help_topic b
 		WHERE
 			b.help_topic_id &lt; ( length( task.tags ) - length( replace( task.tags, ',', '' ))+ 1 )
+			AND project.code = task.project
 			AND task.id = wek.task_id
 			AND task.is_parent is null
 			AND wek.status != 21

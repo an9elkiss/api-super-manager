@@ -17,6 +17,7 @@ import com.an9elkiss.api.manager.constant.ApiStatus;
 import com.an9elkiss.api.manager.constant.TypeMap;
 import com.an9elkiss.api.manager.exception.SuperMngBizException;
 import com.an9elkiss.api.manager.model.Tag;
+import com.an9elkiss.api.manager.service.ProjectService;
 import com.an9elkiss.api.manager.service.TagService;
 import com.an9elkiss.api.manager.util.DateTools;
 import com.an9elkiss.commons.auth.spring.Access;
@@ -27,9 +28,14 @@ public class CommonApiController implements CommonApi {
     
     public static String TAG_CODE = "tag";
     
+    public static String PROJECT_CODE = "project";
+    
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private ProjectService projectService;
+    
 	@Override
 	@Access("API_COMMON_TYPE")
 	@RequestMapping(value = "/common/type", produces = { "application/json" }, method = RequestMethod.GET)
@@ -41,6 +47,7 @@ public class CommonApiController implements CommonApi {
 	    TypeMap map = new TypeMap();
 	    Map<String, String> tagMap = map.getTagMap(allTagsList);
 	    typeMap.put(TAG_CODE, tagMap);
+	    typeMap.put(PROJECT_CODE,  projectService.getProjectMap());
 		return ResponseEntity.ok(ApiResponseCmd.success(typeMap));
 	}
 	

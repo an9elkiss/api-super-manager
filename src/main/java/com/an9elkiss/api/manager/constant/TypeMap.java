@@ -13,7 +13,6 @@ public class TypeMap {
 
 	public static Map<String,Map<String,String>> getTypeMap(){
 		Map<String,Map<String,String>> map = new HashMap<>();
-		map.put(PROJECT_CODE, getProjectMap());
 		/*map.put(TAG_CODE, getTagMap());*/
 		map.put(STATUS_CODE, getStatusMap());
 		return map;

@@ -18,6 +18,7 @@ import com.an9elkiss.api.manager.constant.ProjectPlanTrackingLevelStatus;
 import com.an9elkiss.api.manager.constant.TypeMap;
 import com.an9elkiss.api.manager.model.ProjectPlanTracking;
 import com.an9elkiss.api.manager.service.ProjectPlanTrackingService;
+import com.an9elkiss.api.manager.service.ProjectService;
 import com.an9elkiss.commons.auth.spring.Access;
 import com.an9elkiss.commons.command.ApiResponseCmd;
 import com.an9elkiss.commons.util.JsonUtils;
@@ -39,6 +40,9 @@ public class ProjectPlanTrackingController implements ProjectPlanTrackingApi{
     @Autowired
     private ProjectPlanTrackingService projectPlanTrackingService;
 
+    @Autowired
+    private ProjectService projectService;
+    
     @Override
     @Access("API_SAVE_PROJECTPLANTRACKING")
     @RequestMapping(value = "/projectplan",produces = { "application/json" },method = RequestMethod.POST)
@@ -88,7 +92,7 @@ public class ProjectPlanTrackingController implements ProjectPlanTrackingApi{
      */
     private boolean checkSaveProjectPlanTracking(ProjectPlanTracking projectPlanTracking){
         if (projectPlanTracking == null || !ProjectPlanTrackingLevelStatus.isProjectPlanTrackingLevelStatus(projectPlanTracking.getProjectLevel()) || StringUtils.isEmpty(projectPlanTracking.getName()) || projectPlanTracking.getProject() == null
-                        || StringUtils.isEmpty(TypeMap.getProjectMap().get(projectPlanTracking.getProject().toString())) || projectPlanTracking.getPlanStartTime() == null || projectPlanTracking.getPlanEndTime() == null){
+                        || StringUtils.isEmpty(projectService.getProjectMap().get(projectPlanTracking.getProject().toString())) || projectPlanTracking.getPlanStartTime() == null || projectPlanTracking.getPlanEndTime() == null){
 
             LOGGER.info("任务计划需要校验对象校验失败：[{}]", JsonUtils.toString(projectPlanTracking));
 

@@ -7,16 +7,18 @@
 
 	<select id="getEchartsData" parameterType="java.util.Map" resultType="com.an9elkiss.api.manager.command.EchartsCommand" >
 		SELECT
-			task.project,
+			project.project,
 			task.plan_hours planHours,
 			task.percent_hours percentHours,
 			wek.user_id memberId,
 			wek.user_name username
 		FROM
 			t_task task,
-			t_task_week wek
+			t_task_week wek,
+			t_project project
 		WHERE
 			task.id = wek.task_id
+			and project.code = task.project
 			and task.is_parent is null
 			and wek.end_time <![CDATA[>=]]> DATE_FORMAT(#{searchParams.startDate},'%Y-%m-%d')
 			and wek.end_time <![CDATA[<=]]> DATE_FORMAT(#{searchParams.endDate},'%Y-%m-%d')
